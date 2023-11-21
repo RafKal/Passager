@@ -9,10 +9,19 @@
             android:id="@+id/nav_home"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_games"
             android:title="@string/menu_Games" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_services"
             android:title="@string/menu_Services" />
+
+        <item
+            android:id="@+id/nav_add"
+            android:title="@string/menu_add"
+            android:icon="@drawable/ic_menu_gallery"/>
+
+
+
+
     </group>
 </menu>
