@@ -19,6 +19,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.io.File;
 import android.Manifest.permission;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,10 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.ListFragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -42,7 +47,11 @@ import de.slackspace.openkeepass.domain.KeePassFile;
 
 import java.io.File;
 import java.net.URI;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.example.passager.databinding.ActivityMainBinding;
 
@@ -55,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,120 +74,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
+        TextView txtResult = findViewById(R.id.txtResult);
 
-         TextView txtResult = findViewById(R.id.txtResult);
+        String[] testlist = {"a","e","i","o","u"};
+        List<String> vowelsList = Arrays.asList(testlist);
+
+
+
+
+
+
+
 
         //KeePassFile database = KeePassDatabase.getInstance("document/raw:/storage/emulated/0/Download/test.kdbx").openDatabase("1234");
 
 //        ActivityCompat.requestPermissions(this,
 //                new String[]{permission.WRITE_EXTERNAL_STORAGE, permission.READ_EXTERNAL_STORAGE},
 //                PackageManager.PERMISSION_GRANTED);
-
-
-//        Intent intent3 = new Intent(Intent.ACTION_VIEW, MediaStore.Downloads.EXTERNAL_CONTENT_URI);
-//        intent.setType("application/pdf");
-//        intent3.setType("*/*");
-//        this.startActivity(intent3);
-//        Uri uri = intent3.getData();
-//        File file = new File(uri.getPath());
-//        String path = file.getPath();
-//        Log.v("afaf", path);
-
-
-
-
-
-
-
-
-
-
-
-
-//        //bind to fragment creation when fragment is designed
-//        binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-                //bind to fragment creation when fragment is designed
-
-
-//        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        intent.setType("*/*");
-//        intent.putExtra("result", "result");
-//        startActivityForResult(intent, 1);
-
-
-        Intent intent = new Intent(this, filepicker.class);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
-        //intent.putExtra("result", "result");
-        //String result;
-
-        //Uri uri = new Uri();
-
-
-
-        binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
-
-
-            @Override
-            public void onClick(View view) {
-                         showFileChooser();
-                         String paths = (String) txtResult.getText();
-                          if(paths != ""){
-                              Log.v("af", paths);
-                              KeePassFile database = KeePassDatabase.getInstance("/storage/emulated/0/Download/test.kdbx").openDatabase("1234");}
-
-
-
-
-
-
-                //                String result;
-//                startActivityForResult(intent, 100);
-//                String a = intent.getStringExtra("result");
-//                if (a == null){
-//                  Log.v("ja", "ist nuddll");
-//                }
-//                else {Log.v("nein", "ist niddcht null");}
-////
-//                Uri uri = intent.getData();
-//                File file = new File(uri.getPath());
-//                String path = file.getPath();
-//                Log.v("afaf", path);
-            }
-
-
-        }
-
-
-        );
-
-
-//
-
-
-
-//        ActivityResultLauncher<String> launcher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
-//            @Override
-//            public void onActivityResult(Uri o) {
-//                binding.appBarMain.add.setImageURI(o);
-//            }
-//        });
-//
-//
-//        binding.appBarMain.add.setOnClickListener(view -> launcher.launch("image/*"));
-
-
-
-
-
 
 
 
@@ -194,6 +108,58 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+
+
+
+        binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View view) {
+                  showFileChooser();
+                  String paths = (String) txtResult.getText();
+                  if(paths != ""){
+                      Log.v("af", paths);
+                      KeePassFile database = KeePassDatabase.getInstance("/storage/emulated/0/Download/test.kdbx").openDatabase("1234");}
+              }
+          }
+        );
+
+        //final Menu menu = navigationView.getMenu();
+        //menu.add("eins");
+
+        Bundle category_entries = new Bundle();
+        //category_entries.putStringArray("vowels", testlist);
+        category_entries.putInt("nr", 3);
+
+        Fragment temp = getSupportFragmentManager().findFragmentById(R.id.nav_home);
+        temp.setArguments(category_entries);
+
+
+        //Fragment fragment = new ListFragment();
+        //getSupportFragmentManager().beginTransaction().add(androidx.fragment.R.id.fragment_container_view_tag, fragment).commit();
+
+        //temp.setArguments(category_entries);
+
+
+
+        ArrayList<Fragment> lista = getAllFragments();
+        //long anzahlFrag = lista.stream().count();
+        //Log.v("number", String.valueOf(anzahlFrag));
+
+        //Fragment temp = getVisibleFragment();
+        //temp.getId();
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }
@@ -248,6 +214,32 @@ public class MainActivity extends AppCompatActivity {
         catch (Exception exception){
             Toast.makeText(this, "Install a file manager!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public ArrayList<Fragment> getAllFragments() {
+        ArrayList<Fragment> lista = new ArrayList<Fragment>();
+
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            try {
+                fragment.getTag();
+                lista.add(fragment);
+            } catch (NullPointerException e) {
+            }
+        }
+        return lista;
+
+    }
+
+    public Fragment getVisibleFragment(){
+        FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        if(fragments != null){
+            for(Fragment fragment : fragments){
+                if(fragment != null && fragment.isVisible())
+                    return fragment;
+            }
+        }
+        return null;
     }
 
 

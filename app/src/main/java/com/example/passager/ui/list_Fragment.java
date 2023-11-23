@@ -9,13 +9,19 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.example.passager.R;
 import com.example.passager.ui.placeholder.PlaceholderContent;
+
+import java.util.List;
+import java.util.zip.Inflater;
 
 /**
  * A fragment representing a list of Items.
@@ -44,12 +50,40 @@ public class list_Fragment extends ListFragment {
         return fragment;
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
+
+
         ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.fruits_list, android.R.layout.simple_list_item_1);
         setListAdapter(arrayAdapter);
+
+        Bundle bundle = this.getArguments();
+
+
+
+
+
+
+        View view = getView();
+
+        //ListView listView = view.findViewById(android.R.id.list);
+
+
+
+
+
+
+
+
+
+
+
 
 
         if (getArguments() != null) {
@@ -62,6 +96,7 @@ public class list_Fragment extends ListFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
 
+
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -73,6 +108,9 @@ public class list_Fragment extends ListFragment {
             }
             recyclerView.setAdapter(new MyItemRecyclerViewAdapter(PlaceholderContent.ITEMS));
         }
+
         return view;
     }
+
+
 }
