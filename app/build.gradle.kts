@@ -30,6 +30,26 @@ android {
         viewBinding = true
         dataBinding = true
     }
+
+    packaging {
+        resources.excludes.add("META-INF/INDEX.LIST")
+        resources.excludes.add("META-INF/LICENSE.md")
+        resources.excludes.add("META-INF/NOTICE.md")
+        //resources.excludes.add("META-INF/NOTICE.md")
+    }
+
+    configurations {
+        all {
+            resolutionStrategy {
+                //force("com.sun.activation:jakarta.activation:1.2.2")
+                exclude("com.sun.activation", "jakarta.activation")
+                exclude("javax.xml.bind", "jaxb-api")
+            }
+        }
+    }
+
+
+
 }
 
 dependencies {
@@ -43,8 +63,13 @@ dependencies {
     implementation("androidx.navigation:navigation-ui:2.5.3")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.0")
-    implementation("de.slackspace:openkeepass:0.8.2")
+    implementation("org.linguafranca.pwdb:KeePassJava2:2.2.1")
+    //implementation("de.slackspace:openkeepass:0.8.2")
+    implementation ("androidx.multidex:multidex:2.0.1")
+    //implementation ("com.android.tools.build:gradle:8.1.4")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+
 }

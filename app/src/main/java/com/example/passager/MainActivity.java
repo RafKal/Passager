@@ -1,6 +1,6 @@
 package com.example.passager;
 
-import static org.spongycastle.asn1.cms.CMSObjectIdentifiers.data;
+//import static org.spongycastle.asn1.cms.CMSObjectIdentifiers.data;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -38,14 +38,15 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
-import de.slackspace.openkeepass.KeePassDatabase;
-import de.slackspace.openkeepass.domain.KeePassFile;
-import de.slackspace.openkeepass.KeePassDatabase;
-import de.slackspace.openkeepass.domain.Entry;
-import de.slackspace.openkeepass.domain.Group;
-import de.slackspace.openkeepass.domain.KeePassFile;
+//import de.slackspace.openkeepass.KeePassDatabase;
+//import de.slackspace.openkeepass.domain.KeePassFile;
+//import de.slackspace.openkeepass.KeePassDatabase;
+//import de.slackspace.openkeepass.domain.Entry;
+//import de.slackspace.openkeepass.domain.Group;
+//import de.slackspace.openkeepass.domain.KeePassFile;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -55,6 +56,8 @@ import java.util.Map;
 
 import com.example.passager.databinding.ActivityMainBinding;
 
+//import org.linguafranca.pwdb.kdbx.KdbxCreds;
+import org.linguafranca.pwdb.kdbx.KdbxCreds;
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
@@ -80,13 +83,6 @@ public class MainActivity extends AppCompatActivity {
         List<String> vowelsList = Arrays.asList(testlist);
 
 
-
-
-
-
-
-
-        //KeePassFile database = KeePassDatabase.getInstance("document/raw:/storage/emulated/0/Download/test.kdbx").openDatabase("1234");
 
 //        ActivityCompat.requestPermissions(this,
 //                new String[]{permission.WRITE_EXTERNAL_STORAGE, permission.READ_EXTERNAL_STORAGE},
@@ -117,9 +113,9 @@ public class MainActivity extends AppCompatActivity {
               public void onClick(View view) {
                   showFileChooser();
                   String paths = (String) txtResult.getText();
-                  if(paths != ""){
-                      Log.v("af", paths);
-                      KeePassFile database = KeePassDatabase.getInstance("/storage/emulated/0/Download/test.kdbx").openDatabase("1234");}
+
+                  KdbxCreds creds = new KdbxCreds("123".getBytes());
+                  //InputStream inputStream = getClass().getClassLoader().getResourceAsStream("test.kdbx");
               }
           }
         );
@@ -130,32 +126,6 @@ public class MainActivity extends AppCompatActivity {
         Bundle category_entries = new Bundle();
         //category_entries.putStringArray("vowels", testlist);
         category_entries.putInt("nr", 3);
-
-        Fragment temp = getSupportFragmentManager().findFragmentById(R.id.nav_home);
-        temp.setArguments(category_entries);
-
-
-        //Fragment fragment = new ListFragment();
-        //getSupportFragmentManager().beginTransaction().add(androidx.fragment.R.id.fragment_container_view_tag, fragment).commit();
-
-        //temp.setArguments(category_entries);
-
-
-
-        ArrayList<Fragment> lista = getAllFragments();
-        //long anzahlFrag = lista.stream().count();
-        //Log.v("number", String.valueOf(anzahlFrag));
-
-        //Fragment temp = getVisibleFragment();
-        //temp.getId();
-
-
-
-
-
-
-
-
 
 
 
