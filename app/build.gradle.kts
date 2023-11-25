@@ -64,12 +64,14 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.0")
     implementation("org.linguafranca.pwdb:KeePassJava2:2.2.1")
-    //implementation("de.slackspace:openkeepass:0.8.2")
+    //implementation ("de.slackspace:openkeepass:0.8.2")
     implementation ("androidx.multidex:multidex:2.0.1")
     //implementation ("com.android.tools.build:gradle:8.1.4")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation ("javax.xml.stream:stax-api:1.0")
+
 
 
 }

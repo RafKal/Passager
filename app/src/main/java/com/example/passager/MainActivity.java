@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -22,7 +23,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -44,10 +44,15 @@ import androidx.appcompat.app.AppCompatActivity;
 //import de.slackspace.openkeepass.domain.Entry;
 //import de.slackspace.openkeepass.domain.Group;
 //import de.slackspace.openkeepass.domain.KeePassFile;
-
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URI;
+import java.security.Permission;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,13 +62,24 @@ import java.util.Map;
 import com.example.passager.databinding.ActivityMainBinding;
 
 //import org.linguafranca.pwdb.kdbx.KdbxCreds;
+import org.linguafranca.pwdb.Database;
+import org.linguafranca.pwdb.Visitor;
 import org.linguafranca.pwdb.kdbx.KdbxCreds;
+import org.linguafranca.pwdb.kdbx.jaxb.JaxbDatabase;
+import org.linguafranca.pwdb.kdbx.simple.SimpleDatabase;
 import org.w3c.dom.Text;
+
+import org.linguafranca.pwdb.kdbx.*;
+
+
+
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+
+    //static PrintStream printStream = getTestPrintStream();
 
 
 
@@ -84,9 +100,16 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{permission.WRITE_EXTERNAL_STORAGE, permission.READ_EXTERNAL_STORAGE},
-//                PackageManager.PERMISSION_GRANTED);
+        ActivityCompat.requestPermissions(this,
+                new String[]{permission.WRITE_EXTERNAL_STORAGE, permission.READ_EXTERNAL_STORAGE, permission.MANAGE_EXTERNAL_STORAGE},
+                PackageManager.PERMISSION_GRANTED);
+
+        if (!Environment.isExternalStorageManager()){
+            Intent getpermission = new Intent();
+            getpermission.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+            startActivity(getpermission);
+        }
+
 
 
 
@@ -108,14 +131,47 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
         binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View view) {
                   showFileChooser();
                   String paths = (String) txtResult.getText();
 
-                  KdbxCreds creds = new KdbxCreds("123".getBytes());
-                  //InputStream inputStream = getClass().getClassLoader().getResourceAsStream("test.kdbx");
+                  KdbxCreds creds = new KdbxCreds("1234".getBytes());
+                  File path = Environment.getExternalStoragePublicDirectory((Environment.DIRECTORY_DOWNLOADS+"/"+"test.kdbx"));
+                  Log.v("patj", path.getPath());
+
+                  if (path != null){
+                      try {
+                          InputStream inputStream = new FileInputStream(path);
+                          try {
+                              Database database = SimpleDatabase.load(creds, inputStream);
+                              if (database != null){
+
+                                  Log.v("inputstream",  String.valueOf(database.getRootGroup().getEntries()));
+                                  List entries = database.getRootGroup().getEntries();
+                                  Log.v("inputstream",  String.valueOf(entries.get(0)));
+
+                              }
+
+                          } catch (IOException e) {
+                              throw new RuntimeException(e);
+                          }
+
+                      } catch (FileNotFoundException e) {
+                          throw new RuntimeException(e);
+                      }
+                  }
+
+
+
+
+
+
+
+
+
               }
           }
         );
@@ -147,10 +203,6 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-
-    //String path =  "/storage/emulated/0/Download/test.kdbx";
-    //KeePassFile database = KeePassDatabase.getInstance(path).openDatabase("1234");
-    //File file = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -213,4 +265,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
 }
+
