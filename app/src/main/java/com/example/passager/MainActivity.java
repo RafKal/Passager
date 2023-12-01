@@ -87,6 +87,7 @@ import org.linguafranca.pwdb.kdbx.*;
 
 
 
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
