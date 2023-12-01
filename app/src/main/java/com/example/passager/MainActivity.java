@@ -2,8 +2,13 @@ package com.example.passager;
 
 //import static org.spongycastle.asn1.cms.CMSObjectIdentifiers.data;
 
+import static android.app.PendingIntent.getActivity;
+
+import static java.security.AccessController.getContext;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -12,9 +17,12 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.net.Uri;
+
+import com.example.passager.ui.list_Fragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import java.io.File;
@@ -31,12 +39,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.fragment.app.ListFragment;
+import androidx.navigation.ActivityNavigator;
 import androidx.navigation.NavController;
+import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 //import de.slackspace.openkeepass.KeePassDatabase;
 //import de.slackspace.openkeepass.domain.KeePassFile;
@@ -58,11 +69,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.example.passager.databinding.ActivityMainBinding;
 
 //import org.linguafranca.pwdb.kdbx.KdbxCreds;
 import org.linguafranca.pwdb.Database;
+import org.linguafranca.pwdb.Entry;
 import org.linguafranca.pwdb.Visitor;
 import org.linguafranca.pwdb.kdbx.KdbxCreds;
 import org.linguafranca.pwdb.kdbx.jaxb.JaxbDatabase;
@@ -74,7 +87,7 @@ import org.linguafranca.pwdb.kdbx.*;
 
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -87,7 +100,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
+
         super.onCreate(savedInstanceState);
+
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -121,12 +139,15 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_games,  R.id.nav_services, R.id.nav_add)
+                R.id.nav_home ,R.id.nav_games,  R.id.nav_services, R.id.nav_add
+        )
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+
 
 
 
@@ -139,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                   String paths = (String) txtResult.getText();
 
                   KdbxCreds creds = new KdbxCreds("1234".getBytes());
-                  File path = Environment.getExternalStoragePublicDirectory((Environment.DIRECTORY_DOWNLOADS+"/"+"test.kdbx"));
+                  File path = Environment.getExternalStoragePublicDirectory((Environment.DIRECTORY_DOWNLOADS+"/"+"test1.kdbx"));
                   Log.v("patj", path.getPath());
 
                   if (path != null){
@@ -152,6 +173,15 @@ public class MainActivity extends AppCompatActivity {
                                   Log.v("inputstream",  String.valueOf(database.getRootGroup().getEntries()));
                                   List entries = database.getRootGroup().getEntries();
                                   Log.v("inputstream",  String.valueOf(entries.get(0)));
+                                  String entry1 = String.valueOf(entries.get(0));
+                                   List c = database.findEntries("Sample Entry");
+                                  c = database.findEntries("general");
+
+                                   Entry temp =  (Entry) c.get(0);
+
+                                  Log.v("list",  String.valueOf(c));
+                                  Log.v("pw",  temp.getPassword());
+                                  //Log.v("inputstream",  String.valueOf(database.findEntry(id)));
 
                               }
 
@@ -176,12 +206,81 @@ public class MainActivity extends AppCompatActivity {
           }
         );
 
-        //final Menu menu = navigationView.getMenu();
-        //menu.add("eins");
 
-        Bundle category_entries = new Bundle();
+
+
+
+
+
+        Menu menu = navigationView.getMenu();
+        menu.add("Home2").setCheckable(true);
+        menu.add("Games2").setCheckable(true);
+        int id =  menu.getItem(4).getItemId();
+        menu.add(0, id, 0, "haha");
+
+
+
+
+        CharSequence name =  menu.getItem(4).getTitle();
+        MenuItem item =  menu.getItem(4);
+
+        NavGraph graph = navController.getGraph();
+        //graph.addDestination(ActivityNavigator(this).);
+
+
+        Log.v("id", String.valueOf(id));
+        Log.v("name", String.valueOf(name));
+
+        Fragment fragment= new list_Fragment();
+
+
+
+       // getSupportFragmentManager().beginTransaction().add(R.id.nav_host_fragment_content_main, fragment).commit();
+
+
+
+        //addMenuItemInNavMenuDrawer();
+
+
+        //MenuItem item = menu.getItem(4);
+        //item.
+        //menu.
+
+
+
+
+        //getSupportFragmentManager().beginTransaction().
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        getSupportFragmentManager().beginTransaction()
+//                .add(id, fragment).commit();
+
+
+;
+
+
+
+
+
+
+        //Bundle category_entries = new Bundle();
         //category_entries.putStringArray("vowels", testlist);
-        category_entries.putInt("nr", 3);
+        //category_entries.putInt("nr", 3);
 
 
 
@@ -263,6 +362,84 @@ public class MainActivity extends AppCompatActivity {
         }
         return null;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = new list_Fragment();
+
+        switch(item.getItemId()){
+            default:fragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment_content_main, fragment)
+                .commit();
+//            case 0:
+//                Toast.makeText(this, "aha",
+//                        Toast.LENGTH_SHORT).show();
+//                return true;
+        }
+
+        return false;
+    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item){
+//                Toast.makeText(this, "aha", Toast.LENGTH_LONG).show();
+//                return true;
+//        }
+
+    private void addMenuItemInNavMenuDrawer() {
+        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+
+        Menu menu = navView.getMenu();
+        Menu submenu = menu.addSubMenu("New Super SubMenu");
+
+        submenu.add("Super Item1");
+        submenu.add("Super Item2");
+        submenu.add("Super Item3");
+
+        navView.invalidate();
+    }
+
+
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        // update the main content by replacing fragments
+        Fragment fragment;
+        FragmentManager fragmentManager = getSupportFragmentManager(); // For AppCompat use getSupportFragmentManager
+        switch(id) {
+            default:fragment = new list_Fragment();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_main, fragment)
+                        .commit();
+            case 4:
+                fragment = new list_Fragment();
+
+                break;
+            case 1245:
+                fragment = new list_Fragment();
+
+                break;
+        }
+        fragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment_content_main, fragment)
+                .commit();
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
