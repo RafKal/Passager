@@ -13,10 +13,11 @@
     <string name="menu_add">add</string>
 
 
-    <string-array name="fruits_list">
-        <item>Apple</item>
-        <item>Peach</item>
-        <item>Banana</item>
+    <string-array name="default_groups">
+        <item>Home</item>
+        <item>Games</item>
+        <item>Services</item>
+        <item>Add Group</item>
     </string-array>
 
 

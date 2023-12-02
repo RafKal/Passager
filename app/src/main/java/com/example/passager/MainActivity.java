@@ -22,11 +22,14 @@ import android.view.View;
 import android.view.Menu;
 import android.net.Uri;
 
+import com.example.passager.ui.home.HomeFragment;
 import com.example.passager.ui.list_Fragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import java.io.File;
 import android.Manifest.permission;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -117,6 +120,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String[] testlist = {"a","e","i","o","u"};
         List<String> vowelsList = Arrays.asList(testlist);
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
 
 
         ActivityCompat.requestPermissions(this,
@@ -129,6 +134,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(getpermission);
         }
 
+        ListView navmenu = findViewById(R.id.list_slidermenu);
+        ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(this, R.array.default_groups, android.R.layout.simple_list_item_1);
+        navmenu.setAdapter(arrayAdapter);
+
+        //Fragment fragment= new list_Fragment();
+
+
+
+
+
+
+
+
+
 
 
 
@@ -137,16 +156,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+//        // Passing each menu ID as a set of Ids because each
+//        // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home ,R.id.nav_games,  R.id.nav_services, R.id.nav_add
+                R.id.nav_home
         )
                 .setOpenableLayout(drawer)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+          NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+          NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+          NavigationUI.setupWithNavController(navigationView, navController);
+
+          Database database = new SimpleDatabase();
+
+
+
+
+
 
 
 
@@ -184,6 +210,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                   Log.v("pw",  temp.getPassword());
                                   //Log.v("inputstream",  String.valueOf(database.findEntry(id)));
 
+
+
                               }
 
                           } catch (IOException e) {
@@ -207,32 +235,63 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
           }
         );
 
+        navmenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
+                                    long id) {
+
+           /*     if(database != null){
+                    Log.v("database", "ist da");
+                    list_Fragment b = newInstance(1);
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.nav_host_fragment_content_main, b)
+                            .commit();
+                    drawer.closeDrawers();
+
+
+                }*/
 
 
 
 
 
 
-        Menu menu = navigationView.getMenu();
-        menu.add("Home2").setCheckable(true);
-        menu.add("Games2").setCheckable(true);
-        int id =  menu.getItem(4).getItemId();
-        menu.add(0, id, 0, "haha");
+/*                Fragment fragment= new HomeFragment();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_main, fragment)
+                        .commit();
+                drawer.closeDrawers();*/
+
+
+            }
+        });
 
 
 
 
-        CharSequence name =  menu.getItem(4).getTitle();
-        MenuItem item =  menu.getItem(4);
 
-        NavGraph graph = navController.getGraph();
+
+
+        //Menu menu = navigationView.getMenu();
+        //menu.add("Home2").setCheckable(true);
+        //menu.add("Games2").setCheckable(true);
+        //int id =  menu.getItem(4).getItemId();
+        //menu.add(0, id, 0, "haha");
+
+
+
+
+        //CharSequence name =  menu.getItem(4).getTitle();
+        //MenuItem item =  menu.getItem(4);
+
+        //NavGraph graph = navController.getGraph();
         //graph.addDestination(ActivityNavigator(this).);
 
 
-        Log.v("id", String.valueOf(id));
-        Log.v("name", String.valueOf(name));
+        //Log.v("id", String.valueOf(id));
+        //Log.v("name", String.valueOf(name));
 
-        Fragment fragment= new list_Fragment();
+
 
 
 
@@ -431,6 +490,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+
+    public static list_Fragment newInstance(int someInt) {
+        list_Fragment myFragment = new list_Fragment();
+
+        Bundle args = new Bundle();
+        args.putInt("someInt", someInt);
+        myFragment.setArguments(args);
+
+        return myFragment;
+    }
 
 
 

@@ -43,6 +43,7 @@ public class list_Fragment extends ListFragment {
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static list_Fragment newInstance(int columnCount) {
+
         list_Fragment fragment = new list_Fragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
@@ -60,12 +61,13 @@ public class list_Fragment extends ListFragment {
 
 
 
-        ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.fruits_list, android.R.layout.simple_list_item_1);
-        setListAdapter(arrayAdapter);
-
-        Bundle bundle = this.getArguments();
 
 
+        //ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.fruits_list, android.R.layout.simple_list_item_1);
+        //setListAdapter(arrayAdapter);
+
+        //Bundle bundle = this.getArguments();
+        //int data = bundle.getInt("someInt");
 
 
 
@@ -111,6 +113,16 @@ public class list_Fragment extends ListFragment {
 
         return view;
     }
+
+  /*  public static list_Fragment newInstance(int someInt) {
+        list_Fragment new_frag = new list_Fragment();
+
+        Bundle args = new Bundle();
+        args.putInt("someInt", someInt);
+        new_frag.setArguments(args);
+
+        return new_frag;
+    }*/
 
 
 }
