@@ -20,6 +20,7 @@ import android.widget.ListView;
 import com.example.passager.R;
 import com.example.passager.ui.placeholder.PlaceholderContent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Inflater;
 
@@ -49,6 +50,7 @@ public class list_Fragment extends ListFragment {
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
+
     }
 
 
@@ -59,15 +61,14 @@ public class list_Fragment extends ListFragment {
 
 
 
-
-
-
-
-        //ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.fruits_list, android.R.layout.simple_list_item_1);
+        //ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.default_groups, android.R.layout.simple_list_item_1);
         //setListAdapter(arrayAdapter);
 
-        //Bundle bundle = this.getArguments();
-        //int data = bundle.getInt("someInt");
+
+
+
+
+
 
 
 
@@ -90,7 +91,22 @@ public class list_Fragment extends ListFragment {
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+//            ArrayList<String> groups = getArguments().getStringArrayList("groups");
+//            Log.v("ies ist", "NICHT leer");
+//            Log.v("nummer ist", String.valueOf(groups.get(0)));
+//
+//
+//            ArrayAdapter groupadapter;
+//            groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, groups);
+//            setListAdapter(groupadapter);
+
         }
+        else { Log.v("ies ist", "leer"); }
+
+
+
+
+
     }
 
     @Override
@@ -123,6 +139,7 @@ public class list_Fragment extends ListFragment {
 
         return new_frag;
     }*/
+
 
 
 }

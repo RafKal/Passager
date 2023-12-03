@@ -6,6 +6,9 @@ import static android.app.PendingIntent.getActivity;
 
 import static java.security.AccessController.getContext;
 
+
+
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -77,6 +80,7 @@ import java.util.UUID;
 import com.example.passager.databinding.ActivityMainBinding;
 
 //import org.linguafranca.pwdb.kdbx.KdbxCreds;
+import org.apache.commons.codec.binary.StringUtils;
 import org.linguafranca.pwdb.Database;
 import org.linguafranca.pwdb.Entry;
 import org.linguafranca.pwdb.Visitor;
@@ -91,7 +95,7 @@ import org.linguafranca.pwdb.kdbx.*;
 
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity  {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -180,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
         binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View view) {
@@ -188,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                   KdbxCreds creds = new KdbxCreds("1234".getBytes());
                   File path = Environment.getExternalStoragePublicDirectory((Environment.DIRECTORY_DOWNLOADS+"/"+"test1.kdbx"));
-                  Log.v("patj", path.getPath());
+                  //Log.v("path", path.getPath());
 
                   if (path != null){
                       try {
@@ -197,17 +202,73 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                               Database database = SimpleDatabase.load(creds, inputStream);
                               if (database != null){
 
-                                  Log.v("inputstream",  String.valueOf(database.getRootGroup().getEntries()));
+                                  String db_name = database.getName();
+                                  Log.v("Database Name",  String.valueOf(db_name));
+
+                                  String root = database.getRootGroup().getName();
+                                  Log.v("Root Name",  String.valueOf(root));
+
+                                  Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
+                                  //List entries = database.getRootGroup().getEntries();
                                   List entries = database.getRootGroup().getEntries();
-                                  Log.v("inputstream",  String.valueOf(entries.get(0)));
+
+                                  List groups = database.getRootGroup().getGroups();
+                                  Log.v("groups",  String.valueOf(groups.get(0)));
+                                  String firstgrp = groups.get(0).toString();
+
+                                  ArrayList<String> group_names = new ArrayList<String>();
+
+                                  for (int i  = 0; i < groups.size(); i++){
+
+                                      String temp = groups.get(i).toString();
+                                      //temp = temp.replace( "/" + root + "/", "");
+
+                                      temp = temp.substring((root.length()+2), temp.length()-1);
+                                      Log.v("temp",  String.valueOf(temp));
+
+                                      //temp = removeLastChar(temp);
+
+
+                                      //Log.v("getEntries result",  temp);
+
+                                      group_names.add(temp);
+                                  }
+
+                                  group_names.remove(db_name);
+                                  Log.v("group names 0",  String.valueOf(group_names.get(0)));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  ArrayAdapter groupadapter;
+                                  groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+                                  navmenu.setAdapter(groupadapter);
+
+
+
+
+
+
+                                  Log.v("entries get 0 result",  String.valueOf(entries.get(0)));
                                   String entry1 = String.valueOf(entries.get(0));
-                                   List c = database.findEntries("Sample Entry");
-                                  c = database.findEntries("general");
+                                  //List c = database.findEntries("general");
+                                 // Log.v("find general entries result",  String.valueOf(entries.get(0)));
 
-                                   Entry temp =  (Entry) c.get(0);
 
-                                  Log.v("list",  String.valueOf(c));
-                                  Log.v("pw",  temp.getPassword());
+                                   //Entry temp =  (Entry) c.get(0);
+
+                                  //Log.v("list",  String.valueOf(c));
+                                  //Log.v("pw",  temp.getPassword());
                                   //Log.v("inputstream",  String.valueOf(database.findEntry(id)));
 
 
@@ -239,17 +300,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                     long id) {
 
-           /*     if(database != null){
-                    Log.v("database", "ist da");
-                    list_Fragment b = newInstance(1);
+                if(database != null){
+                    //Log.v("database", "ist da");
+                    //list_Fragment b = newInstance(1);
+
+                    list_Fragment b = new list_Fragment();
+
+                    ArrayList<String> groups = new ArrayList<>();
+                    groups.add("a");
+                    groups.add("v");
+
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArrayList("groups", groups);
+                    b.setArguments(bundle);
+
 
                     fragmentManager.beginTransaction()
                             .replace(R.id.nav_host_fragment_content_main, b)
                             .commit();
-                    drawer.closeDrawers();
+                     drawer.closeDrawers();
 
 
-                }*/
+                }
 
 
 
@@ -423,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return null;
     }
 
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(MenuItem item){
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -440,7 +512,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         return false;
-    }
+    }*/
 //
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item){
@@ -463,7 +535,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-    @Override
+    /*@Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
         int id = item.getItemId();
@@ -488,7 +560,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .replace(R.id.nav_host_fragment_content_main, fragment)
                 .commit();
         return true;
-    }
+    }*/
 
 
     public static list_Fragment newInstance(int someInt) {
@@ -499,6 +571,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         myFragment.setArguments(args);
 
         return myFragment;
+    }
+
+//    https://stackoverflow.com/questions/7438612/how-to-remove-the-last-character-from-a-string
+    public String removeLastChar(String str) {
+        if (str != null && str.length() > 0 && str.charAt(str.length() - 1) == 'x') {
+            str = str.substring(0, str.length() - 1);
+        }
+        return str;
     }
 
 
