@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity  {
     //static PrintStream printStream = getTestPrintStream();
 
 
+    Database database = new SimpleDatabase();
+    ArrayList<String> group_names = new ArrayList<String>();
 
 
 
@@ -120,9 +122,6 @@ public class MainActivity extends AppCompatActivity  {
 
         setSupportActionBar(binding.appBarMain.toolbar);
         TextView txtResult = findViewById(R.id.txtResult);
-
-        String[] testlist = {"a","e","i","o","u"};
-        List<String> vowelsList = Arrays.asList(testlist);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -142,18 +141,6 @@ public class MainActivity extends AppCompatActivity  {
         ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(this, R.array.default_groups, android.R.layout.simple_list_item_1);
         navmenu.setAdapter(arrayAdapter);
 
-        //Fragment fragment= new list_Fragment();
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -171,14 +158,17 @@ public class MainActivity extends AppCompatActivity  {
           NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
           NavigationUI.setupWithNavController(navigationView, navController);
 
-          Database database = new SimpleDatabase();
 
 
 
 
+          //implement start screen with default new database values
 
-
-
+          group_names.add("Home");
+          group_names.add("Games");
+          group_names.add("Services");
+          group_names.add("Add");
+          showFileChooser();
 
 
 
@@ -188,88 +178,45 @@ public class MainActivity extends AppCompatActivity  {
         binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View view) {
-                  showFileChooser();
+                  //showFileChooser();
                   String paths = (String) txtResult.getText();
 
                   KdbxCreds creds = new KdbxCreds("1234".getBytes());
                   File path = Environment.getExternalStoragePublicDirectory((Environment.DIRECTORY_DOWNLOADS+"/"+"test1.kdbx"));
-                  //Log.v("path", path.getPath());
+                  Log.v("File", path.getPath());
+                  Log.v("txtResultPath", paths);
 
                   if (path != null){
                       try {
                           InputStream inputStream = new FileInputStream(path);
                           try {
-                              Database database = SimpleDatabase.load(creds, inputStream);
+                                database = SimpleDatabase.load(creds, inputStream);
                               if (database != null){
+                                  group_names.clear();
 
                                   String db_name = database.getName();
-                                  Log.v("Database Name",  String.valueOf(db_name));
+                                  //Log.v("Database Name",  String.valueOf(db_name));
 
                                   String root = database.getRootGroup().getName();
-                                  Log.v("Root Name",  String.valueOf(root));
+                                  Log.v("Root Name onclick",  String.valueOf(root));
 
-                                  Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
+                                  //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
                                   //List entries = database.getRootGroup().getEntries();
                                   List entries = database.getRootGroup().getEntries();
 
+                                  //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
                                   List groups = database.getRootGroup().getGroups();
-                                  Log.v("groups",  String.valueOf(groups.get(0)));
-                                  String firstgrp = groups.get(0).toString();
-
-                                  ArrayList<String> group_names = new ArrayList<String>();
-
                                   for (int i  = 0; i < groups.size(); i++){
-
                                       String temp = groups.get(i).toString();
-                                      //temp = temp.replace( "/" + root + "/", "");
-
                                       temp = temp.substring((root.length()+2), temp.length()-1);
-                                      Log.v("temp",  String.valueOf(temp));
-
-                                      //temp = removeLastChar(temp);
-
-
-                                      //Log.v("getEntries result",  temp);
-
                                       group_names.add(temp);
                                   }
-
-                                  group_names.remove(db_name);
-                                  Log.v("group names 0",  String.valueOf(group_names.get(0)));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                   ArrayAdapter groupadapter;
                                   groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
                                   navmenu.setAdapter(groupadapter);
 
 
 
-
-
-
-                                  Log.v("entries get 0 result",  String.valueOf(entries.get(0)));
-                                  String entry1 = String.valueOf(entries.get(0));
-                                  //List c = database.findEntries("general");
-                                 // Log.v("find general entries result",  String.valueOf(entries.get(0)));
-
-
-                                   //Entry temp =  (Entry) c.get(0);
-
-                                  //Log.v("list",  String.valueOf(c));
-                                  //Log.v("pw",  temp.getPassword());
-                                  //Log.v("inputstream",  String.valueOf(database.findEntry(id)));
 
 
 
@@ -301,30 +248,53 @@ public class MainActivity extends AppCompatActivity  {
                                     long id) {
 
                 if(database != null){
-                    //Log.v("database", "ist da");
-                    //list_Fragment b = newInstance(1);
-
-                    list_Fragment b = new list_Fragment();
-
-                    ArrayList<String> groups = new ArrayList<>();
-                    groups.add("a");
-                    groups.add("v");
-
-                    Bundle bundle = new Bundle();
-                    bundle.putStringArrayList("groups", groups);
-                    b.setArguments(bundle);
 
 
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.nav_host_fragment_content_main, b)
-                            .commit();
-                     drawer.closeDrawers();
+
+                    String name = group_names.get(position);
+                    Log.v("onItemClick Name",  String.valueOf(name));
+
+
+                    List grp_entries = database.getRootGroup().findGroups(name);
+
+
+                    // make group search more robust so that groups with two / arent included in results
+
+                    grp_entries = database.findEntries(name);
+                    Log.v("onItemClick size",  String.valueOf(grp_entries.size()));
+                    //grp_entries = database.findGroup()
+
+                    Log.v("onItemClick entries",  String.valueOf(grp_entries));
+
+
+                    //ArrayList<>
+
+
+
+                    if (grp_entries.size() > 0){
+                        list_Fragment new_fragment = new list_Fragment();
+                        ArrayList<Entry> groups = new ArrayList<Entry>(grp_entries.size());
+                        groups.addAll(grp_entries);
+
+
+
+
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("entries", groups);
+                        new_fragment.setArguments(bundle);
+
+
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.nav_host_fragment_content_main, new_fragment)
+                                .commit();
+
+
+                    }
+
+                    drawer.closeDrawers();
 
 
                 }
-
-
-
 
 
 
@@ -338,81 +308,6 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
-
-
-
-
-
-
-        //Menu menu = navigationView.getMenu();
-        //menu.add("Home2").setCheckable(true);
-        //menu.add("Games2").setCheckable(true);
-        //int id =  menu.getItem(4).getItemId();
-        //menu.add(0, id, 0, "haha");
-
-
-
-
-        //CharSequence name =  menu.getItem(4).getTitle();
-        //MenuItem item =  menu.getItem(4);
-
-        //NavGraph graph = navController.getGraph();
-        //graph.addDestination(ActivityNavigator(this).);
-
-
-        //Log.v("id", String.valueOf(id));
-        //Log.v("name", String.valueOf(name));
-
-
-
-
-
-       // getSupportFragmentManager().beginTransaction().add(R.id.nav_host_fragment_content_main, fragment).commit();
-
-
-
-        //addMenuItemInNavMenuDrawer();
-
-
-        //MenuItem item = menu.getItem(4);
-        //item.
-        //menu.
-
-
-
-
-        //getSupportFragmentManager().beginTransaction().
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//        getSupportFragmentManager().beginTransaction()
-//                .add(id, fragment).commit();
-
-
-;
-
-
-
-
-
-
-        //Bundle category_entries = new Bundle();
-        //category_entries.putStringArray("vowels", testlist);
-        //category_entries.putInt("nr", 3);
 
 
 
@@ -441,13 +336,14 @@ public class MainActivity extends AppCompatActivity  {
         if (requestCode == 100) {
             if(resultCode == Activity.RESULT_OK & data!= null){
                 Uri uri = data.getData();
-                String path = uri.getPath();
-                File file = new File(path);
 
+
+                String path = uri.getPath();
+                path = uri.getLastPathSegment().substring(4);
 
                 TextView txtResult = findViewById(R.id.txtResult);
                 txtResult.setText(path);
-                Log.v("aaa", path);
+                Log.v("OnResult path", path);
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -468,129 +364,6 @@ public class MainActivity extends AppCompatActivity  {
             Toast.makeText(this, "Install a file manager!", Toast.LENGTH_LONG).show();
         }
     }
-
-    public ArrayList<Fragment> getAllFragments() {
-        ArrayList<Fragment> lista = new ArrayList<Fragment>();
-
-        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-            try {
-                fragment.getTag();
-                lista.add(fragment);
-            } catch (NullPointerException e) {
-            }
-        }
-        return lista;
-
-    }
-
-    public Fragment getVisibleFragment(){
-        FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-        if(fragments != null){
-            for(Fragment fragment : fragments){
-                if(fragment != null && fragment.isVisible())
-                    return fragment;
-            }
-        }
-        return null;
-    }
-
-   /* @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = new list_Fragment();
-
-        switch(item.getItemId()){
-            default:fragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main, fragment)
-                .commit();
-//            case 0:
-//                Toast.makeText(this, "aha",
-//                        Toast.LENGTH_SHORT).show();
-//                return true;
-        }
-
-        return false;
-    }*/
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item){
-//                Toast.makeText(this, "aha", Toast.LENGTH_LONG).show();
-//                return true;
-//        }
-
-    private void addMenuItemInNavMenuDrawer() {
-        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
-
-        Menu menu = navView.getMenu();
-        Menu submenu = menu.addSubMenu("New Super SubMenu");
-
-        submenu.add("Super Item1");
-        submenu.add("Super Item2");
-        submenu.add("Super Item3");
-
-        navView.invalidate();
-    }
-
-
-
-    /*@Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-        // update the main content by replacing fragments
-        Fragment fragment;
-        FragmentManager fragmentManager = getSupportFragmentManager(); // For AppCompat use getSupportFragmentManager
-        switch(id) {
-            default:fragment = new list_Fragment();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment_content_main, fragment)
-                        .commit();
-            case 4:
-                fragment = new list_Fragment();
-
-                break;
-            case 1245:
-                fragment = new list_Fragment();
-
-                break;
-        }
-        fragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main, fragment)
-                .commit();
-        return true;
-    }*/
-
-
-    public static list_Fragment newInstance(int someInt) {
-        list_Fragment myFragment = new list_Fragment();
-
-        Bundle args = new Bundle();
-        args.putInt("someInt", someInt);
-        myFragment.setArguments(args);
-
-        return myFragment;
-    }
-
-//    https://stackoverflow.com/questions/7438612/how-to-remove-the-last-character-from-a-string
-    public String removeLastChar(String str) {
-        if (str != null && str.length() > 0 && str.charAt(str.length() - 1) == 'x') {
-            str = str.substring(0, str.length() - 1);
-        }
-        return str;
-    }
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

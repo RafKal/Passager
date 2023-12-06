@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +17,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.passager.R;
 import com.example.passager.ui.placeholder.PlaceholderContent;
 
+import org.linguafranca.pwdb.Entry;
+import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
+import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.Inflater;
 
@@ -61,21 +68,12 @@ public class list_Fragment extends ListFragment {
 
 
 
-        //ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.default_groups, android.R.layout.simple_list_item_1);
-        //setListAdapter(arrayAdapter);
 
 
 
 
 
 
-
-
-
-
-        View view = getView();
-
-        //ListView listView = view.findViewById(android.R.id.list);
 
 
 
@@ -91,17 +89,48 @@ public class list_Fragment extends ListFragment {
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-//            ArrayList<String> groups = getArguments().getStringArrayList("groups");
-//            Log.v("ies ist", "NICHT leer");
-//            Log.v("nummer ist", String.valueOf(groups.get(0)));
-//
-//
-//            ArrayAdapter groupadapter;
-//            groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, groups);
-//            setListAdapter(groupadapter);
+
+
+            ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("entries");
+
+            if (groups.size() != 0){
+                SimpleEntry test_entry =  (SimpleEntry) groups.get(0);
+                Log.v("fragment log", String.valueOf(test_entry.getTitle()));
+
+                ArrayAdapter groupadapter;
+                //groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, test_entry.getTitle());
+                groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, Collections.singletonList(test_entry.getTitle()));
+                setListAdapter(groupadapter);
+
+
+
+
+
+                //ListView listView =   getListView();
+                //ListView listView = view.findViewById(android.R.id.list);
+
+
+
+
+
+            }
+
+
+
+
 
         }
         else { Log.v("ies ist", "leer"); }
+
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
+                                    long id) {
+                Toast.makeText(getActivity(),"gello",
+                        Toast.LENGTH_LONG).show();
+
+
+            }
+        });*/
 
 
 
@@ -130,15 +159,39 @@ public class list_Fragment extends ListFragment {
         return view;
     }
 
-  /*  public static list_Fragment newInstance(int someInt) {
-        list_Fragment new_frag = new list_Fragment();
+    @Override
+    public void onViewCreated (View view, Bundle savedInstanceState) {
 
-        Bundle args = new Bundle();
-        args.putInt("someInt", someInt);
-        new_frag.setArguments(args);
+        ListView lv = getListView();
 
-        return new_frag;
-    }*/
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
+                                    long id) {
+
+
+                if (getArguments() != null) {
+                    mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+                    ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("entries");
+
+                    if (groups.size() != 0){
+                        SimpleEntry test_entry =  (SimpleEntry) groups.get(0);
+
+                }
+                }
+
+
+
+
+            }
+        });
+
+
+
+
+
+    }
+
+
 
 
 
