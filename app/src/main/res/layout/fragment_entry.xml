@@ -11,16 +11,17 @@
     tools:context=".entry">
 
 
-
-
     <TextView
         android:id="@+id/entry_Name"
+        style="@style/Widget.AppCompat.TextView.SpinnerItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:contentDescription='"aa"'
         android:gravity="center"
-        android:hint="aaa"
+        android:hint="&quot;aa&quot;"
+        android:singleLine="true"
         android:text="TextView"
-        android:textSize="60sp" />
+        android:textSize="34sp" />
 
     <EditText
         android:id="@+id/entry_Password"
@@ -44,6 +45,7 @@
         android:id="@+id/back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:insetTop="400dp"
         android:text="Back" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

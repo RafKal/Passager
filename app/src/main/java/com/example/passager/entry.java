@@ -66,26 +66,7 @@ public class entry extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-
-            //Bundle data = getArguments();
-            //String name = data.getString("title");
-
-
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
 
     }
 
@@ -103,20 +84,9 @@ public class entry extends Fragment {
         backs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                //FragmentManager fm = getParentFragmentManager();
-                fm = getParentFragmentManager();
-                //fm.popBackStack (null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                FragmentManager fm = getParentFragmentManager();
                 fm.popBackStack();
 
-
-
-
-
-                Toast.makeText(getActivity(), "hello", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -131,8 +101,6 @@ public class entry extends Fragment {
 
         // Inflate the layout for this fragment
         return rootView;
-
-
 
     }
 }

@@ -80,19 +80,11 @@ public class list_Fragment extends ListFragment {
                 Log.v("fragment log", String.valueOf(test_entry.getTitle()));
 
                 ArrayAdapter groupadapter;
-                //groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, test_entry.getTitle());
                 groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, Collections.singletonList(test_entry.getTitle()));
                 setListAdapter(groupadapter);
 
 
-
-
-
-                //ListView listView =   getListView();
                 //ListView listView = view.findViewById(android.R.id.list);
-
-
-
 
 
             }
@@ -104,20 +96,6 @@ public class list_Fragment extends ListFragment {
 
         }
         else { Log.v("ies ist", "leer"); }
-
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
-                                    long id) {
-                Toast.makeText(getActivity(),"gello",
-                        Toast.LENGTH_LONG).show();
-
-
-            }
-        });*/
-
-
-
-
 
     }
 
