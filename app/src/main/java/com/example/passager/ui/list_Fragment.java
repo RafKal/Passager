@@ -25,6 +25,7 @@ import com.example.passager.ui.placeholder.PlaceholderContent;
 import com.example.passager.entry;
 
 import org.linguafranca.pwdb.Entry;
+import org.linguafranca.pwdb.Group;
 import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
 import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
 
@@ -73,9 +74,19 @@ public class list_Fragment extends ListFragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 
 
-            ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("entries");
+            ArrayList<Parcelable> entries = getArguments().getParcelableArrayList("entries");
+            Entry testentry =  (SimpleEntry) entries.get(0);
 
-            if (groups.size() != 0){
+            Log.v("fragment log entries", String.valueOf(testentry.getTitle()));
+
+            ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("groups");
+            Group testgroup = (SimpleGroup) groups.get(0);
+            Log.v("fragment log groups get 0", String.valueOf(testgroup.getEntries()));
+
+            //Group grp = (Group) groups;
+
+
+          /*  if (groups.size() != 0){
                 SimpleEntry test_entry =  (SimpleEntry) groups.get(0);
                 Log.v("fragment log", String.valueOf(test_entry.getTitle()));
 
@@ -87,7 +98,7 @@ public class list_Fragment extends ListFragment {
                 //ListView listView = view.findViewById(android.R.id.list);
 
 
-            }
+            }*/
 
 
 
@@ -95,7 +106,7 @@ public class list_Fragment extends ListFragment {
 
 
         }
-        else { Log.v("ies ist", "leer"); }
+        //else { Log.v("ies ist", "leer"); }
 
     }
 

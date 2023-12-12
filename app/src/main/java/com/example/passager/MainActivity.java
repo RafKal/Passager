@@ -85,10 +85,14 @@ import com.example.passager.databinding.ActivityMainBinding;
 import org.apache.commons.codec.binary.StringUtils;
 import org.linguafranca.pwdb.Database;
 import org.linguafranca.pwdb.Entry;
+import org.linguafranca.pwdb.Group;
 import org.linguafranca.pwdb.Visitor;
+import org.linguafranca.pwdb.base.AbstractDatabase;
 import org.linguafranca.pwdb.kdbx.KdbxCreds;
 import org.linguafranca.pwdb.kdbx.jaxb.JaxbDatabase;
 import org.linguafranca.pwdb.kdbx.simple.SimpleDatabase;
+import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
+import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
 import org.w3c.dom.Text;
 
 import org.linguafranca.pwdb.kdbx.*;
@@ -97,7 +101,7 @@ import org.linguafranca.pwdb.kdbx.*;
 
 
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity   {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -194,61 +198,6 @@ public class MainActivity extends AppCompatActivity  {
         binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View view) {
-                 /* //showFileChooser();
-                  //String paths = (String) txtResult.getText();
-
-                  KdbxCreds creds = new KdbxCreds("1234".getBytes());
-                  //File path = Environment.getExternalStoragePublicDirectory((Environment.DIRECTORY_DOWNLOADS+"/"+"test1.kdbx"));
-                  //Log.v("File", path.getPath());
-                  //Log.v("txtResultPath", paths);
-
-                  //Log.v("filepicker path", filepicker_path);
-
-
-
-                  if (filepicker_path != null){
-                      try {
-                          InputStream inputStream = new FileInputStream(filepicker_path);
-                          try {
-                                database = SimpleDatabase.load(creds, inputStream);
-                              if (database != null){
-                                  group_names.clear();
-
-                                  String db_name = database.getName();
-                                  //Log.v("Database Name",  String.valueOf(db_name));
-
-                                  String root = database.getRootGroup().getName();
-                                  Log.v("Root Name onclick",  String.valueOf(root));
-
-                                  //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
-                                  //List entries = database.getRootGroup().getEntries();
-                                  List entries = database.getRootGroup().getEntries();
-
-                                  //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
-                                  List groups = database.getRootGroup().getGroups();
-                                  for (int i  = 0; i < groups.size(); i++){
-                                      String temp = groups.get(i).toString();
-                                      temp = temp.substring((root.length()+2), temp.length()-1);
-                                      group_names.add(temp);
-                                  }
-                                  ArrayAdapter groupadapter;
-                                  groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
-                                  navmenu.setAdapter(groupadapter);
-
-
-                              }
-
-                          } catch (IOException e) {
-                              throw new RuntimeException(e);
-                          }
-
-                      } catch (FileNotFoundException e) {
-                          throw new RuntimeException(e);
-                      }
-                  }*/
-
-                  //database = import_db();
-
 
 
                   navController.navigate(R.id.nav_home);
@@ -263,18 +212,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
                   drawer.closeDrawers();
-                  startActivityForResult(launch, 101);
-
-
-
-
-
-
-
-
-
-
-
+                 startActivityForResult(launch, 101);
 
 
               }
@@ -298,7 +236,22 @@ public class MainActivity extends AppCompatActivity  {
 
                     // make group search more robust so that groups with two / arent included in results
 
-                    grp_entries = database.findEntries(name);
+
+                    Group grp_toSend = database.getRootGroup().getGroups().get(position);
+                    Log.v("grp_toSend entries",  String.valueOf(grp_toSend));
+                    Log.v("grp_toSend hat subgroups",  String.valueOf(grp_toSend.getGroups()));
+
+                    grp_entries = grp_toSend.getEntries();
+
+                    List root_entries = database.getRootGroup().getEntries();
+                    Log.v("get root",  String.valueOf(root_entries));
+
+                    SimpleGroup list =  database.getRootGroup().getGroups().get(position);
+                    Log.v("Check for subgroups",  String.valueOf(list.getGroups()));
+
+                    Log.v("get groups",  String.valueOf(list));
+
+
                     Log.v("onItemClick size",  String.valueOf(grp_entries.size()));
                     //grp_entries = database.findGroup()
 
@@ -308,16 +261,27 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
-                    if (grp_entries.size() > 0){
-                        list_Fragment new_fragment = new list_Fragment();
+                    if (grp_toSend.getEntries().size() > 0){
+                        /*list_Fragment new_fragment = new list_Fragment();
                         ArrayList<Entry> groups = new ArrayList<Entry>(grp_entries.size());
-                        groups.addAll(grp_entries);
+                        groups.addAll(grp_entries);*/
+
+                        list_Fragment new_fragment = new list_Fragment();
+                        ArrayList<Group> groups = new ArrayList<Group>(grp_toSend.getEntries().size());
+                        groups.addAll(grp_toSend.getGroups());
+
+                        ArrayList<Entry> entries = new ArrayList<Entry>(grp_entries.size());
+                        entries.addAll(grp_entries);
+
 
 
 
 
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("entries", groups);
+                        bundle.putSerializable("groups", groups);
+                        bundle.putSerializable("entries", entries);
+
+
                         new_fragment.setArguments(bundle);
 
 
@@ -392,10 +356,16 @@ public class MainActivity extends AppCompatActivity  {
 
 
                 if (startScreen_result == 1){
+
                     database = import_db();
 
-                    String Password = input_password();
+                }
+                else if (startScreen_result == 0){
+                    database = new SimpleDatabase();
 
+                    database.getRootGroup().addGroup(database.newGroup("General"));
+
+                    Log.v("new db?", String.valueOf(database.getRootGroup().getGroups()));
                 }
 
                 Log.v("startScreen_result", String.valueOf(startScreen_result));
@@ -442,12 +412,19 @@ public class MainActivity extends AppCompatActivity  {
 
 
         //Log.v("paswod", Password);
+        String Password = input_password();
+
+
+
+
 
 
 
         if (filepicker_path != ""){
 
             try {
+
+
                 InputStream inputStream = new FileInputStream(filepicker_path);
 
                 try {
@@ -524,4 +501,7 @@ private String input_password(){
     return Password;
 }
 }
+
+
+
 
