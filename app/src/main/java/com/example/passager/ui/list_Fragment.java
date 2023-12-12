@@ -78,38 +78,15 @@ public class list_Fragment extends ListFragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 
 
-
-
-
-
-
-
-
             ArrayList<Parcelable> entries = getArguments().getParcelableArrayList("entries");
             ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("groups");
 
 
 
-           /* if (getArguments().getParcelableArrayList("new_entries") != null){
-                entries = getArguments().getParcelableArrayList("new_entries");
-                groups = getArguments().getParcelableArrayList("new_groups");
-
-                Log.v("neue entrues", String.valueOf(entries));
-            }*/
-
             Log.v("neue entrues", String.valueOf(entries));
 
 
-
-
-
-
-
-
-            //Group testgroup = (SimpleGroup) groups.get(0);
-            //Log.v("fragment log groups get 0", String.valueOf(testgroup));
-
-            //ArrayAdapter groupadapter;
+            setListAdapter(groupadapter);
 
 
 
@@ -117,19 +94,8 @@ public class list_Fragment extends ListFragment {
 
 
 
-
-
-            if (groups != null) {
-                if (groups.size() > 0) {
-
+            if (groups.size() > 0) {
                     Log.v("ist in groups.size() > 0", String.valueOf("ja"));
-
-//                SimpleEntry test_entry =  (SimpleEntry) groups.get(0);
-//                Log.v("fragment log", String.valueOf(test_entry.getTitle()));
-//
-//                ArrayAdapter groupadapter;
-//                groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, Collections.singletonList(test_entry.getTitle()));
-//                setListAdapter(groupadapter);
 
                     ArrayList<String> group_names = new ArrayList<String>();
 
@@ -137,6 +103,7 @@ public class list_Fragment extends ListFragment {
                     for (int i = 0; i < groups.size(); i++) {
                         SimpleGroup temp = (SimpleGroup) groups.get(i);
                         String grp_name = temp.getName();
+                        grp_name = "|GROUP| " + grp_name;
                         group_names.add(grp_name);
                     }
                     groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, group_names);
@@ -146,43 +113,25 @@ public class list_Fragment extends ListFragment {
                     if (entries  != null) {
                         if (entries.size() > 0) {
                             Log.v("ist in entries.size() > 0", String.valueOf("ja"));
-//                SimpleEntry test_entry =  (SimpleEntry) groups.get(0);
-//                Log.v("fragment log", String.valueOf(test_entry.getTitle()));
-//
-//                ArrayAdapter groupadapter;
-//                groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, Collections.singletonList(test_entry.getTitle()));
-//                setListAdapter(groupadapter);
-
                             ArrayList<String> entries_names = new ArrayList<String>();
 
                             for (int i = 0; i < entries.size(); i++) {
                                 SimpleEntry temp = (SimpleEntry) entries.get(i);
                                 String entry_name = temp.getTitle();
+
                                 entries_names.add(entry_name);
                             }
 
 
                             groupadapter.addAll(entries_names);
-                            //setListAdapter(groupadapter);
                         }
                     }
 
-                    //setListAdapter(groupadapter);
                 }
-
-
-
-            }
 
             else if (entries  != null) {
                 if (entries.size() > 0) {
                     Log.v("ist in zweite entries.size() > 0", String.valueOf("ja"));
-//                SimpleEntry test_entry =  (SimpleEntry) groups.get(0);
-//                Log.v("fragment log", String.valueOf(test_entry.getTitle()));
-//
-//                ArrayAdapter groupadapter;
-//                groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, Collections.singletonList(test_entry.getTitle()));
-//                setListAdapter(groupadapter);
 
                     ArrayList<String> entries_names = new ArrayList<String>();
 
@@ -192,22 +141,16 @@ public class list_Fragment extends ListFragment {
                         entries_names.add(entry_name);
                     }
 
-
-                    //groupadapter.addAll(entries_names);
                     groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, entries_names);
-                    //setListAdapter(groupadapter);
+
                 }
             }
+            else { Log.v("es ist", "leer"); }
 
             setListAdapter(groupadapter);
 
-
-
-
-
-
         }
-        //else { Log.v("ies ist", "leer"); }
+
 
     }
 
@@ -252,13 +195,6 @@ public class list_Fragment extends ListFragment {
                     ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("groups");
 
 
-
-                    //Log.v("entries size",    String.valueOf(entries.size()));
-
-                    groups.get(0);
-                    //groups.get(1);
-                    groups.size();
-                    Log.v("groups.get(0);",    String.valueOf(groups.get(0)));
                     Log.v("groups.size;",    String.valueOf(groups.size()));
 
 
