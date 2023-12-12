@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import java.io.Serializable;
 
 import com.example.passager.R;
 import com.example.passager.ui.placeholder.PlaceholderContent;
@@ -63,6 +64,9 @@ public class list_Fragment extends ListFragment {
 
     }
 
+    ArrayAdapter groupadapter;
+
+
 
 
     @Override
@@ -74,31 +78,128 @@ public class list_Fragment extends ListFragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 
 
+
+
+
+
+
+
+
             ArrayList<Parcelable> entries = getArguments().getParcelableArrayList("entries");
-            Entry testentry =  (SimpleEntry) entries.get(0);
-
-            Log.v("fragment log entries", String.valueOf(testentry.getTitle()));
-
             ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("groups");
-            Group testgroup = (SimpleGroup) groups.get(0);
-            Log.v("fragment log groups get 0", String.valueOf(testgroup.getEntries()));
-
-            //Group grp = (Group) groups;
 
 
-          /*  if (groups.size() != 0){
-                SimpleEntry test_entry =  (SimpleEntry) groups.get(0);
-                Log.v("fragment log", String.valueOf(test_entry.getTitle()));
 
-                ArrayAdapter groupadapter;
-                groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, Collections.singletonList(test_entry.getTitle()));
-                setListAdapter(groupadapter);
+           /* if (getArguments().getParcelableArrayList("new_entries") != null){
+                entries = getArguments().getParcelableArrayList("new_entries");
+                groups = getArguments().getParcelableArrayList("new_groups");
 
-
-                //ListView listView = view.findViewById(android.R.id.list);
-
-
+                Log.v("neue entrues", String.valueOf(entries));
             }*/
+
+            Log.v("neue entrues", String.valueOf(entries));
+
+
+
+
+
+
+
+
+            //Group testgroup = (SimpleGroup) groups.get(0);
+            //Log.v("fragment log groups get 0", String.valueOf(testgroup));
+
+            //ArrayAdapter groupadapter;
+
+
+
+
+
+
+
+
+
+            if (groups != null) {
+                if (groups.size() > 0) {
+
+                    Log.v("ist in groups.size() > 0", String.valueOf("ja"));
+
+//                SimpleEntry test_entry =  (SimpleEntry) groups.get(0);
+//                Log.v("fragment log", String.valueOf(test_entry.getTitle()));
+//
+//                ArrayAdapter groupadapter;
+//                groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, Collections.singletonList(test_entry.getTitle()));
+//                setListAdapter(groupadapter);
+
+                    ArrayList<String> group_names = new ArrayList<String>();
+
+
+                    for (int i = 0; i < groups.size(); i++) {
+                        SimpleGroup temp = (SimpleGroup) groups.get(i);
+                        String grp_name = temp.getName();
+                        group_names.add(grp_name);
+                    }
+                    groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, group_names);
+
+
+
+                    if (entries  != null) {
+                        if (entries.size() > 0) {
+                            Log.v("ist in entries.size() > 0", String.valueOf("ja"));
+//                SimpleEntry test_entry =  (SimpleEntry) groups.get(0);
+//                Log.v("fragment log", String.valueOf(test_entry.getTitle()));
+//
+//                ArrayAdapter groupadapter;
+//                groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, Collections.singletonList(test_entry.getTitle()));
+//                setListAdapter(groupadapter);
+
+                            ArrayList<String> entries_names = new ArrayList<String>();
+
+                            for (int i = 0; i < entries.size(); i++) {
+                                SimpleEntry temp = (SimpleEntry) entries.get(i);
+                                String entry_name = temp.getTitle();
+                                entries_names.add(entry_name);
+                            }
+
+
+                            groupadapter.addAll(entries_names);
+                            //setListAdapter(groupadapter);
+                        }
+                    }
+
+                    //setListAdapter(groupadapter);
+                }
+
+
+
+            }
+
+            else if (entries  != null) {
+                if (entries.size() > 0) {
+                    Log.v("ist in zweite entries.size() > 0", String.valueOf("ja"));
+//                SimpleEntry test_entry =  (SimpleEntry) groups.get(0);
+//                Log.v("fragment log", String.valueOf(test_entry.getTitle()));
+//
+//                ArrayAdapter groupadapter;
+//                groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout. simple_list_item_1, Collections.singletonList(test_entry.getTitle()));
+//                setListAdapter(groupadapter);
+
+                    ArrayList<String> entries_names = new ArrayList<String>();
+
+                    for (int i = 0; i < entries.size(); i++) {
+                        SimpleEntry temp = (SimpleEntry) entries.get(i);
+                        String entry_name = temp.getTitle();
+                        entries_names.add(entry_name);
+                    }
+
+
+                    //groupadapter.addAll(entries_names);
+                    groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, entries_names);
+                    //setListAdapter(groupadapter);
+                }
+            }
+
+            setListAdapter(groupadapter);
 
 
 
@@ -136,7 +237,8 @@ public class list_Fragment extends ListFragment {
 
         ListView lv = getListView();
 
-        FragmentManager fragmentManager = getParentFragmentManager();
+        //FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -146,29 +248,91 @@ public class list_Fragment extends ListFragment {
 
                 if (getArguments() != null) {
                     mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-                    ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("entries");
-
-                    if (groups.size() != 0){
-                        SimpleEntry test_entry =  (SimpleEntry) groups.get(0);
-
-
-                        entry entry_fragment = new entry();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("title", test_entry.getTitle());
-                        bundle.putString("notes", test_entry.getNotes());
-                        bundle.putString("password", test_entry.getPassword());
-                        entry_fragment.setArguments(bundle);
-                        //bundle.putString("entries", test_entry.getTitle());
+                    ArrayList<Parcelable> entries = getArguments().getParcelableArrayList("entries");
+                    ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("groups");
 
 
 
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.nav_host_fragment_content_main, entry_fragment).addToBackStack(null)
-                                .commit();
+                    //Log.v("entries size",    String.valueOf(entries.size()));
+
+                    groups.get(0);
+                    //groups.get(1);
+                    groups.size();
+                    Log.v("groups.get(0);",    String.valueOf(groups.get(0)));
+                    Log.v("groups.size;",    String.valueOf(groups.size()));
 
 
 
-                }
+
+                    int grp_size = groups.size();
+
+                    if (groups != null){
+                        grp_size = groups.size();
+                    }
+                    else{
+                        grp_size = 0;
+
+                    }
+
+
+
+
+                    if ( (position+1)  > grp_size) {
+                            SimpleEntry test_entry = (SimpleEntry) entries.get(position - groups.size());
+
+                            entry entry_fragment = new entry();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("title", test_entry.getTitle());
+                            bundle.putString("notes", test_entry.getNotes());
+                            bundle.putString("password", test_entry.getPassword());
+                            entry_fragment.setArguments(bundle);
+                            //bundle.putString("entries", test_entry.getTitle());
+
+
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.nav_host_fragment_content_main, entry_fragment).addToBackStack(null)
+                                    .commit();
+                        }
+                    else if (grp_size > 0) {
+
+                           //Group grp_toSend = (SimpleGroup) groups.get(position);
+                            Group grp_toSend = (SimpleGroup) groups.get(position);
+                            List entries_toSend = grp_toSend.getEntries();
+
+                            list_Fragment next_fragment = new list_Fragment();
+
+                            ArrayList<Group> new_groups = new ArrayList<Group>(grp_toSend.getGroups().size());
+
+                            if(grp_toSend != null){
+                                new_groups.addAll(grp_toSend.getGroups());
+                            }
+
+
+                            ArrayList<Entry> new_entries = new ArrayList<Entry>(entries_toSend.size());
+                            if (entries_toSend  != null){
+                                new_entries.addAll(entries_toSend);
+                            }
+
+
+
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("groups", new_groups);
+                            bundle.putSerializable("entries", new_entries);
+                            bundle.putInt("int", 1);
+
+                            Log.v("ist angekommen", "ja");
+                            Log.v("gesendete gruppe", String.valueOf(new_groups));
+                            Log.v("gesendete entries", String.valueOf(new_entries));
+
+
+                            next_fragment.setArguments(bundle);
+
+
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.nav_host_fragment_content_main, next_fragment).addToBackStack(null)
+                                    .commit();
+                        }
+
 
 
 

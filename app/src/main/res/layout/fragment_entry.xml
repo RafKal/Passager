@@ -48,14 +48,6 @@
         android:insetTop="400dp"
         android:text="Back" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/back_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:src="@android:drawable/ic_menu_revert"
-        tools:visibility="invisible" />
-
 
 </LinearLayout>
 

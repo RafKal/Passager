@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity   {
           //group_names.add("Add");
 
 
-          Log.v("startScreen_result in main", String.valueOf(startScreen_result));
+          //Log.v("startScreen_result in main", String.valueOf(startScreen_result));
 
 
 
@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity   {
 
 
                     String name = group_names.get(position);
-                    Log.v("onItemClick Name",  String.valueOf(name));
+                    //Log.v("onItemClick Name",  String.valueOf(name));
 
 
                     List grp_entries = database.getRootGroup().findGroups(name);
@@ -238,43 +238,40 @@ public class MainActivity extends AppCompatActivity   {
 
 
                     Group grp_toSend = database.getRootGroup().getGroups().get(position);
-                    Log.v("grp_toSend entries",  String.valueOf(grp_toSend));
-                    Log.v("grp_toSend hat subgroups",  String.valueOf(grp_toSend.getGroups()));
+                    //Log.v("grp_toSend entries",  String.valueOf(grp_toSend));
+                   // Log.v("grp_toSend hat subgroups",  String.valueOf(grp_toSend.getGroups()));
 
                     grp_entries = grp_toSend.getEntries();
 
                     List root_entries = database.getRootGroup().getEntries();
-                    Log.v("get root",  String.valueOf(root_entries));
+                   // Log.v("get root",  String.valueOf(root_entries));
 
                     SimpleGroup list =  database.getRootGroup().getGroups().get(position);
-                    Log.v("Check for subgroups",  String.valueOf(list.getGroups()));
+                    //Log.v("Check for subgroups",  String.valueOf(list.getGroups()));
 
-                    Log.v("get groups",  String.valueOf(list));
+                    //Log.v("get groups",  String.valueOf(list));
 
 
-                    Log.v("onItemClick size",  String.valueOf(grp_entries.size()));
+                    //Log.v("onItemClick size",  String.valueOf(grp_entries.size()));
                     //grp_entries = database.findGroup()
 
-                    Log.v("onItemClick entries",  String.valueOf(grp_entries));
+                   // Log.v("onItemClick entries",  String.valueOf(grp_entries));
 
 
 
 
 
-                    if (grp_toSend.getEntries().size() > 0){
+                    if (grp_toSend.getEntries().size() > 0  || grp_toSend.getGroups().size() > 0){
                         /*list_Fragment new_fragment = new list_Fragment();
                         ArrayList<Entry> groups = new ArrayList<Entry>(grp_entries.size());
                         groups.addAll(grp_entries);*/
 
                         list_Fragment new_fragment = new list_Fragment();
-                        ArrayList<Group> groups = new ArrayList<Group>(grp_toSend.getEntries().size());
+                        ArrayList<Group> groups = new ArrayList<Group>(grp_toSend.getGroups().size());
                         groups.addAll(grp_toSend.getGroups());
 
                         ArrayList<Entry> entries = new ArrayList<Entry>(grp_entries.size());
                         entries.addAll(grp_entries);
-
-
-
 
 
                         Bundle bundle = new Bundle();
@@ -286,7 +283,7 @@ public class MainActivity extends AppCompatActivity   {
 
 
                         fragmentManager.beginTransaction()
-                                .replace(R.id.nav_host_fragment_content_main, new_fragment)
+                                .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                                 .commit();
 
                         drawer.closeDrawers();
@@ -340,7 +337,6 @@ public class MainActivity extends AppCompatActivity   {
 
                 TextView txtResult = findViewById(R.id.txtResult);
                 txtResult.setText(path);
-                Log.v("OnResult path", path);
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -368,7 +364,7 @@ public class MainActivity extends AppCompatActivity   {
                     Log.v("new db?", String.valueOf(database.getRootGroup().getGroups()));
                 }
 
-                Log.v("startScreen_result", String.valueOf(startScreen_result));
+                //Log.v("startScreen_result", String.valueOf(startScreen_result));
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {

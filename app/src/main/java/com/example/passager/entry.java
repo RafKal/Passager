@@ -76,15 +76,15 @@ public class entry extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_entry, container, false);
 
+        //FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+
 
 
         Button back =  (Button) rootView.findViewById(R.id.back);
-
-        FloatingActionButton backs = rootView.findViewById(R.id.back_button);
-        backs.setOnClickListener(new View.OnClickListener() {
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fm = getParentFragmentManager();
                 fm.popBackStack();
 
             }
@@ -92,9 +92,17 @@ public class entry extends Fragment {
 
         Bundle data = getArguments();
         String name = data.getString("title");
+        String password = data.getString("password");
+        String notes = data.getString("notes");
 
         TextView name_text = rootView.findViewById(R.id.entry_Name);
         name_text.setText(name);
+
+        TextView password_text = rootView.findViewById(R.id.entry_Password);
+        password_text.setText(password);
+
+        TextView notes_text = rootView.findViewById(R.id.entry_Notes);
+        notes_text.setText(notes);
 
 
 
