@@ -1,8 +1,10 @@
 package com.example.passager.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.ListFragment;
@@ -65,7 +67,24 @@ public class list_Fragment extends ListFragment {
     }
 
     ArrayAdapter groupadapter;
+    public AppCompatActivity parent;
 
+
+
+
+    public interface OnDataPass {
+        public void onDataPass(String data);
+    }
+    OnDataPass dataPasser;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        dataPasser = (OnDataPass) context;
+    }
+    public void passData(String data) {
+        dataPasser.onDataPass(data);
+    }
 
 
 
@@ -80,6 +99,10 @@ public class list_Fragment extends ListFragment {
 
             ArrayList<Parcelable> entries = getArguments().getParcelableArrayList("entries");
             ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("groups");
+
+            parent = (AppCompatActivity) getActivity();
+
+
 
 
 
@@ -147,6 +170,9 @@ public class list_Fragment extends ListFragment {
             }
             else { Log.v("es ist", "leer"); }
 
+
+
+            groupadapter.add("+ Entry / Group ");
             setListAdapter(groupadapter);
 
         }
@@ -180,6 +206,8 @@ public class list_Fragment extends ListFragment {
 
         ListView lv = getListView();
 
+
+
         //FragmentManager fragmentManager = getParentFragmentManager();
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
@@ -191,6 +219,12 @@ public class list_Fragment extends ListFragment {
 
                 if (getArguments() != null) {
                     mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+
+                    if (lv.getAdapter().getCount()-1 == position){
+                        Log.v("machda", "bitte");
+                    }
+
+
                     ArrayList<Parcelable> entries = getArguments().getParcelableArrayList("entries");
                     ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("groups");
 
@@ -221,8 +255,11 @@ public class list_Fragment extends ListFragment {
                             bundle.putString("title", test_entry.getTitle());
                             bundle.putString("notes", test_entry.getNotes());
                             bundle.putString("password", test_entry.getPassword());
+
                             entry_fragment.setArguments(bundle);
-                            //bundle.putString("entries", test_entry.getTitle());
+
+
+
 
 
                             fragmentManager.beginTransaction()
@@ -280,6 +317,8 @@ public class list_Fragment extends ListFragment {
 
             }
         });
+
+
 
 
     }

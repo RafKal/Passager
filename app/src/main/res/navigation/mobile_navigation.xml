@@ -9,7 +9,7 @@
         android:id="@+id/nav_home"
         android:name="com.example.passager.ui.list_Fragment"
         tools:layout="@layout/list_fragment"
-        android:label="Home"/>
+        />
 
 
 </navigation>

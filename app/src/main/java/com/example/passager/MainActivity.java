@@ -39,6 +39,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
+
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -163,6 +165,7 @@ public class MainActivity extends AppCompatActivity   {
 
 
 
+
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -173,6 +176,14 @@ public class MainActivity extends AppCompatActivity   {
           NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
           NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
           NavigationUI.setupWithNavController(navigationView, navController);
+
+
+
+
+
+
+
+
 
 
 
@@ -200,19 +211,20 @@ public class MainActivity extends AppCompatActivity   {
               public void onClick(View view) {
 
 
-                  navController.navigate(R.id.nav_home);
+
+                  //navController.navigate(R.id.nav_home);
                   fragmentManager.clearBackStack(null);
 
-                  list_Fragment new_fragment = new list_Fragment();
+                /*  list_Fragment new_fragment = new list_Fragment();
 
                   fragmentManager.beginTransaction()
                           .replace(R.id.nav_host_fragment_content_main, new_fragment)
                           .commit();
-
+*/
 
 
                   drawer.closeDrawers();
-                 startActivityForResult(launch, 101);
+                  startActivityForResult(launch, 101);
 
 
               }
@@ -229,6 +241,8 @@ public class MainActivity extends AppCompatActivity   {
 
                     String name = group_names.get(position);
                     //Log.v("onItemClick Name",  String.valueOf(name));
+
+                    binding.appBarMain.toolbar.setTitle(name);
 
 
                     List grp_entries = database.getRootGroup().findGroups(name);
@@ -262,9 +276,6 @@ public class MainActivity extends AppCompatActivity   {
 
 
                     if (grp_toSend.getEntries().size() > 0  || grp_toSend.getGroups().size() > 0){
-                        /*list_Fragment new_fragment = new list_Fragment();
-                        ArrayList<Entry> groups = new ArrayList<Entry>(grp_entries.size());
-                        groups.addAll(grp_entries);*/
 
                         list_Fragment new_fragment = new list_Fragment();
                         ArrayList<Group> groups = new ArrayList<Group>(grp_toSend.getGroups().size());
@@ -355,6 +366,7 @@ public class MainActivity extends AppCompatActivity   {
 
                     database = import_db();
 
+
                 }
                 else if (startScreen_result == 0){
                     database = new SimpleDatabase();
@@ -393,8 +405,14 @@ public class MainActivity extends AppCompatActivity   {
 
     private SimpleDatabase import_db(){
 
-
         //filepicker_path = "";
+
+
+
+
+
+
+        String Password = input_password();
         showFileChooser();
         //String paths = (String) txtResult.getText();
 
@@ -408,25 +426,16 @@ public class MainActivity extends AppCompatActivity   {
 
 
         //Log.v("paswod", Password);
-        String Password = input_password();
 
 
 
-
-
-
-
-        if (filepicker_path != ""){
-
+        /*if (filepicker_path != ""){
+            Log.v("kommh ier", "tga");
             try {
-
-
                 InputStream inputStream = new FileInputStream(filepicker_path);
-
+                Log.v("kommh ier", filepicker_path);
                 try {
-
                     KdbxCreds creds = new KdbxCreds(Password.getBytes());
-
                     database = SimpleDatabase.load(creds, inputStream);
 
                     if (database != null){
@@ -452,18 +461,14 @@ public class MainActivity extends AppCompatActivity   {
                         ArrayAdapter groupadapter;
                         groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
                         navmenu.setAdapter(groupadapter);
-
-
                     }
-
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
-        }
+        }*/
 
 
     return database;
@@ -486,11 +491,104 @@ private String input_password(){
             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     Password = txtUrl.getText().toString();
+                    ListView navmenu = findViewById(R.id.list_slidermenu);
+
+                    Log.v("kommh ier pw", filepicker_path);
+
+                    if (filepicker_path != ""){
+                        try {
+                            InputStream inputStream = new FileInputStream(filepicker_path);
+                            Log.v("kommh ier pw", filepicker_path);
+                            try {
+                                KdbxCreds creds = new KdbxCreds(Password.getBytes());
+                                database = SimpleDatabase.load(creds, inputStream);
+
+                                if (database != null){
+                                    group_names.clear();
+
+                                    String db_name = database.getName();
+                                    //Log.v("Database Name",  String.valueOf(db_name));
+
+
+
+                                    String root = database.getRootGroup().getName();
+                                    Log.v("Root Name onclick",  String.valueOf(root));
+
+                                    //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
+                                    //List entries = database.getRootGroup().getEntries();
+                                    List entries = database.getRootGroup().getEntries();
+
+                                    //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
+                                    List groups = database.getRootGroup().getGroups();
+                                    for (int i  = 0; i < groups.size(); i++){
+                                        String temp = groups.get(i).toString();
+                                        temp = temp.substring((root.length()+2), temp.length()-1);
+                                        group_names.add(temp);
+                                    }
+                                    ArrayAdapter groupadapter;
+                                    groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+                                    navmenu.setAdapter(groupadapter);
+
+                                    binding.appBarMain.toolbar.setTitle(db_name);
+                                }
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+
 
                 }
             })
             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
+                    ListView navmenu = findViewById(R.id.list_slidermenu);
+
+                    if (filepicker_path != ""){
+                        try {
+                            InputStream inputStream = new FileInputStream(filepicker_path);
+                            try {
+                                KdbxCreds creds = new KdbxCreds(Password.getBytes());
+                                database = SimpleDatabase.load(creds, inputStream);
+
+                                if (database != null){
+                                    group_names.clear();
+
+                                    String db_name = database.getName();
+                                    //Log.v("Database Name",  String.valueOf(db_name));
+
+
+
+                                    String root = database.getRootGroup().getName();
+                                    Log.v("Root Name onclick",  String.valueOf(root));
+
+                                    //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
+                                    //List entries = database.getRootGroup().getEntries();
+                                    List entries = database.getRootGroup().getEntries();
+
+                                    //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
+                                    List groups = database.getRootGroup().getGroups();
+                                    for (int i  = 0; i < groups.size(); i++){
+                                        String temp = groups.get(i).toString();
+                                        temp = temp.substring((root.length()+2), temp.length()-1);
+                                        group_names.add(temp);
+                                    }
+                                    ArrayAdapter groupadapter;
+                                    groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+                                    navmenu.setAdapter(groupadapter);
+
+                                    binding.appBarMain.toolbar.setTitle(db_name);
+                                }
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
             })
             .show();
