@@ -33,11 +33,20 @@
         android:inputType="textPassword" />
 
     <EditText
-        android:id="@+id/entry_Notes"
+        android:id="@+id/entry_URL"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:ems="10"
         android:gravity="center"
+        android:inputType="text"
+        android:text="URL" />
+
+    <EditText
+        android:id="@+id/entry_Notes"
+        android:layout_width="match_parent"
+        android:layout_height="161dp"
+        android:ems="10"
+        android:gravity="center|top"
         android:inputType="text"
         android:text="Notes" />
 
@@ -45,7 +54,7 @@
         android:id="@+id/back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:insetTop="400dp"
+        android:insetTop="200dp"
         android:text="Back" />
 
 

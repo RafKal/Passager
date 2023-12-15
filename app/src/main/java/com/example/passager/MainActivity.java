@@ -212,6 +212,7 @@ public class MainActivity extends AppCompatActivity   {
 
 
 
+
                   //navController.navigate(R.id.nav_home);
                   fragmentManager.clearBackStack(null);
 
@@ -224,6 +225,8 @@ public class MainActivity extends AppCompatActivity   {
 
 
                   drawer.closeDrawers();
+
+                  Log.v("dies wird", "erreicht");
                   startActivityForResult(launch, 101);
 
 
@@ -240,39 +243,17 @@ public class MainActivity extends AppCompatActivity   {
 
 
                     String name = group_names.get(position);
-                    //Log.v("onItemClick Name",  String.valueOf(name));
 
                     binding.appBarMain.toolbar.setTitle(name);
 
 
                     List grp_entries = database.getRootGroup().findGroups(name);
-
-
-                    // make group search more robust so that groups with two / arent included in results
-
-
                     Group grp_toSend = database.getRootGroup().getGroups().get(position);
-                    //Log.v("grp_toSend entries",  String.valueOf(grp_toSend));
-                   // Log.v("grp_toSend hat subgroups",  String.valueOf(grp_toSend.getGroups()));
 
                     grp_entries = grp_toSend.getEntries();
-
                     List root_entries = database.getRootGroup().getEntries();
-                   // Log.v("get root",  String.valueOf(root_entries));
 
                     SimpleGroup list =  database.getRootGroup().getGroups().get(position);
-                    //Log.v("Check for subgroups",  String.valueOf(list.getGroups()));
-
-                    //Log.v("get groups",  String.valueOf(list));
-
-
-                    //Log.v("onItemClick size",  String.valueOf(grp_entries.size()));
-                    //grp_entries = database.findGroup()
-
-                   // Log.v("onItemClick entries",  String.valueOf(grp_entries));
-
-
-
 
 
                     if (grp_toSend.getEntries().size() > 0  || grp_toSend.getGroups().size() > 0){
@@ -594,7 +575,29 @@ private String input_password(){
             .show();
     return Password;
 }
+    public void print(){
+        Entry entry1 = database.getRootGroup().getEntries().get(0);
+        Log.v("kann printen", "ja");
+    }
+
+    public void add_toDB(SimpleGroup group, SimpleEntry entry){
+
+        if (entry != null){
+            database.getRootGroup().addEntry(entry);
+        }
+
+        if (group != null){
+            database.getRootGroup().addGroup(group);
+        }
+
+
+    }
+
+
+
 }
+
+
 
 
 

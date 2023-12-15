@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import java.io.Serializable;
 
+import com.example.passager.MainActivity;
 import com.example.passager.R;
 import com.example.passager.ui.placeholder.PlaceholderContent;
 import com.example.passager.entry;
@@ -41,6 +42,7 @@ import java.util.zip.Inflater;
  * A fragment representing a list of Items.
  */
 public class list_Fragment extends ListFragment {
+
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -66,25 +68,13 @@ public class list_Fragment extends ListFragment {
 
     }
 
+
+
+
     ArrayAdapter groupadapter;
     public AppCompatActivity parent;
 
 
-
-
-    public interface OnDataPass {
-        public void onDataPass(String data);
-    }
-    OnDataPass dataPasser;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        dataPasser = (OnDataPass) context;
-    }
-    public void passData(String data) {
-        dataPasser.onDataPass(data);
-    }
 
 
 
@@ -217,11 +207,18 @@ public class list_Fragment extends ListFragment {
                                     long id) {
 
 
+                start_loop:
                 if (getArguments() != null) {
                     mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 
+
                     if (lv.getAdapter().getCount()-1 == position){
-                        Log.v("machda", "bitte");
+                        AppCompatActivity activity = (AppCompatActivity) getActivity();
+
+                        ((MainActivity) getActivity()).print();
+
+                        break start_loop;
+
                     }
 
 
