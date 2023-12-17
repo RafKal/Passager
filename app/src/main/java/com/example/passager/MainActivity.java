@@ -114,6 +114,8 @@ public class MainActivity extends AppCompatActivity   {
     SimpleDatabase database = new SimpleDatabase();
     ArrayList<String> group_names = new ArrayList<String>();
 
+    Group current_group;
+
     String filepicker_path = "";
     int startScreen_result = 2; //startScreen can have 2 options (0 & 1). 2 handled as error
     String Password;
@@ -210,6 +212,10 @@ public class MainActivity extends AppCompatActivity   {
               @Override
               public void onClick(View view) {
 
+                  String filepicker_path = "";
+
+
+
 
 
 
@@ -244,11 +250,13 @@ public class MainActivity extends AppCompatActivity   {
 
                     String name = group_names.get(position);
 
+
                     binding.appBarMain.toolbar.setTitle(name);
 
 
                     List grp_entries = database.getRootGroup().findGroups(name);
                     Group grp_toSend = database.getRootGroup().getGroups().get(position);
+                    current_group = grp_toSend;
 
                     grp_entries = grp_toSend.getEntries();
                     List root_entries = database.getRootGroup().getEntries();
@@ -580,20 +588,20 @@ private String input_password(){
         Log.v("kann printen", "ja");
     }
 
-    public void add_toDB(SimpleGroup group, SimpleEntry entry){
+    public void add_grp(String name){
 
-        if (entry != null){
-            database.getRootGroup().addEntry(entry);
-        }
+        if (name != null){
+            SimpleGroup group = database.newGroup(name);
 
-        if (group != null){
-            database.getRootGroup().addGroup(group);
+            current_group.addGroup(group);
         }
 
 
     }
 
-
+    public void set_group(Group group){
+        current_group = group;
+    }
 
 }
 

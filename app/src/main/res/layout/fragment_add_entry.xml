@@ -24,7 +24,7 @@
         android:textSize="34sp" />
 
     <TextView
-        android:id="@+id/entry_username"
+        android:id="@+id/entry_username_add"
         style="@style/Widget.AppCompat.TextView.SpinnerItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,6 +67,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:insetTop="200dp"
+        android:text="Generate Password" />
+
+    <Button
+        android:id="@+id/button_saveEntry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:insetTop="10dp"
+        android:text="Save Entry" />
+
+    <Button
+        android:id="@+id/button_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:insetTop="10dp"
         android:text="Back" />
 
 

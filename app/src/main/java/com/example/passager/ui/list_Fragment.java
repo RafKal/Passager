@@ -1,7 +1,10 @@
 package com.example.passager.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,17 +22,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 
 import com.example.passager.MainActivity;
 import com.example.passager.R;
+import com.example.passager.add_entry;
+import com.example.passager.startScreen;
 import com.example.passager.ui.placeholder.PlaceholderContent;
 import com.example.passager.entry;
 
 import org.linguafranca.pwdb.Entry;
 import org.linguafranca.pwdb.Group;
+import org.linguafranca.pwdb.kdbx.KdbxCreds;
+import org.linguafranca.pwdb.kdbx.simple.SimpleDatabase;
 import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
 import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
 
@@ -90,7 +103,7 @@ public class list_Fragment extends ListFragment {
             ArrayList<Parcelable> entries = getArguments().getParcelableArrayList("entries");
             ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("groups");
 
-            parent = (AppCompatActivity) getActivity();
+
 
 
 
@@ -100,6 +113,8 @@ public class list_Fragment extends ListFragment {
 
 
             setListAdapter(groupadapter);
+
+            MainActivity Activity = ((MainActivity) getActivity());
 
 
 
@@ -162,7 +177,13 @@ public class list_Fragment extends ListFragment {
 
 
 
-            groupadapter.add("+ Entry / Group ");
+            if (groupadapter == null){
+                groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
+            }
+
+            groupadapter.add("ADD Entry");
+            groupadapter.add("ADD Group ");
+
             setListAdapter(groupadapter);
 
         }
@@ -196,6 +217,9 @@ public class list_Fragment extends ListFragment {
 
         ListView lv = getListView();
 
+        MainActivity Activity = ((MainActivity) getActivity());
+
+
 
 
         //FragmentManager fragmentManager = getParentFragmentManager();
@@ -212,10 +236,31 @@ public class list_Fragment extends ListFragment {
                     mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 
 
-                    if (lv.getAdapter().getCount()-1 == position){
-                        AppCompatActivity activity = (AppCompatActivity) getActivity();
+                    if (lv.getAdapter().getCount()-2 == position){
 
-                        ((MainActivity) getActivity()).print();
+                        add_entry add_entry = new add_entry();
+
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.nav_host_fragment_content_main, add_entry).addToBackStack(null)
+                                .commit();
+
+                        break start_loop;
+
+                    }
+
+                    if (lv.getAdapter().getCount()-1 == position){
+
+                        /*add_entry add_entry = new add_entry();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.nav_host_fragment_content_main, add_entry).addToBackStack(null)
+                                .commit();*/
+
+                        input_grp_name();
+
+
+
+
+                        Log.v("kommt an", "ja");
 
                         break start_loop;
 
@@ -258,7 +303,6 @@ public class list_Fragment extends ListFragment {
 
 
 
-
                             fragmentManager.beginTransaction()
                                     .replace(R.id.nav_host_fragment_content_main, entry_fragment).addToBackStack(null)
                                     .commit();
@@ -267,6 +311,7 @@ public class list_Fragment extends ListFragment {
 
                            //Group grp_toSend = (SimpleGroup) groups.get(position);
                             Group grp_toSend = (SimpleGroup) groups.get(position);
+                            Activity.set_group(grp_toSend);
                             List entries_toSend = grp_toSend.getEntries();
 
                             list_Fragment next_fragment = new list_Fragment();
@@ -320,8 +365,37 @@ public class list_Fragment extends ListFragment {
 
     }
 
+    public void input_grp_name(){
+
+        final EditText grp_name = new EditText(getActivity());
+
+        grp_name.setHint("Name");
+
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Group name")
+                .setView(grp_name)
+                .setPositiveButton("Moustachify", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        MainActivity Activity = ((MainActivity) getActivity());
+                        String name = grp_name.getText().toString();
+
+                        Activity.add_grp(name);
+
+
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                })
+                .show();
+    }
+
 
 
 
 
 }
+
