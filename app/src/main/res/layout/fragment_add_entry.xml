@@ -11,29 +11,24 @@
     tools:context=".entry">
 
 
-    <TextView
+    <EditText
         android:id="@+id/entry_Title"
-        style="@style/Widget.AppCompat.TextView.SpinnerItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:contentDescription='"aa"'
-        android:gravity="center"
-        android:hint="&quot;aa&quot;"
-        android:singleLine="true"
-        android:text="TextView"
-        android:textSize="34sp" />
+        android:layout_gravity="center|center_vertical"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Name"
+        android:textAlignment="center" />
 
-    <TextView
-        android:id="@+id/entry_username_add"
-        style="@style/Widget.AppCompat.TextView.SpinnerItem"
+    <EditText
+        android:id="@+id/entry_username"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription='"aa"'
-        android:gravity="center"
-        android:hint="&quot;aa&quot;"
-        android:singleLine="true"
-        android:text="TextView"
-        android:textSize="34sp" />
+        android:layout_height="48dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Name"
+        android:textAlignment="center" />
 
     <EditText
         android:id="@+id/entry_Password"

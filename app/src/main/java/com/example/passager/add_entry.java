@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.example.passager.databinding.FragmentEntryBinding;
 
 import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
 import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
@@ -123,32 +126,10 @@ public class add_entry extends Fragment {
 
 
 
-
-
-
-
-
-
-
                 fm.popBackStack();
 
             }
         });
-
-       /* Bundle data = getArguments();
-        String name = data.getString("title");
-        String password = data.getString("password");
-        String notes = data.getString("notes");
-
-        TextView name_text = rootView.findViewById(R.id.entry_Name);
-        name_text.setText(name);
-
-        TextView password_text = rootView.findViewById(R.id.entry_Password);
-        password_text.setText(password);
-
-        TextView notes_text = rootView.findViewById(R.id.entry_Notes);
-        notes_text.setText(notes);*/
-
 
 
 

@@ -593,7 +593,9 @@ private String input_password(){
         if (name != null){
             SimpleGroup group = database.newGroup(name);
 
+
             current_group.addGroup(group);
+
         }
 
 
@@ -603,6 +605,24 @@ private String input_password(){
         current_group = group;
     }
 
+    public Group get_current_group(){
+        return current_group;
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+
+
+        // code here to show dialog
+        if(current_group.getParent() != null){
+            current_group = current_group.getParent();
+            Log.v("current group", String.valueOf(current_group.getName()));
+        }
+
+
+        super.onBackPressed();  // optional depending on your needs
+    }
 }
 
 
