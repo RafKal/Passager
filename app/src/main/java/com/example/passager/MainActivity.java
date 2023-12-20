@@ -182,32 +182,6 @@ public class MainActivity extends AppCompatActivity   {
 
 
 
-
-
-
-
-
-
-
-
-
-          //implement start screen with default new database values
-
-          //group_names.add("Home");
-          //group_names.add("Games");
-          //group_names.add("Services");
-          //group_names.add("Add");
-
-
-          //Log.v("startScreen_result in main", String.valueOf(startScreen_result));
-
-
-
-
-
-
-
-
         binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View view) {
@@ -253,9 +227,15 @@ public class MainActivity extends AppCompatActivity   {
 
                     binding.appBarMain.toolbar.setTitle(name);
 
+                    Log.v("position", String.valueOf(position));
+
 
                     List grp_entries = database.getRootGroup().findGroups(name);
                     Group grp_toSend = database.getRootGroup().getGroups().get(position);
+
+                    if (position == 0){
+                        grp_toSend = database.getRootGroup();
+                    }
                     current_group = grp_toSend;
 
                     grp_entries = grp_toSend.getEntries();
@@ -414,6 +394,8 @@ public class MainActivity extends AppCompatActivity   {
         ListView navmenu = findViewById(R.id.list_slidermenu);
 
 
+
+
         //Log.v("paswod", Password);
 
 
@@ -509,14 +491,15 @@ private String input_password(){
 
                                     //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
                                     List groups = database.getRootGroup().getGroups();
+
+                                    group_names.add(root);
                                     for (int i  = 0; i < groups.size(); i++){
                                         String temp = groups.get(i).toString();
                                         temp = temp.substring((root.length()+2), temp.length()-1);
                                         group_names.add(temp);
                                     }
                                     ArrayAdapter groupadapter;
-                                    groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
-                                    navmenu.setAdapter(groupadapter);
+
 
                                     binding.appBarMain.toolbar.setTitle(db_name);
                                 }
