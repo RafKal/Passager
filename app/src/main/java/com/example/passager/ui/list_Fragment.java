@@ -71,6 +71,7 @@ public class list_Fragment extends ListFragment {
     ArrayAdapter groupadapter;
     public AppCompatActivity parent;
     MainActivity Activity = ((MainActivity) getActivity());
+    List grp_entries;
 
 
 
@@ -100,6 +101,9 @@ public class list_Fragment extends ListFragment {
             ArrayList<Entry> entries = new ArrayList<Entry>(grp_entries.size());
             entries.addAll(grp_entries);
 
+            //Log.v("root group", String.valueOf(Activity.get_root_group()));
+            //Log.v("current group", String.valueOf(current_group));
+
 
             //ArrayList<Parcelable> entries = getArguments().getParcelableArrayList("entries");
             //ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("groups");
@@ -107,11 +111,13 @@ public class list_Fragment extends ListFragment {
 
             //setListAdapter(groupadapter);
 
+            Activity.updateBar();
+
 
 
 
             if (groups.size() > 0) {
-                    Log.v("ist in groups.size() > 0", String.valueOf("ja"));
+                    //Log.v("ist in groups.size() > 0", String.valueOf("ja"));
 
                     ArrayList<String> group_names = new ArrayList<String>();
 
@@ -147,7 +153,7 @@ public class list_Fragment extends ListFragment {
 
             else if (entries  != null) {
                 if (entries.size() > 0) {
-                    Log.v("ist in zweite entries.size() > 0", String.valueOf("ja"));
+                    //Log.v("ist in zweite entries.size() > 0", String.valueOf("ja"));
 
                     ArrayList<String> entries_names = new ArrayList<String>();
 
@@ -206,7 +212,6 @@ public class list_Fragment extends ListFragment {
         ListView lv = getListView();
 
 
-
         MainActivity Activity = ((MainActivity) getActivity());
 
 
@@ -223,17 +228,13 @@ public class list_Fragment extends ListFragment {
                                     long id) {
 
                 ListView lv = getListView();
-
-
                 start_loop:
                 if (getArguments() != null) {
                     mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 
 
                     if (lv.getAdapter().getCount()-2 == position){
-
                         add_entry add_entry = new add_entry();
-
                         fragmentManager.beginTransaction()
                                 .replace(R.id.nav_host_fragment_content_main, add_entry).addToBackStack(null)
                                 .commit();
@@ -256,16 +257,21 @@ public class list_Fragment extends ListFragment {
                     update_listview();
 
 
+
+
                     MainActivity Activity = ((MainActivity) getActivity());
                     Group group = Activity.get_current_group();
                     List groups = group.getGroups();
                     List entries = group.getEntries();
 
+                    Log.v("current group", String.valueOf(group));
 
 
-                    Log.v("groups.size;",    String.valueOf(groups.size()));
-                    Log.v("group",    String.valueOf(group));
-                    Log.v("groups",    String.valueOf(group.getGroups()));
+
+
+                    //Log.v("groups.size;",    String.valueOf(groups.size()));
+                    //Log.v("group",    String.valueOf(group));
+                    //Log.v("groups",    String.valueOf(group.getGroups()));
 
 
 
@@ -314,7 +320,7 @@ public class list_Fragment extends ListFragment {
 
                             ArrayList<Group> new_groups = new ArrayList<Group>(grp_toSend.getGroups().size());
 
-                            if(grp_toSend != null){
+                            if(grp_toSend != null & grp_toSend != group){
                                 new_groups.addAll(grp_toSend.getGroups());
                             }
 
@@ -323,6 +329,8 @@ public class list_Fragment extends ListFragment {
                             if (entries_toSend  != null){
                                 new_entries.addAll(entries_toSend);
                             }
+
+
 
 
 
@@ -370,7 +378,7 @@ public class list_Fragment extends ListFragment {
         new AlertDialog.Builder(getActivity())
                 .setTitle("Group name")
                 .setView(grp_name)
-                .setPositiveButton("Moustachify", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Add Group", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
                         MainActivity Activity = ((MainActivity) getActivity());
@@ -398,6 +406,8 @@ public class list_Fragment extends ListFragment {
         Group group = Activity.get_current_group();
         List groups = group.getGroups();
         List entries = group.getEntries();
+
+
 
 
 
@@ -463,19 +473,12 @@ public class list_Fragment extends ListFragment {
         groupadapter.add("ADD Entry");
         groupadapter.add("ADD Group ");
 
+
+
         setListAdapter(groupadapter);
 
     }
-
-
-
-
-
-
-
-
-
-    }
+}
 
 
 

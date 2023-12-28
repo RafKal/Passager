@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.passager.databinding.FragmentEntryBinding;
+import com.example.passager.ui.list_Fragment;
 
 import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
 import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
@@ -122,6 +123,17 @@ public class add_entry extends Fragment {
                 Log.v("kommt at", String.valueOf(Activity.current_group));
                 Activity.current_group.addEntry(new_entry);
 
+                //Activity.updateUI();
+
+                //FragmentManager f = getChildFragmentManager();
+                //list_Fragment frag = (list_Fragment) getParentFragment();
+                //frag.update_listview();
+
+                /*list_Fragment parentFrag = ((list_Fragment)add_entry.this.getParentFragment());
+                parentFrag.update_listview();*/
+
+                // ((list_Fragment) getParentFragment()).update_listview();
+
 
 
 
@@ -137,4 +149,5 @@ public class add_entry extends Fragment {
         return rootView;
 
     }
+
 }

@@ -35,6 +35,7 @@ import java.io.File;
 import android.Manifest.permission;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ import android.widget.Toolbar;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -68,6 +70,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -99,8 +102,7 @@ import org.w3c.dom.Text;
 
 import org.linguafranca.pwdb.kdbx.*;
 
-
-
+import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
 
 
 public class MainActivity extends AppCompatActivity   {
@@ -115,6 +117,7 @@ public class MainActivity extends AppCompatActivity   {
     ArrayList<String> group_names = new ArrayList<String>();
 
     Group current_group;
+    Group grp_toSend;
 
     String filepicker_path = "";
     int startScreen_result = 2; //startScreen can have 2 options (0 & 1). 2 handled as error
@@ -161,7 +164,10 @@ public class MainActivity extends AppCompatActivity   {
 
         ListView navmenu = findViewById(R.id.list_slidermenu);
         ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(this, R.array.default_groups, android.R.layout.simple_list_item_1);
+        //navmenu.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         navmenu.setAdapter(arrayAdapter);
+
+
 
 
 
@@ -182,16 +188,13 @@ public class MainActivity extends AppCompatActivity   {
 
 
 
+
+
         binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View view) {
 
                   String filepicker_path = "";
-
-
-
-
-
 
                   //navController.navigate(R.id.nav_home);
                   fragmentManager.clearBackStack(null);
@@ -223,56 +226,53 @@ public class MainActivity extends AppCompatActivity   {
 
 
                     String name = group_names.get(position);
-
-
                     binding.appBarMain.toolbar.setTitle(name);
-
-                    Log.v("position", String.valueOf(position));
 
 
                     List grp_entries = database.getRootGroup().findGroups(name);
-                    Group grp_toSend = database.getRootGroup().getGroups().get(position);
+
 
                     if (position == 0){
                         grp_toSend = database.getRootGroup();
                     }
+                    else {
+                        grp_toSend = database.getRootGroup().getGroups().get(position-1);
+                    }
                     current_group = grp_toSend;
 
                     grp_entries = grp_toSend.getEntries();
-                    List root_entries = database.getRootGroup().getEntries();
+                   // List root_entries = database.getRootGroup().getEntries();
 
-                    SimpleGroup list =  database.getRootGroup().getGroups().get(position);
-
-
-                    if (grp_toSend.getEntries().size() > 0  || grp_toSend.getGroups().size() > 0){
-
-                        list_Fragment new_fragment = new list_Fragment();
-                        ArrayList<Group> groups = new ArrayList<Group>(grp_toSend.getGroups().size());
-                        groups.addAll(grp_toSend.getGroups());
-
-                        ArrayList<Entry> entries = new ArrayList<Entry>(grp_entries.size());
-                        entries.addAll(grp_entries);
+                    //SimpleGroup list =  database.getRootGroup().getGroups().get(position-1);
 
 
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("groups", groups);
-                        bundle.putSerializable("entries", entries);
 
 
-                        new_fragment.setArguments(bundle);
+                    list_Fragment new_fragment = new list_Fragment();
+                    ArrayList<Group> groups = new ArrayList<Group>(grp_toSend.getGroups().size());
+                    groups.addAll(grp_toSend.getGroups());
+
+                    ArrayList<Entry> entries = new ArrayList<Entry>(grp_entries.size());
+                    entries.addAll(grp_entries);
 
 
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
-                                .commit();
-
-                        drawer.closeDrawers();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("groups", groups);
+                    bundle.putSerializable("entries", entries);
 
 
-                    }
-                    else {
-                        Toast.makeText(MainActivity.this, "Chosen Group is Empty", Toast.LENGTH_SHORT).show();
-                    }
+                    new_fragment.setArguments(bundle);
+
+                    Log.v("current group", String.valueOf(current_group));
+
+
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+                            .commit();
+
+                    drawer.closeDrawers();
+
 
 
 
@@ -285,13 +285,25 @@ public class MainActivity extends AppCompatActivity   {
 
 
 
-
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item ) {
+
+        Log.v("id", String.valueOf(item.getItemId()));
+
+        switch (item.getItemId()){
+            case 2131296323 :
+                 save_db();
+                 break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -338,16 +350,19 @@ public class MainActivity extends AppCompatActivity   {
 
                 }
                 else if (startScreen_result == 0){
-                    database = new SimpleDatabase();
 
-                    database.getRootGroup().addGroup(database.newGroup("General"));
+                    Intent gen_newDB = new Intent(this, gen_newDB.class);
+                    startActivityForResult(gen_newDB, 102);
 
-                    Log.v("new db?", String.valueOf(database.getRootGroup().getGroups()));
+
+
                 }
 
                 //Log.v("startScreen_result", String.valueOf(startScreen_result));
 
             }
+
+
             if (resultCode == Activity.RESULT_CANCELED) {
                 // Write your code if there's no result
             }
@@ -355,6 +370,66 @@ public class MainActivity extends AppCompatActivity   {
 
 
 
+
+        }
+
+        if (requestCode == 102) {
+            Log.v("kommt", "an");
+
+            Uri uri = data.getData();
+
+            String name = data.getStringExtra("name");
+            String master_password = data.getStringExtra("master_password");
+            String repeat_password = data.getStringExtra("repeat_password");
+            String description = data.getStringExtra("description");
+
+            database = new SimpleDatabase();
+            
+
+            database.setName(name);
+            database.setDescription(description);
+
+            database.getRootGroup().addGroup(database.newGroup("General"));
+            database.getRootGroup().addGroup(database.newGroup("Windows"));
+            database.getRootGroup().addGroup(database.newGroup("Network"));
+            database.getRootGroup().addGroup(database.newGroup("Internet"));
+            database.getRootGroup().addGroup(database.newGroup("eMail"));
+            database.getRootGroup().addGroup(database.newGroup("Homebanking"));
+
+            group_names.clear();
+            String db_name = database.getName();
+
+            String root = database.getRootGroup().getName();
+            Log.v("Root Name onclick",  String.valueOf(root));
+
+            //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
+            //List entries = database.getRootGroup().getEntries();
+            List entries = database.getRootGroup().getEntries();
+
+            //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
+            List groups = database.getRootGroup().getGroups();
+
+            group_names.add(root);
+            for (int i  = 0; i < groups.size(); i++){
+                String temp = groups.get(i).toString();
+                temp = temp.substring((root.length()+2), temp.length()-1);
+                group_names.add(temp);
+            }
+            ArrayAdapter groupadapter;
+            groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+            ListView navmenu = findViewById(R.id.list_slidermenu);
+            navmenu.setAdapter(groupadapter);
+
+            binding.appBarMain.toolbar.setTitle(db_name);
+
+
+            current_group = database.getRootGroup();
+
+
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            binding.appBarMain.toolbar.setTitle(db_name);
         }
 
     } //onActivityResult
@@ -392,8 +467,6 @@ public class MainActivity extends AppCompatActivity   {
 
         //Log.v("filepicker path", filepicker_path);
         ListView navmenu = findViewById(R.id.list_slidermenu);
-
-
 
 
         //Log.v("paswod", Password);
@@ -450,7 +523,6 @@ public class MainActivity extends AppCompatActivity   {
 //https://stackoverflow.com/questions/10903754/input-text-dialog-android
 private String input_password(){
     final EditText txtUrl = new EditText(this);
-
      // Set the default text to a link of the Queen
     txtUrl.setHint("Password?");
     //String Password;
@@ -499,9 +571,48 @@ private String input_password(){
                                         group_names.add(temp);
                                     }
                                     ArrayAdapter groupadapter;
-
+                                    groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+                                    navmenu.setAdapter(groupadapter);
 
                                     binding.appBarMain.toolbar.setTitle(db_name);
+
+
+                                    current_group = database.getRootGroup();
+
+
+
+                                    FragmentManager fragmentManager = getSupportFragmentManager();
+
+                                    binding.appBarMain.toolbar.setTitle(db_name);
+
+
+
+                                  /*  Group grp_toSend = database.getRootGroup();;
+                                    List grp_entries = database.getRootGroup().getEntries();
+                                    list_Fragment new_fragment = new list_Fragment();
+
+                                    ArrayList<Group> groups_root = new ArrayList<Group>(grp_toSend.getGroups().size());
+                                    groups.addAll(grp_toSend.getGroups());
+
+                                    ArrayList<Entry> entries_root = new ArrayList<Entry>(grp_entries.size());
+                                    entries.addAll(grp_entries);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putSerializable("groups", groups_root);
+                                    bundle.putSerializable("entries", entries_root);
+                                    new_fragment.setArguments(bundle);
+
+
+                                    fragmentManager.beginTransaction()
+                                            .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+                                            .commit();*/
+
+
+
+                                    //NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
+
+
+
+
                                 }
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -552,7 +663,16 @@ private String input_password(){
                                     groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
                                     navmenu.setAdapter(groupadapter);
 
+                                   /* current_group = database.getRootGroup();
+
+                                    list_Fragment a = new list_Fragment();
+                                    FragmentManager fragmentManager = getSupportFragmentManager();
+
                                     binding.appBarMain.toolbar.setTitle(db_name);
+
+                                    fragmentManager.beginTransaction()
+                                            .replace(R.id.nav_host_fragment_content_main, a).addToBackStack(null)
+                                            .commit();*/
                                 }
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -566,6 +686,7 @@ private String input_password(){
             .show();
     return Password;
 }
+
     public void print(){
         Entry entry1 = database.getRootGroup().getEntries().get(0);
         Log.v("kann printen", "ja");
@@ -575,6 +696,7 @@ private String input_password(){
 
         if (name != null){
             SimpleGroup group = database.newGroup(name);
+
 
 
             current_group.addGroup(group);
@@ -592,6 +714,10 @@ private String input_password(){
         return current_group;
     }
 
+    public Group get_root_group(){
+        return database.getRootGroup();
+    }
+
     @Override
     public void onBackPressed()
     {
@@ -600,12 +726,43 @@ private String input_password(){
         // code here to show dialog
         if(current_group.getParent() != null){
             current_group = current_group.getParent();
-            Log.v("current group", String.valueOf(current_group.getName()));
+            updateBar();
+            //Log.v("current group", String.valueOf(current_group.getName()));
         }
 
 
         super.onBackPressed();  // optional depending on your needs
     }
+
+    public void updateUI(){
+        list_Fragment a = new list_Fragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment_content_main, a).addToBackStack(null)
+                .commit();
+    }
+
+    public void updateBar(){
+        //Group group
+        binding.appBarMain.toolbar.setTitle(get_current_group().getPath());
+    }
+    public void save_db(){
+        try {
+            KdbxCreds creds = new KdbxCreds(Password.getBytes());
+            OutputStream outputStream = new FileOutputStream(filepicker_path);
+            database.save(creds, outputStream);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    // methods to control the operations that will
+    // happen when user clicks on the action buttons
+
 }
 
 
