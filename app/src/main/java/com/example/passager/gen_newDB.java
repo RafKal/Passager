@@ -4,9 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class gen_newDB extends AppCompatActivity {
 
@@ -29,14 +31,28 @@ public class gen_newDB extends AppCompatActivity {
         create_db.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent returnIntent = new Intent();
 
-                returnIntent.putExtra("name", name_text.getText());
-                returnIntent.putExtra("master_password", password_text.getText());
-                returnIntent.putExtra("repeat_password", repeat_password_text.getText());
-                returnIntent.putExtra("description", description_text.getText());
-                setResult(RESULT_OK, returnIntent);
-                finish();
+                String master_password = password_text.getText().toString();
+                String repeat_password = repeat_password_text.getText().toString();
+
+                if (master_password.equals(repeat_password)){
+                    Intent returnIntent = new Intent();
+
+                    String name = (String) name_text.getText().toString();
+                    Log.v("name", name);
+
+                    returnIntent.putExtra("name", name_text.getText().toString());
+                    returnIntent.putExtra("master_password", password_text.getText().toString());
+                    returnIntent.putExtra("repeat_password", repeat_password_text.getText().toString());
+                    returnIntent.putExtra("description", description_text.getText().toString());
+                    setResult(RESULT_OK, returnIntent);
+                    finish();
+                }else {
+                    Toast.makeText(getApplicationContext(), "Passwords don't match!", Toast.LENGTH_LONG).show();
+                }
+
+
+
             }
         });
     }

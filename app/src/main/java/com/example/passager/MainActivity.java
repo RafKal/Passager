@@ -189,6 +189,8 @@ public class MainActivity extends AppCompatActivity   {
 
 
 
+
+
         binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View view) {
@@ -295,7 +297,12 @@ public class MainActivity extends AppCompatActivity   {
         switch (item.getItemId()){
             //save id
             case 2131296323 :
-                 save_db();
+
+                 if (filepicker_path != null){
+                     save_db();
+                 }
+
+
                  break;
 
                  //delete group id
@@ -375,6 +382,7 @@ public class MainActivity extends AppCompatActivity   {
         }
 
         if (requestCode == 102) {
+            if(resultCode == Activity.RESULT_OK & data!= null){
             Log.v("kommt", "an");
 
             Uri uri = data.getData();
@@ -388,6 +396,12 @@ public class MainActivity extends AppCompatActivity   {
             
 
             database.setName(name);
+            database.getRootGroup().setName(name);
+
+            //database.setName("name");
+            //database.getRootGroup().setName("name");
+
+
             database.setDescription(description);
 
             database.getRootGroup().addGroup(database.newGroup("General"));
@@ -400,6 +414,11 @@ public class MainActivity extends AppCompatActivity   {
             group_names.clear();
             String db_name = database.getName();
 
+
+
+
+
+
             String root = database.getRootGroup().getName();
             Log.v("Root Name onclick",  String.valueOf(root));
 
@@ -408,7 +427,7 @@ public class MainActivity extends AppCompatActivity   {
             //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
             List groups = database.getRootGroup().getGroups();
 
-            group_names.add(root);
+            group_names.add(root + " (ROOT)");
             for (int i  = 0; i < groups.size(); i++){
                 String temp = groups.get(i).toString();
                 temp = temp.substring((root.length()+2), temp.length()-1);
@@ -429,12 +448,39 @@ public class MainActivity extends AppCompatActivity   {
             FragmentManager fragmentManager = getSupportFragmentManager();
 
             binding.appBarMain.toolbar.setTitle(db_name);
+
+
+            current_group = database.getRootGroup();
+
+
+
+
+            Group grp_toSend = database.getRootGroup();;
+            List grp_entries = database.getRootGroup().getEntries();
+            list_Fragment new_fragment = new list_Fragment();
+
+            ArrayList<Group> groups_root = new ArrayList<Group>(grp_toSend.getGroups().size());
+            groups.addAll(grp_toSend.getGroups());
+
+            ArrayList<Entry> entries_root = new ArrayList<Entry>(grp_entries.size());
+            entries.addAll(grp_entries);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("groups", groups_root);
+            bundle.putSerializable("entries", entries_root);
+            new_fragment.setArguments(bundle);
+
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+                    .commit();
+        }
         }
 
     } //onActivityResult
 
     private void showFileChooser(){
         Intent intent4 = new Intent(Intent.ACTION_GET_CONTENT);
+        
         intent4.setType("*/*");
         intent4.addCategory(Intent.CATEGORY_OPENABLE);
 
@@ -525,7 +571,7 @@ private String input_password(){
 
 
 
-                                  /*  Group grp_toSend = database.getRootGroup();;
+                                    Group grp_toSend = database.getRootGroup();;
                                     List grp_entries = database.getRootGroup().getEntries();
                                     list_Fragment new_fragment = new list_Fragment();
 
@@ -542,7 +588,7 @@ private String input_password(){
 
                                     fragmentManager.beginTransaction()
                                             .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
-                                            .commit();*/
+                                            .commit();
 
 
 
@@ -619,12 +665,20 @@ private String input_password(){
                                             .replace(R.id.nav_host_fragment_content_main, a).addToBackStack(null)
                                             .commit();*/
                                 }
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
+                            }  catch (Exception e) {
+                                //throw new RuntimeException(e);
+                                Intent launch = new Intent(MainActivity.this, startScreen.class);
+                                startActivityForResult(launch, 101);
                             }
-                        } catch (FileNotFoundException e) {
-                            throw new RuntimeException(e);
+                        } catch (Exception e) {
+                            //throw new RuntimeException(e);
+                            Intent launch = new Intent(MainActivity.this, startScreen.class);
+                            startActivityForResult(launch, 101);
                         }
+                    }
+                    else {
+                        Intent launch = new Intent(MainActivity.this, startScreen.class);
+                        startActivityForResult(launch, 101);
                     }
                 }
             })
@@ -641,6 +695,36 @@ private String input_password(){
         if (name != null){
             SimpleGroup group = database.newGroup(name);
             current_group.addGroup(group);
+
+            group_names.clear();
+
+            String db_name = database.getName();
+            //Log.v("Database Name",  String.valueOf(db_name));
+
+
+
+            String root = database.getRootGroup().getName();
+            Log.v("Root Name onclick",  String.valueOf(root));
+
+            //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
+            //List entries = database.getRootGroup().getEntries();
+            List entries = database.getRootGroup().getEntries();
+
+            //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
+            List groups = database.getRootGroup().getGroups();
+
+
+            group_names.add(root + " (ROOT)");
+
+            for (int i  = 0; i < groups.size(); i++){
+                String temp = groups.get(i).toString();
+                temp = temp.substring((root.length()+2), temp.length()-1);
+                group_names.add(temp);
+            }
+            ArrayAdapter groupadapter;
+            groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+            ListView navmenu = findViewById(R.id.list_slidermenu);
+            navmenu.setAdapter(groupadapter);
 
         }
     }
