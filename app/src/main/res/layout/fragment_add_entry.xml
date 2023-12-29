@@ -11,6 +11,7 @@
     tools:context=".entry">
 
 
+
     <EditText
         android:id="@+id/entry_Title"
         android:layout_width="match_parent"
@@ -18,7 +19,7 @@
         android:layout_gravity="center|center_vertical"
         android:ems="10"
         android:inputType="text"
-        android:text="Name"
+        android:text="Title"
         android:textAlignment="center" />
 
     <EditText
@@ -27,7 +28,7 @@
         android:layout_height="48dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Name"
+        android:text="Username"
         android:textAlignment="center" />
 
     <EditText
@@ -58,25 +59,33 @@
         android:text="Notes" />
 
     <Button
-        android:id="@+id/button_gen_password"
+        android:id="@+id/entry_saveEntry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:insetTop="200dp"
-        android:text="Generate Password" />
+        android:insetTop="50dp"
+        android:text="Save" />
 
     <Button
-        android:id="@+id/button_saveEntry"
+        android:id="@+id/entry_gen_password2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:insetTop="10dp"
-        android:text="Save Entry" />
+        android:insetTop="20dp"
+        android:text="generate password" />
 
     <Button
-        android:id="@+id/button_back"
+        android:id="@+id/entry_copy_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:insetTop="10dp"
+        android:insetTop="20dp"
+        android:text="copy password" />
+
+    <Button
+        android:id="@+id/entry_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:insetTop="20dp"
         android:text="Back" />
+
 
 
 </LinearLayout>

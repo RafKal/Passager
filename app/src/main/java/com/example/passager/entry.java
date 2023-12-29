@@ -5,11 +5,17 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import org.checkerframework.checker.units.qual.A;
+import org.linguafranca.pwdb.Entry;
+
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,18 +65,19 @@ public class entry extends Fragment {
 
     }
 
+    MainActivity Activity = ((MainActivity) getActivity());
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_entry, container, false);
 
-        //FragmentManager fragmentManager = getParentFragmentManager();
         FragmentManager fm = getActivity().getSupportFragmentManager();
 
 
 
-        Button back =  (Button) rootView.findViewById(R.id.button_gen_password);
+        Button back =  (Button) rootView.findViewById(R.id.entry_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,14 +86,30 @@ public class entry extends Fragment {
             }
         });
 
+        Button delete =  (Button) rootView.findViewById(R.id.entry_delete_entry);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle data = getArguments();
+                String uuid_string = data.getString("UUID");
+                UUID uuid = UUID.fromString(uuid_string);
+                MainActivity Activity = ((MainActivity) getActivity());
+                Log.v("UUID entry", String.valueOf(uuid));
+                Activity.delete_entry(uuid);
+                fm.popBackStack();
+
+            }
+        });
+
 
         Bundle data = getArguments();
-        String name = data.getString("title");
+        String title = data.getString("title");
+        String username = data.getString("username");
         String password = data.getString("password");
         String notes = data.getString("notes");
 
         TextView name_text = rootView.findViewById(R.id.entry_Title);
-        name_text.setText(name);
+        name_text.setText(title);
 
         TextView password_text = rootView.findViewById(R.id.entry_Password);
         password_text.setText(password);
@@ -94,11 +117,19 @@ public class entry extends Fragment {
         TextView notes_text = rootView.findViewById(R.id.entry_Notes);
         notes_text.setText(notes);
 
+        TextView username_text = rootView.findViewById(R.id.entry_username);
+        username_text.setText(username);
+
 
 
 
         // Inflate the layout for this fragment
         return rootView;
 
+    }
+
+    public void deleteEntry(Entry entry){
+        UUID uuid = entry.getUuid();
+        Activity.delete_entry(uuid);
     }
 }

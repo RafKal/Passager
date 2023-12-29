@@ -34,6 +34,7 @@ import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A fragment representing a list of Items.
@@ -101,23 +102,10 @@ public class list_Fragment extends ListFragment {
             ArrayList<Entry> entries = new ArrayList<Entry>(grp_entries.size());
             entries.addAll(grp_entries);
 
-            //Log.v("root group", String.valueOf(Activity.get_root_group()));
-            //Log.v("current group", String.valueOf(current_group));
-
-
-            //ArrayList<Parcelable> entries = getArguments().getParcelableArrayList("entries");
-            //ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("groups");
-
-
-            //setListAdapter(groupadapter);
-
             Activity.updateBar();
 
 
-
-
             if (groups.size() > 0) {
-                    //Log.v("ist in groups.size() > 0", String.valueOf("ja"));
 
                     ArrayList<String> group_names = new ArrayList<String>();
 
@@ -217,9 +205,6 @@ public class list_Fragment extends ListFragment {
 
         //update_listview();
 
-
-
-        //FragmentManager fragmentManager = getParentFragmentManager();
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
 
@@ -292,13 +277,15 @@ public class list_Fragment extends ListFragment {
 
 
                     if ( (position+1)  > grp_size) {
-                             SimpleEntry test_entry = (SimpleEntry) entries.get(position - groups.size());
+                             SimpleEntry entry_tosend = (SimpleEntry) entries.get(position - groups.size());
 
                             entry entry_fragment = new entry();
                             Bundle bundle = new Bundle();
-                            bundle.putString("title", test_entry.getTitle());
-                            bundle.putString("notes", test_entry.getNotes());
-                            bundle.putString("password", test_entry.getPassword());
+                            bundle.putString("title", entry_tosend.getTitle());
+                            bundle.putString("username", entry_tosend.getUsername());
+                            bundle.putString("notes", entry_tosend.getNotes());
+                            bundle.putString("password", entry_tosend.getPassword());
+                            bundle.putString("UUID", String.valueOf(entry_tosend.getUuid()));
 
                             entry_fragment.setArguments(bundle);
 
@@ -477,6 +464,11 @@ public class list_Fragment extends ListFragment {
 
         setListAdapter(groupadapter);
 
+    }
+
+    public void deleteEntry(Entry entry){
+        UUID uuid = entry.getUuid();
+        Activity.delete_entry(uuid);
     }
 }
 

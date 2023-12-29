@@ -164,7 +164,6 @@ public class MainActivity extends AppCompatActivity   {
 
         ListView navmenu = findViewById(R.id.list_slidermenu);
         ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(this, R.array.default_groups, android.R.layout.simple_list_item_1);
-        //navmenu.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         navmenu.setAdapter(arrayAdapter);
 
 
@@ -241,11 +240,6 @@ public class MainActivity extends AppCompatActivity   {
                     current_group = grp_toSend;
 
                     grp_entries = grp_toSend.getEntries();
-                   // List root_entries = database.getRootGroup().getEntries();
-
-                    //SimpleGroup list =  database.getRootGroup().getGroups().get(position-1);
-
-
 
 
                     list_Fragment new_fragment = new list_Fragment();
@@ -299,10 +293,18 @@ public class MainActivity extends AppCompatActivity   {
         Log.v("id", String.valueOf(item.getItemId()));
 
         switch (item.getItemId()){
+            //save id
             case 2131296323 :
                  save_db();
                  break;
+
+                 //delete group id
+            case 2131296803 :
+                //delete_grp();
+                break;
         }
+
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -358,7 +360,6 @@ public class MainActivity extends AppCompatActivity   {
 
                 }
 
-                //Log.v("startScreen_result", String.valueOf(startScreen_result));
 
             }
 
@@ -402,8 +403,6 @@ public class MainActivity extends AppCompatActivity   {
             String root = database.getRootGroup().getName();
             Log.v("Root Name onclick",  String.valueOf(root));
 
-            //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
-            //List entries = database.getRootGroup().getEntries();
             List entries = database.getRootGroup().getEntries();
 
             //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
@@ -450,69 +449,9 @@ public class MainActivity extends AppCompatActivity   {
     private SimpleDatabase import_db(){
 
         //filepicker_path = "";
-
-
-
-
-
-
         String Password = input_password();
         showFileChooser();
-        //String paths = (String) txtResult.getText();
-
-        //KdbxCreds creds = new KdbxCreds("1234".getBytes());
-        //File path = Environment.getExternalStoragePublicDirectory((Environment.DIRECTORY_DOWNLOADS+"/"+"test1.kdbx"));
-        //Log.v("File", path.getPath());
-        //Log.v("txtResultPath", paths);
-
-        //Log.v("filepicker path", filepicker_path);
         ListView navmenu = findViewById(R.id.list_slidermenu);
-
-
-        //Log.v("paswod", Password);
-
-
-
-        /*if (filepicker_path != ""){
-            Log.v("kommh ier", "tga");
-            try {
-                InputStream inputStream = new FileInputStream(filepicker_path);
-                Log.v("kommh ier", filepicker_path);
-                try {
-                    KdbxCreds creds = new KdbxCreds(Password.getBytes());
-                    database = SimpleDatabase.load(creds, inputStream);
-
-                    if (database != null){
-                        group_names.clear();
-
-                        String db_name = database.getName();
-                        //Log.v("Database Name",  String.valueOf(db_name));
-
-                        String root = database.getRootGroup().getName();
-                        Log.v("Root Name onclick",  String.valueOf(root));
-
-                        //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
-                        //List entries = database.getRootGroup().getEntries();
-                        List entries = database.getRootGroup().getEntries();
-
-                        //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
-                        List groups = database.getRootGroup().getGroups();
-                        for (int i  = 0; i < groups.size(); i++){
-                            String temp = groups.get(i).toString();
-                            temp = temp.substring((root.length()+2), temp.length()-1);
-                            group_names.add(temp);
-                        }
-                        ArrayAdapter groupadapter;
-                        groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
-                        navmenu.setAdapter(groupadapter);
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }*/
 
 
     return database;
@@ -529,14 +468,13 @@ private String input_password(){
 
     new AlertDialog.Builder(this)
             .setTitle("Password for chosen Database?")
-            //.setMessage("optional message")
             .setView(txtUrl)
             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     Password = txtUrl.getText().toString();
                     ListView navmenu = findViewById(R.id.list_slidermenu);
 
-                    Log.v("kommh ier pw", filepicker_path);
+                    //Log.v("kommh ier pw", filepicker_path);
 
                     if (filepicker_path != ""){
                         try {
@@ -564,7 +502,7 @@ private String input_password(){
                                     //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
                                     List groups = database.getRootGroup().getGroups();
 
-                                    group_names.add(root);
+                                    group_names.add(root + " (ROOT)");
                                     for (int i  = 0; i < groups.size(); i++){
                                         String temp = groups.get(i).toString();
                                         temp = temp.substring((root.length()+2), temp.length()-1);
@@ -614,11 +552,18 @@ private String input_password(){
 
 
                                 }
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
+                                //Exception instead of IOexception here
+                            } catch (Exception e) {
+                                //throw new RuntimeException(e);
+                                Intent launch = new Intent(MainActivity.this, startScreen.class);
+                                startActivityForResult(launch, 101);
+                                Toast.makeText(MainActivity.this, "Incorrect Password", Toast.LENGTH_LONG).show();
+
                             }
                         } catch (FileNotFoundException e) {
-                            throw new RuntimeException(e);
+                            //throw new RuntimeException(e);
+                            Toast.makeText(MainActivity.this, "File not found", Toast.LENGTH_LONG).show();
+
                         }
                     }
 
@@ -693,18 +638,20 @@ private String input_password(){
     }
 
     public void add_grp(String name){
-
         if (name != null){
             SimpleGroup group = database.newGroup(name);
-
-
-
             current_group.addGroup(group);
 
         }
-
-
     }
+
+    public void delete_grp(){
+        onBackPressed();
+        UUID uuid = current_group.getUuid();
+        database.deleteGroup(uuid);
+
+
+        }
 
     public void set_group(Group group){
         current_group = group;
@@ -757,6 +704,11 @@ private String input_password(){
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void delete_entry(UUID uuid){
+        Log.v("UUID activity", String.valueOf(uuid));
+        database.deleteEntry(uuid);
     }
 
 

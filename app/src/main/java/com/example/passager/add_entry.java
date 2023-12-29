@@ -82,7 +82,7 @@ public class add_entry extends Fragment {
 
 
 
-        Button back =  (Button) rootView.findViewById(R.id.button_back);
+        Button back =  (Button) rootView.findViewById(R.id.entry_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,7 +91,7 @@ public class add_entry extends Fragment {
             }
         });
 
-        Button save_entry =  (Button) rootView.findViewById(R.id.button_saveEntry);
+        Button save_entry =  (Button) rootView.findViewById(R.id.entry_saveEntry);
         save_entry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
