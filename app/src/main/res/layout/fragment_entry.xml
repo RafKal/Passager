@@ -58,13 +58,6 @@
         android:text="Notes" />
 
     <Button
-        android:id="@+id/entry_saveEntry"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:insetTop="50dp"
-        android:text="generate password" />
-
-    <Button
         android:id="@+id/entry_copy_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

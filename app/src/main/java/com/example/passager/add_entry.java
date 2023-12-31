@@ -1,5 +1,7 @@
 package com.example.passager;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -100,10 +102,6 @@ public class add_entry extends Fragment {
                 MainActivity Activity = ((MainActivity) getActivity());
 
 
-
-
-
-
                 String name = (String) name_text.getText().toString();
                 String password = (String) password_text.getText().toString();
                 String notes = (String) notes_text.getText().toString();
@@ -121,13 +119,14 @@ public class add_entry extends Fragment {
                 //group.addEntry(new_entry);
 
                 Log.v("kommt at", String.valueOf(Activity.current_group));
-                Activity.current_group.addEntry(new_entry);
+                //Activity.current_group.addEntry(new_entry);
+                Activity.add_entry(new_entry);
 
                 //Activity.updateUI();
 
                 //FragmentManager f = getChildFragmentManager();
                 //list_Fragment frag = (list_Fragment) getParentFragment();
-                //frag.update_listview();
+
 
                 /*list_Fragment parentFrag = ((list_Fragment)add_entry.this.getParentFragment());
                 parentFrag.update_listview();*/
@@ -143,11 +142,46 @@ public class add_entry extends Fragment {
             }
         });
 
+        Button gen_password =  (Button) rootView.findViewById(R.id.entry_gen_password);
+
+        gen_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //password_generator pg = new password_generator();
+                //String Password = pg.generatePassword(8);
+                //password_text.setText(Password);
+
+                Intent gen_newPW = new Intent(getContext(), gen_password.class);
+                startActivityForResult(gen_newPW, 100);
+
+
+            }
+        });
+
 
 
         // Inflate the layout for this fragment
         return rootView;
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data); comment this unless you want to pass your result to the activity.
+
+        if (requestCode == 100) {
+            if(resultCode == Activity.RESULT_OK & data!= null){
+
+                String password = data.getStringExtra("password");
+
+
+                View rootView = getView();
+                TextView password_text = rootView.findViewById(R.id.entry_Password);
+                password_text.setText(password);
+
+
+            }
+        }
     }
 
 }

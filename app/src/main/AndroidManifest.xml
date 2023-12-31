@@ -18,6 +18,9 @@
         android:theme="@style/Theme.Passager"
         tools:targetApi="31">
         <activity
+            android:name=".gen_password"
+            android:exported="false" />
+        <activity
             android:name=".gen_newDB"
             android:exported="false" />
         <activity

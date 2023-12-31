@@ -3,6 +3,7 @@ package com.example.passager.ui;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -94,6 +95,7 @@ public class list_Fragment extends ListFragment {
 
             Group current_group = Activity.get_current_group();
             List grp_entries = current_group.getEntries();
+
 
 
             ArrayList<Group> groups = new ArrayList<Group>(current_group.getGroups().size());
@@ -470,6 +472,10 @@ public class list_Fragment extends ListFragment {
         UUID uuid = entry.getUuid();
         Activity.delete_entry(uuid);
     }
+
+
+
+
 }
 
 

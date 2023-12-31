@@ -66,18 +66,11 @@
         android:text="Save" />
 
     <Button
-        android:id="@+id/entry_gen_password2"
+        android:id="@+id/entry_gen_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:insetTop="20dp"
         android:text="generate password" />
-
-    <Button
-        android:id="@+id/entry_copy_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:insetTop="20dp"
-        android:text="copy password" />
 
     <Button
         android:id="@+id/entry_back"

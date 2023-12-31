@@ -795,6 +795,14 @@ private String input_password(){
         database.deleteEntry(uuid);
     }
 
+    public void add_entry(Entry entry){
+        current_group.addEntry(entry);
+
+
+
+
+    }
+
 
     // methods to control the operations that will
     // happen when user clicks on the action buttons
