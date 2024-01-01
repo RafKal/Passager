@@ -8,9 +8,9 @@ public class password_generator {
     public  String generatePassword (int length, boolean lowercases_b, boolean uppercase_b,
                                                  boolean numbers_b, boolean symbols_b) {
         //minimum length of 6
-        if (length < 1) {
-            length = 6;
-        }
+        //if (length < 1) {
+         //   length = 6;
+        //}
 
         final char[] lowercase = "abcdefghijklmnopqrstuvwxyz".toCharArray();
         final char[] uppercase = "ABCDEFGJKLMNPRSTUVWXYZ".toCharArray();
@@ -34,6 +34,8 @@ public class password_generator {
 
         String allowed_s = allowed.toString();
         final char[] allowed_c= allowed_s.toCharArray();
+
+
 
 
         //Use cryptographically secure random number generator

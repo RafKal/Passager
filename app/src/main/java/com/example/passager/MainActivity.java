@@ -751,15 +751,24 @@ private String input_password(){
 
     @Override
     public void onBackPressed()
+
+
     {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
 
+        Log.v("current frag", String.valueOf(currentFragment));
 
-        // code here to show dialog
-        if(current_group.getParent() != null){
-            current_group = current_group.getParent();
-            updateBar();
-            //Log.v("current group", String.valueOf(current_group.getName()));
+        if (currentFragment instanceof list_Fragment) {
+            Log.v("is list", "yes");
+
+            if(current_group.getParent() != null){
+                current_group = current_group.getParent();
+                updateBar();
+            }
         }
+
+
+
 
 
         super.onBackPressed();  // optional depending on your needs
