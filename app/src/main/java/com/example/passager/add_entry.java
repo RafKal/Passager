@@ -20,6 +20,8 @@ import com.example.passager.ui.list_Fragment;
 import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
 import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
 
+import java.util.UUID;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link add_entry#newInstance} factory method to
@@ -68,19 +70,44 @@ public class add_entry extends Fragment {
 
     }
 
+    boolean is_edit;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
 
+       /* bundle.putString("title", entry_tosend.getTitle());
+        bundle.putString("username", entry_tosend.getUsername());
+        bundle.putString("notes", entry_tosend.getNotes());
+        bundle.putString("password", entry_tosend.getPassword());
+        bundle.putString("URL", entry_tosend.getUrl());
+        bundle.putString("UUID", String.valueOf(entry_tosend.getUuid()));*/
+
 
         View rootView = inflater.inflate(R.layout.fragment_add_entry, container, false);
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        TextView name_text = rootView.findViewById(R.id.entry_Title);
+        TextView title_text = rootView.findViewById(R.id.entry_Title);
+        TextView username_text = rootView.findViewById(R.id.entry_username);
         TextView password_text = rootView.findViewById(R.id.entry_Password);
         TextView notes_text = rootView.findViewById(R.id.entry_Notes);
         TextView url_text = rootView.findViewById(R.id.entry_URL);
+
+        is_edit = false;
+
+        if (getArguments() != null){
+            Bundle data = getArguments();
+            title_text.setText(data.getString("title"));
+            username_text.setText(data.getString("username"));
+            password_text.setText(data.getString("password"));
+            notes_text.setText(data.getString("notes"));
+            url_text.setText(data.getString("URL"));
+
+
+
+            is_edit = true;
+        }
 
 
 
@@ -102,17 +129,19 @@ public class add_entry extends Fragment {
                 MainActivity Activity = ((MainActivity) getActivity());
 
 
-                String name = (String) name_text.getText().toString();
-                String password = (String) password_text.getText().toString();
-                String notes = (String) notes_text.getText().toString();
-                String url = (String) url_text.getText().toString();
+                String title =  title_text.getText().toString();
+                String password =  password_text.getText().toString();
+                String notes =  notes_text.getText().toString();
+                String url =  url_text.getText().toString();
+                String username =  username_text.getText().toString();
 
-                String[] Data = {name, password, notes, url};
+                //String[] Data = {title, password, notes, url};
 
 
                 SimpleEntry new_entry = Activity.database.newEntry();
-                new_entry.setTitle(name);
+                new_entry.setTitle(title);
                 new_entry.setNotes(notes);
+                new_entry.setUsername(username);
                 new_entry.setPassword(password);
                 new_entry.setUrl(url);
                 //SimpleGroup group = Activity.database.getRootGroup().getGroups().get(0);
@@ -120,7 +149,15 @@ public class add_entry extends Fragment {
 
                 Log.v("kommt at", String.valueOf(Activity.current_group));
                 //Activity.current_group.addEntry(new_entry);
-                Activity.add_entry(new_entry);
+                if (is_edit){
+                    Bundle data = getArguments();
+                    UUID uuid =  UUID.fromString(data.getString("UUID"));
+                    Activity.edit_entry(new_entry, uuid);
+                }
+                else {
+                    Activity.add_entry(new_entry);
+                }
+
 
                 //Activity.updateUI();
 

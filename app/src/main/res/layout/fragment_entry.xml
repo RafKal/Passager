@@ -65,6 +65,13 @@
         android:text="copy password" />
 
     <Button
+        android:id="@+id/entry_edit_entry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:insetTop="20dp"
+        android:text="edit entry" />
+
+    <Button
         android:id="@+id/entry_delete_entry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -287,6 +287,7 @@ public class list_Fragment extends ListFragment {
                             bundle.putString("username", entry_tosend.getUsername());
                             bundle.putString("notes", entry_tosend.getNotes());
                             bundle.putString("password", entry_tosend.getPassword());
+                            bundle.putString("URL", entry_tosend.getUrl());
                             bundle.putString("UUID", String.valueOf(entry_tosend.getUuid()));
 
                             entry_fragment.setArguments(bundle);

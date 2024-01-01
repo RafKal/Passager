@@ -102,11 +102,14 @@ public class entry extends Fragment {
         });
 
 
+
+
         Bundle data = getArguments();
         String title = data.getString("title");
         String username = data.getString("username");
         String password = data.getString("password");
         String notes = data.getString("notes");
+        String url = data.getString("URL");
 
         TextView name_text = rootView.findViewById(R.id.entry_Title);
         name_text.setText(title);
@@ -119,6 +122,36 @@ public class entry extends Fragment {
 
         TextView username_text = rootView.findViewById(R.id.entry_username);
         username_text.setText(username);
+
+        TextView url_text = rootView.findViewById(R.id.entry_URL);
+        url_text.setText(url);
+
+
+        Button edit =  (Button) rootView.findViewById(R.id.entry_edit_entry);
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String uuid_string = data.getString("UUID");
+
+                Bundle data = new Bundle();
+                data.putString("password", password);
+                data.putString("URL",url );
+                data.putString("username", username);
+                data.putString("title", title);
+                data.putString("notes", notes);
+                data.putString("UUID", uuid_string);
+                add_entry frag = new add_entry();
+                frag.setArguments(data);
+
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_main, frag).addToBackStack(null)
+                        .commit();
+
+
+            }
+        });
 
 
 

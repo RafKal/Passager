@@ -806,11 +806,16 @@ private String input_password(){
 
     public void add_entry(Entry entry){
         current_group.addEntry(entry);
-
-
-
-
     }
+
+    public void edit_entry(Entry entry, UUID uuid){
+        database.deleteEntry(uuid);
+        current_group.addEntry(entry);
+        FragmentManager fm = getSupportFragmentManager();
+        fm.popBackStack();
+    }
+
+
 
 
     // methods to control the operations that will
