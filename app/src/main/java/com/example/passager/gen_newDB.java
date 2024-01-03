@@ -1,6 +1,9 @@
 package com.example.passager;
 
+import static com.google.android.material.internal.ContextUtils.getActivity;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,10 +13,23 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.passager.ui.list_Fragment;
+
+import java.util.List;
+
 public class gen_newDB extends AppCompatActivity {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String value = extras.getString("open");
+            Log.v("is first time", value.toString());
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gen_new_db);
 
@@ -58,9 +74,22 @@ public class gen_newDB extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //setResult();
+
+
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed()
+
+
+
+
+
+    {
+        super.onBackPressed();
     }
 
     }

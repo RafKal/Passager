@@ -145,7 +145,7 @@ public class entry extends Fragment {
 
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment_content_main, frag).addToBackStack(null)
+                        .add(R.id.nav_host_fragment_content_main, frag).addToBackStack(null)
                         .commit();
 
 

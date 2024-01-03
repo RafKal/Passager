@@ -83,6 +83,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import com.example.passager.databinding.ActivityMainBinding;
@@ -159,6 +160,7 @@ public class MainActivity extends AppCompatActivity   {
 
 
         Intent launch = new Intent(this, startScreen.class);
+        launch.putExtra("open", filepicker_path=="" );
         startActivityForResult(launch, 101);
 
 
@@ -262,7 +264,7 @@ public class MainActivity extends AppCompatActivity   {
 
 
                     fragmentManager.beginTransaction()
-                            .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+                            .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                             .commit();
 
                     drawer.closeDrawers();
@@ -474,6 +476,10 @@ public class MainActivity extends AppCompatActivity   {
                     .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                     .commit();
         }
+            else {
+                Intent launch = new Intent(MainActivity.this, startScreen.class);
+                startActivityForResult(launch, 101);
+            }
         }
 
     } //onActivityResult
@@ -585,7 +591,7 @@ private String input_password(){
 
 
                                     fragmentManager.beginTransaction()
-                                            .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+                                            .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                                             .commit();
 
 
@@ -766,7 +772,9 @@ private String input_password(){
 
 
 
-        super.onBackPressed();  // optional depending on your needs
+        super.onBackPressed();
+
+          // optional depending on your needs
     }
 
     public void updateUI(){
@@ -774,7 +782,7 @@ private String input_password(){
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main, a).addToBackStack(null)
+                .add(R.id.nav_host_fragment_content_main, a).addToBackStack(null)
                 .commit();
     }
 
@@ -825,6 +833,18 @@ private String input_password(){
 
     public void add_entry(Entry entry){
         current_group.addEntry(entry);
+        FragmentManager fm = getSupportFragmentManager();
+        List frags = fm.getFragments();
+        Fragment list_frag = (Fragment) frags.get(frags.size()-2);
+        Log.v("tester", list_frag.toString());
+
+
+        if (list_frag instanceof list_Fragment) {
+            ((list_Fragment) list_frag).update_listview();
+
+            Log.v("ist hirtaa", "ja");
+
+        }
     }
 
     public void edit_entry(Entry entry, UUID uuid){
@@ -847,29 +867,36 @@ private String input_password(){
         //Fragment frag = childmanager.getFragments();
 
 
-        Log.v("current grp", current_group.toString());
-         grp_toSend= current_group;
-        List grp_entries = grp_toSend.getEntries();
-        list_Fragment new_fragment = new list_Fragment();
-        ArrayList<Group> groups = new ArrayList<Group>(grp_toSend.getGroups().size());
-        groups.addAll(grp_toSend.getGroups());
-        ArrayList<Entry> entries = new ArrayList<Entry>(grp_entries.size());
-        entries.addAll(grp_entries);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("groups", groups);
-        bundle.putSerializable("entries", entries);
-        new_fragment.setArguments(bundle);
+//        Log.v("current grp", current_group.toString());
+//         grp_toSend= current_group;
+//        List grp_entries = grp_toSend.getEntries();
+//        list_Fragment new_fragment = new list_Fragment();
+//        ArrayList<Group> groups = new ArrayList<Group>(grp_toSend.getGroups().size());
+//        groups.addAll(grp_toSend.getGroups());
+//        ArrayList<Entry> entries = new ArrayList<Entry>(grp_entries.size());
+//        entries.addAll(grp_entries);
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("groups", groups);
+//        bundle.putSerializable("entries", entries);
+//        new_fragment.setArguments(bundle);
+//
+//        fm.beginTransaction()
+//                .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+//                .commit();
 
-        fm.beginTransaction()
-                .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
-                .commit();
+
+
+        String tag = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
 
 
         Fragment currentFragment = fm.findFragmentById(R.id.nav_host_fragment_content_main);
         List frags = fm.getFragments();
+        Fragment tester = (Fragment) frags.get(frags.size()-3);
+        Log.v("tester", tester.toString());
         Log.v("frags", frags.toString());
 
         Log.v("type?", currentFragment.toString());
+        currentFragment = tester;
 
         if (currentFragment instanceof list_Fragment) {
             ((list_Fragment) currentFragment).update_listview();

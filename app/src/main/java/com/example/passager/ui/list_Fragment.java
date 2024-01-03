@@ -221,7 +221,7 @@ public class list_Fragment extends ListFragment {
                     if (lv.getAdapter().getCount()-2 == position){
                         add_entry add_entry = new add_entry();
                         fragmentManager.beginTransaction()
-                                .replace(R.id.nav_host_fragment_content_main, add_entry).addToBackStack(null)
+                                .add(R.id.nav_host_fragment_content_main, add_entry).addToBackStack(null)
                                 .commit();
 
                         break start_loop;
@@ -293,7 +293,7 @@ public class list_Fragment extends ListFragment {
 
 
                             fragmentManager.beginTransaction()
-                                    .replace(R.id.nav_host_fragment_content_main, entry_fragment).addToBackStack(null)
+                                    .add(R.id.nav_host_fragment_content_main, entry_fragment).addToBackStack(null)
                                     .commit();
                         }
                     else if (grp_size > 0) {
