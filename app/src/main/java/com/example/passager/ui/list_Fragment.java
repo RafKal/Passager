@@ -123,9 +123,7 @@ public class list_Fragment extends ListFragment {
 
 
                     if (entries  != null) {
-                        if (entries.size() > 0) {
-                            Log.v("ist in entries.size() > 0", String.valueOf("ja"));
-                            ArrayList<String> entries_names = new ArrayList<String>();
+                        if (entries.size() > 0) {ArrayList<String> entries_names = new ArrayList<String>();
 
                             for (int i = 0; i < entries.size(); i++) {
                                 SimpleEntry temp = (SimpleEntry) entries.get(i);
@@ -251,7 +249,6 @@ public class list_Fragment extends ListFragment {
                     List groups = group.getGroups();
                     List entries = group.getEntries();
 
-                    Log.v("current group", String.valueOf(group));
 
 
 
@@ -329,10 +326,6 @@ public class list_Fragment extends ListFragment {
                             bundle.putSerializable("entries", new_entries);
                             bundle.putInt("int", 1);
 
-                            Log.v("ist angekommen", "ja");
-                            Log.v("gesendete gruppe", String.valueOf(new_groups));
-                            Log.v("gesendete entries", String.valueOf(new_entries));
-
 
                             next_fragment.setArguments(bundle);
 
@@ -402,7 +395,6 @@ public class list_Fragment extends ListFragment {
 
 
         if (groups.size() > 0) {
-            Log.v("ist in groups.size() > 0", String.valueOf("ja"));
 
             ArrayList<String> group_names = new ArrayList<String>();
 
@@ -418,9 +410,7 @@ public class list_Fragment extends ListFragment {
 
 
             if (entries  != null) {
-                if (entries.size() > 0) {
-                    Log.v("ist in entries.size() > 0", String.valueOf("ja"));
-                    ArrayList<String> entries_names = new ArrayList<String>();
+                if (entries.size() > 0) {ArrayList<String> entries_names = new ArrayList<String>();
 
                     for (int i = 0; i < entries.size(); i++) {
                         SimpleEntry temp = (SimpleEntry) entries.get(i);
@@ -438,8 +428,6 @@ public class list_Fragment extends ListFragment {
 
         else if (entries  != null) {
             if (entries.size() > 0) {
-                Log.v("ist in zweite entries.size() > 0", String.valueOf("ja"));
-
                 ArrayList<String> entries_names = new ArrayList<String>();
 
                 for (int i = 0; i < entries.size(); i++) {

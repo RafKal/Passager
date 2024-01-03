@@ -210,8 +210,6 @@ public class MainActivity extends AppCompatActivity   {
 
 
                   drawer.closeDrawers();
-
-                  Log.v("dies wird", "erreicht");
                   startActivityForResult(launch, 101);
 
 
@@ -260,12 +258,11 @@ public class MainActivity extends AppCompatActivity   {
 
                     new_fragment.setArguments(bundle);
 
-                    Log.v("current group", String.valueOf(current_group));
 
 
 
                     fragmentManager.beginTransaction()
-                            .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+                            .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                             .commit();
 
                     drawer.closeDrawers();
@@ -386,7 +383,6 @@ public class MainActivity extends AppCompatActivity   {
 
         if (requestCode == 102) {
             if(resultCode == Activity.RESULT_OK & data!= null){
-            Log.v("kommt", "an");
 
             Uri uri = data.getData();
 
@@ -425,7 +421,6 @@ public class MainActivity extends AppCompatActivity   {
 
 
             String root = database.getRootGroup().getName();
-            Log.v("Root Name onclick",  String.valueOf(root));
 
             List entries = database.getRootGroup().getEntries();
 
@@ -476,7 +471,7 @@ public class MainActivity extends AppCompatActivity   {
 
 
             fragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+                    .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                     .commit();
         }
         }
@@ -525,12 +520,11 @@ private String input_password(){
                     Password = txtUrl.getText().toString();
                     ListView navmenu = findViewById(R.id.list_slidermenu);
 
-                    //Log.v("kommh ier pw", filepicker_path);
+
 
                     if (filepicker_path != ""){
                         try {
                             InputStream inputStream = new FileInputStream(filepicker_path);
-                            Log.v("kommh ier pw", filepicker_path);
                             try {
                                 KdbxCreds creds = new KdbxCreds(Password.getBytes());
                                 database = SimpleDatabase.load(creds, inputStream);
@@ -544,7 +538,6 @@ private String input_password(){
 
 
                                     String root = database.getRootGroup().getName();
-                                    Log.v("Root Name onclick",  String.valueOf(root));
 
                                     //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
                                     //List entries = database.getRootGroup().getEntries();
@@ -642,7 +635,6 @@ private String input_password(){
 
 
                                     String root = database.getRootGroup().getName();
-                                    Log.v("Root Name onclick",  String.valueOf(root));
 
                                     //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
                                     //List entries = database.getRootGroup().getEntries();
@@ -693,7 +685,6 @@ private String input_password(){
 
     public void print(){
         Entry entry1 = database.getRootGroup().getEntries().get(0);
-        Log.v("kann printen", "ja");
     }
 
     public void add_grp(String name){
@@ -709,7 +700,6 @@ private String input_password(){
 
 
             String root = database.getRootGroup().getName();
-            Log.v("Root Name onclick",  String.valueOf(root));
 
             //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
             //List entries = database.getRootGroup().getEntries();
@@ -759,12 +749,12 @@ private String input_password(){
 
 
     {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
 
-        Log.v("current frag", String.valueOf(currentFragment));
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+        List frags = getSupportFragmentManager().getFragments();
+        Log.v("frags", frags.toString());
 
         if (currentFragment instanceof list_Fragment) {
-            Log.v("is list", "yes");
 
             if(current_group.getParent() != null){
                 current_group = current_group.getParent();
@@ -799,7 +789,7 @@ private String input_password(){
                 File file_dir = new File(dir + "/" + database.getName().replace(" ", "_") + ".kdbx");
                 //filepicker_path =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getPath();
 
-                Log.v("path file", file_dir.toString());
+
                 //KdbxStreamFormat streamFormat = new KdbxStreamFormat(new KdbxHeader(4));
                 //OutputStream outputStream = new FileOutputStream(file_dir);
 
@@ -838,14 +828,46 @@ private String input_password(){
     }
 
     public void edit_entry(Entry entry, UUID uuid){
-        database.deleteEntry(uuid);
-        current_group.addEntry(entry);
+        //database.deleteEntry(uuid);
+
+        Entry old_entry = database.findEntry(uuid);
+        old_entry.setTitle(entry.getTitle());
+        old_entry.setNotes(entry.getNotes());
+        old_entry.setPassword(entry.getPassword());
+        old_entry.setUrl(entry.getUrl());
+        old_entry.setUsername(entry.getUsername());
+        //current_group.addEntry(entry);
 
         FragmentManager fm = getSupportFragmentManager();
         fm.popBackStack();
 
 
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+
+        ;
+        //Fragment frag = childmanager.getFragments();
+
+
+        Log.v("current grp", current_group.toString());
+         grp_toSend= current_group;
+        List grp_entries = grp_toSend.getEntries();
+        list_Fragment new_fragment = new list_Fragment();
+        ArrayList<Group> groups = new ArrayList<Group>(grp_toSend.getGroups().size());
+        groups.addAll(grp_toSend.getGroups());
+        ArrayList<Entry> entries = new ArrayList<Entry>(grp_entries.size());
+        entries.addAll(grp_entries);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("groups", groups);
+        bundle.putSerializable("entries", entries);
+        new_fragment.setArguments(bundle);
+
+        fm.beginTransaction()
+                .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+                .commit();
+
+
+        Fragment currentFragment = fm.findFragmentById(R.id.nav_host_fragment_content_main);
+        List frags = fm.getFragments();
+        Log.v("frags", frags.toString());
 
         Log.v("type?", currentFragment.toString());
 
@@ -855,7 +877,11 @@ private String input_password(){
             Log.v("ist hirtaa", "ja");
 
             }
+
+
         }
+
+
 
 
 

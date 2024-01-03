@@ -39,7 +39,6 @@ public class gen_newDB extends AppCompatActivity {
                     Intent returnIntent = new Intent();
 
                     String name = (String) name_text.getText().toString();
-                    Log.v("name", name);
 
                     returnIntent.putExtra("name", name_text.getText().toString());
                     returnIntent.putExtra("master_password", password_text.getText().toString());

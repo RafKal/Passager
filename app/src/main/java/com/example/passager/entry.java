@@ -94,7 +94,6 @@ public class entry extends Fragment {
                 String uuid_string = data.getString("UUID");
                 UUID uuid = UUID.fromString(uuid_string);
                 MainActivity Activity = ((MainActivity) getActivity());
-                Log.v("UUID entry", String.valueOf(uuid));
                 Activity.delete_entry(uuid);
                 fm.popBackStack();
 
