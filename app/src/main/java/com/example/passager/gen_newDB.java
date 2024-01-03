@@ -50,12 +50,18 @@ public class gen_newDB extends AppCompatActivity {
                 }else {
                     Toast.makeText(getApplicationContext(), "Passwords don't match!", Toast.LENGTH_LONG).show();
                 }
+            }
+          }
+        );
 
-
-
+        Button cancel = findViewById(R.id.gen_cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //setResult();
+                finish();
             }
         });
     }
 
-
-}
+    }

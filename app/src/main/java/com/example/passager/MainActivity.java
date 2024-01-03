@@ -19,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -296,11 +297,12 @@ public class MainActivity extends AppCompatActivity   {
 
         switch (item.getItemId()){
             //save id
-            case 2131296323 :
+            case 2131296801 :
 
                  if (filepicker_path != null){
                      save_db();
                  }
+
 
 
                  break;
@@ -335,6 +337,7 @@ public class MainActivity extends AppCompatActivity   {
                 path = uri.getLastPathSegment().substring(4);
 
                 filepicker_path = path;
+                Log.v("path", filepicker_path);
 
                 TextView txtResult = findViewById(R.id.txtResult);
                 txtResult.setText(path);
@@ -391,6 +394,8 @@ public class MainActivity extends AppCompatActivity   {
             String master_password = data.getStringExtra("master_password");
             String repeat_password = data.getStringExtra("repeat_password");
             String description = data.getStringExtra("description");
+            Password = master_password;
+            filepicker_path = "";
 
             database = new SimpleDatabase();
             
@@ -789,9 +794,33 @@ private String input_password(){
     }
     public void save_db(){
         try {
-            KdbxCreds creds = new KdbxCreds(Password.getBytes());
-            OutputStream outputStream = new FileOutputStream(filepicker_path);
-            database.save(creds, outputStream);
+            if (filepicker_path == ""){
+                File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+                File file_dir = new File(dir + "/" + database.getName().replace(" ", "_") + ".kdbx");
+                //filepicker_path =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getPath();
+
+                Log.v("path file", file_dir.toString());
+                //KdbxStreamFormat streamFormat = new KdbxStreamFormat(new KdbxHeader(4));
+                //OutputStream outputStream = new FileOutputStream(file_dir);
+
+                KdbxCreds creds = new KdbxCreds(Password.getBytes());
+                file_dir.mkdir();
+                FileOutputStream writer = new FileOutputStream(new File(dir, database.getName().replace(" ", "_")) + ".kdbx");
+                Log.v("path file", file_dir.toString());
+                database.save(creds, writer);
+
+
+
+            }
+            else {
+                KdbxCreds creds = new KdbxCreds(Password.getBytes());
+                OutputStream outputStream = new FileOutputStream(filepicker_path);
+                database.save(creds, outputStream);
+            }
+
+            Log.v("path file", filepicker_path);
+
+
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -800,7 +829,7 @@ private String input_password(){
     }
 
     public void delete_entry(UUID uuid){
-        Log.v("UUID activity", String.valueOf(uuid));
+
         database.deleteEntry(uuid);
     }
 
@@ -811,17 +840,36 @@ private String input_password(){
     public void edit_entry(Entry entry, UUID uuid){
         database.deleteEntry(uuid);
         current_group.addEntry(entry);
+
         FragmentManager fm = getSupportFragmentManager();
         fm.popBackStack();
+
+
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+
+        Log.v("type?", currentFragment.toString());
+
+        if (currentFragment instanceof list_Fragment) {
+            ((list_Fragment) currentFragment).update_listview();
+
+            Log.v("ist hirtaa", "ja");
+
+            }
+        }
+
+
+
+
+
     }
 
 
 
 
-    // methods to control the operations that will
-    // happen when user clicks on the action buttons
 
-}
+
+
+
 
 
 
