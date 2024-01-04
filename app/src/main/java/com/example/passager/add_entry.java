@@ -128,9 +128,6 @@ public class add_entry extends Fragment  {
                 String url =  url_text.getText().toString();
                 String username =  username_text.getText().toString();
 
-                //String[] Data = {title, password, notes, url};
-
-
                 SimpleEntry new_entry = Activity.database.newEntry();
                 new_entry.setTitle(title);
                 new_entry.setNotes(notes);
@@ -163,7 +160,6 @@ public class add_entry extends Fragment  {
             public void onClick(View view) {
 
                 //fm.saveBackStack("b_save");
-
                Intent gen_newPW = new Intent(getContext(), gen_password.class);
                startActivityForResult(gen_newPW, 100);
 

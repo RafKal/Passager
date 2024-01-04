@@ -142,7 +142,6 @@ public class list_Fragment extends ListFragment {
 
             else if (entries  != null) {
                 if (entries.size() > 0) {
-                    //Log.v("ist in zweite entries.size() > 0", String.valueOf("ja"));
 
                     ArrayList<String> entries_names = new ArrayList<String>();
 
@@ -199,13 +198,6 @@ public class list_Fragment extends ListFragment {
     public void onViewCreated (View view, Bundle savedInstanceState) {
 
         ListView lv = getListView();
-
-
-        MainActivity Activity = ((MainActivity) getActivity());
-
-
-        //update_listview();
-
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
 
@@ -235,11 +227,6 @@ public class list_Fragment extends ListFragment {
                         break start_loop;
 
                     }
-
-
-                    //ArrayList<Parcelable> entries = getArguments().getParcelableArrayList("entries");
-                    //ArrayList<Parcelable> groups = getArguments().getParcelableArrayList("groups");
-
                     update_listview();
 
 
@@ -250,17 +237,6 @@ public class list_Fragment extends ListFragment {
                     List groups = group.getGroups();
                     List entries = group.getEntries();
 
-
-
-
-
-                    //Log.v("groups.size;",    String.valueOf(groups.size()));
-                    //Log.v("group",    String.valueOf(group));
-                    //Log.v("groups",    String.valueOf(group.getGroups()));
-
-
-
-
                     int grp_size = groups.size();
 
                     if (groups != null){
@@ -270,11 +246,6 @@ public class list_Fragment extends ListFragment {
                         grp_size = 0;
 
                     }
-
-
-
-
-
 
                     if ( (position+1)  > grp_size) {
                              SimpleEntry entry_tosend = (SimpleEntry) entries.get(position - groups.size());
@@ -290,9 +261,6 @@ public class list_Fragment extends ListFragment {
 
                             entry_fragment.setArguments(bundle);
 
-
-
-
                             fragmentManager.beginTransaction()
                                     .add(R.id.nav_host_fragment_content_main, entry_fragment).addToBackStack(null)
                                     .commit();
@@ -300,7 +268,6 @@ public class list_Fragment extends ListFragment {
                         }
                     else if (grp_size > 0) {
 
-                           //Group grp_toSend = (SimpleGroup) groups.get(position);
                             Group grp_toSend = (SimpleGroup) groups.get(position);
                             Activity.set_group(grp_toSend);
                             List entries_toSend = grp_toSend.getEntries();
@@ -309,21 +276,16 @@ public class list_Fragment extends ListFragment {
 
                             ArrayList<Group> new_groups = new ArrayList<Group>(grp_toSend.getGroups().size());
 
-                            if(grp_toSend != null & grp_toSend != group){
+                            if(grp_toSend != group){
                                 new_groups.addAll(grp_toSend.getGroups());
                             }
 
 
                             ArrayList<Entry> new_entries = new ArrayList<Entry>(entries_toSend.size());
-                            if (entries_toSend  != null){
-                                new_entries.addAll(entries_toSend);
-                            }
+                            new_entries.addAll(entries_toSend);
 
 
-
-
-
-                            Bundle bundle = new Bundle();
+                        Bundle bundle = new Bundle();
                             bundle.putSerializable("groups", new_groups);
                             bundle.putSerializable("entries", new_entries);
 
@@ -335,22 +297,9 @@ public class list_Fragment extends ListFragment {
 
                             bundle.clear();
                         }
-
-
-
-
-
                 }
-
-
-
-
             }
         });
-
-
-
-
     }
 
     public void input_grp_name(){
@@ -370,9 +319,6 @@ public class list_Fragment extends ListFragment {
 
                         Activity.add_grp(name);
                         update_listview();
-
-
-
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -381,8 +327,6 @@ public class list_Fragment extends ListFragment {
                 })
                 .show();
     }
-
-
 
     public void update_listview(){
 
@@ -449,9 +393,6 @@ public class list_Fragment extends ListFragment {
 
         groupadapter.add("ADD Entry");
         groupadapter.add("ADD Group ");
-
-
-
         setListAdapter(groupadapter);
 
     }

@@ -1,73 +1,52 @@
 package com.example.passager;
 
-//import static org.spongycastle.asn1.cms.CMSObjectIdentifiers.data;
-
-import static android.app.PendingIntent.getActivity;
-
-import static java.security.AccessController.getContext;
-
-
-
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Menu;
-import android.net.Uri;
-
-import com.example.passager.ui.home.HomeFragment;
-import com.example.passager.ui.list_Fragment;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.navigation.NavigationView;
-import java.io.File;
-import android.Manifest.permission;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.fragment.app.ListFragment;
-import androidx.navigation.ActivityNavigator;
 import androidx.navigation.NavController;
-import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
-//import de.slackspace.openkeepass.KeePassDatabase;
-//import de.slackspace.openkeepass.domain.KeePassFile;
-//import de.slackspace.openkeepass.KeePassDatabase;
-//import de.slackspace.openkeepass.domain.Entry;
-//import de.slackspace.openkeepass.domain.Group;
-//import de.slackspace.openkeepass.domain.KeePassFile;
+import com.example.passager.databinding.ActivityMainBinding;
+import com.example.passager.ui.list_Fragment;
+import com.google.android.material.navigation.NavigationView;
+
+
+/* Quelle:
+https://github.com/jorabin/KeePassJava2
+Library: KeePassJava2
+Ver.: 2.3.1
+Lizenz: Apache2*/
+import org.linguafranca.pwdb.Entry;
+import org.linguafranca.pwdb.Group;
+import org.linguafranca.pwdb.kdbx.KdbxCreds;
+import org.linguafranca.pwdb.kdbx.KdbxHeader;
+import org.linguafranca.pwdb.kdbx.KdbxStreamFormat;
+import org.linguafranca.pwdb.kdbx.simple.SimpleDatabase;
+import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
+import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -75,37 +54,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.Serializable;
-import java.net.URI;
-import java.security.Permission;
-import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-
-import com.example.passager.databinding.ActivityMainBinding;
-
-//import org.linguafranca.pwdb.kdbx.KdbxCreds;
-import org.apache.commons.codec.binary.StringUtils;
-import org.linguafranca.pwdb.Database;
-import org.linguafranca.pwdb.Entry;
-import org.linguafranca.pwdb.Group;
-import org.linguafranca.pwdb.Visitor;
-import org.linguafranca.pwdb.base.AbstractDatabase;
-import org.linguafranca.pwdb.kdbx.KdbxCreds;
-import org.linguafranca.pwdb.kdbx.jaxb.JaxbDatabase;
-import org.linguafranca.pwdb.kdbx.simple.SimpleDatabase;
-import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
-import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
-import org.w3c.dom.Text;
-
-import org.linguafranca.pwdb.kdbx.*;
-
-import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
 
 
 public class MainActivity extends AppCompatActivity   {
@@ -113,11 +65,9 @@ public class MainActivity extends AppCompatActivity   {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
-    //static PrintStream printStream = getTestPrintStream();
-
-
     SimpleDatabase database = new SimpleDatabase();
     ArrayList<String> group_names = new ArrayList<String>();
+
 
     Group current_group;
     Group grp_toSend;
@@ -132,27 +82,18 @@ public class MainActivity extends AppCompatActivity   {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
-
-
-
-
         super.onCreate(savedInstanceState);
-
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
-        TextView txtResult = findViewById(R.id.txtResult);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-
-
-        ActivityCompat.requestPermissions(this,
+      /*  ActivityCompat.requestPermissions(this,
                 new String[]{permission.WRITE_EXTERNAL_STORAGE, permission.READ_EXTERNAL_STORAGE, permission.MANAGE_EXTERNAL_STORAGE},
-                PackageManager.PERMISSION_GRANTED);
+                PackageManager.PERMISSION_GRANTED);*/
 
         if (!Environment.isExternalStorageManager()){
             Intent getpermission = new Intent();
@@ -161,6 +102,7 @@ public class MainActivity extends AppCompatActivity   {
         }
 
 
+        // Initial start screen
         Intent launch = new Intent(this, startScreen.class);
         launch.putExtra("path", true);
         startActivityForResult(launch, 101);
@@ -168,16 +110,10 @@ public class MainActivity extends AppCompatActivity   {
 
 
 
+        //build navigation elements
         ListView navmenu = findViewById(R.id.list_slidermenu);
         ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(this, R.array.default_groups, android.R.layout.simple_list_item_1);
         navmenu.setAdapter(arrayAdapter);
-
-
-
-
-
-
-
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
@@ -194,30 +130,11 @@ public class MainActivity extends AppCompatActivity   {
 
 
 
-
-
-
         binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View view) {
-
-                  String filepicker_path = "";
-
-                  //navController.navigate(R.id.nav_home);
-                  fragmentManager.clearBackStack(null);
-
-                /*  list_Fragment new_fragment = new list_Fragment();
-
-                  fragmentManager.beginTransaction()
-                          .replace(R.id.nav_host_fragment_content_main, new_fragment)
-                          .commit();
-*/
-
-
-                  drawer.closeDrawers();
+                  //fragmentManager.clearBackStack(null);
                   startActivityForResult(launch, 101);
-
-
               }
           }
         );
@@ -227,14 +144,8 @@ public class MainActivity extends AppCompatActivity   {
                                     long id) {
 
                 if(database != null){
-
-
-
                     String name = group_names.get(position);
                     binding.appBarMain.toolbar.setTitle(name);
-
-
-
 
                     if (position == 0){
                         grp_toSend = database.getRootGroup();
@@ -243,66 +154,19 @@ public class MainActivity extends AppCompatActivity   {
                         grp_toSend = database.getRootGroup().getGroups().get(position-1);
                     }
                     current_group = grp_toSend;
-                    List grp_entries = grp_toSend.getEntries();
-
 
                     list_Fragment new_fragment = new list_Fragment();
-                    ArrayList<Group> groups = new ArrayList<Group>(grp_toSend.getGroups().size());
-                    groups.addAll(grp_toSend.getGroups());
-
-                    ArrayList<Entry> entries = new ArrayList<Entry>(grp_entries.size());
-                    entries.addAll(grp_entries);
-
-
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("groups", groups);
-                    bundle.putSerializable("entries", entries);
-                    new_fragment.setArguments(bundle);
+                    new_fragment.setArguments(new Bundle());
 
                     fragmentManager.beginTransaction()
                             .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                             .commit();
 
-                    bundle.clear();
-
-                   /* -------------------------
-                            current_group = database.getRootGroup();
-
-
-
-                    Group grp_toSend = database.getRootGroup();;
-                    List grp_entries = database.getRootGroup().getEntries();
-                    list_Fragment new_fragment = new list_Fragment();
-
-                    ArrayList<Group> groups_root = new ArrayList<Group>(grp_toSend.getGroups().size());
-                    groups.addAll(grp_toSend.getGroups());
-
-                    ArrayList<Entry> entries_root = new ArrayList<Entry>(grp_entries.size());
-                    entries.addAll(grp_entries);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("groups", groups_root);
-                    bundle.putSerializable("entries", entries_root);
-                    new_fragment.setArguments(bundle);
-
-
-                    fragmentManager.beginTransaction()
-                            .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
-                            .commit();
-                    ------------- --   -- -
-*/
                     drawer.closeDrawers();
-
-
-
 
                 }
             }
         });
-
-
-
-
-
 
     }
     @Override
@@ -319,8 +183,6 @@ public class MainActivity extends AppCompatActivity   {
         int save_id = R.id.action_save;
         int paste_entry_id = R.id.action_paste_entry;
 
-
-
         if (id  ==save_id){
             if (filepicker_path != null){
                 save_db();
@@ -333,7 +195,6 @@ public class MainActivity extends AppCompatActivity   {
                 List frags = fm.getFragments();
                 Log.v("paste frags", frags.toString());
                 Fragment list_frag = (Fragment) frags.get(frags.size()-1);
-
 
 
                 if (list_frag instanceof list_Fragment) {
@@ -384,44 +245,22 @@ public class MainActivity extends AppCompatActivity   {
         if (requestCode == 101) {
             if(resultCode == Activity.RESULT_OK & data!= null){
                 Uri uri = data.getData();
-
                 startScreen_result = data.getIntExtra("result", 2);
-
-
                 if (startScreen_result == 1){
-
                     database = import_db();
-
-
                 }
                 else if (startScreen_result == 0){
-
                     Intent gen_newDB = new Intent(this, gen_newDB.class);
                     startActivityForResult(gen_newDB, 102);
-
-
-
                 }
-
-
             }
-
-
             if (resultCode == Activity.RESULT_CANCELED) {
                 // Write your code if there's no result
             }
-
-
-
-
-
         }
 
         if (requestCode == 102) {
             if(resultCode == Activity.RESULT_OK & data!= null){
-
-            Uri uri = data.getData();
-
             String name = data.getStringExtra("name");
             String master_password = data.getStringExtra("master_password");
             String repeat_password = data.getStringExtra("repeat_password");
@@ -434,10 +273,6 @@ public class MainActivity extends AppCompatActivity   {
 
             database.setName(name);
             database.getRootGroup().setName(name);
-
-            //database.setName("name");
-            //database.getRootGroup().setName("name");
-
 
             database.setDescription(description);
 
@@ -452,12 +287,7 @@ public class MainActivity extends AppCompatActivity   {
             String db_name = database.getName();
 
 
-
-
-
-
             String root = database.getRootGroup().getName();
-
             List entries = database.getRootGroup().getEntries();
 
             //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
@@ -475,43 +305,14 @@ public class MainActivity extends AppCompatActivity   {
             navmenu.setAdapter(groupadapter);
 
             binding.appBarMain.toolbar.setTitle(db_name);
-
-
             current_group = database.getRootGroup();
 
-
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-
-
-            binding.appBarMain.toolbar.setTitle(db_name);
-
-
-            current_group = database.getRootGroup();
-
-
-
-
-            Group grp_toSend = database.getRootGroup();;
-            List grp_entries = database.getRootGroup().getEntries();
             list_Fragment new_fragment = new list_Fragment();
-
-            ArrayList<Group> groups_root = new ArrayList<Group>(grp_toSend.getGroups().size());
-            groups.addAll(grp_toSend.getGroups());
-
-            ArrayList<Entry> entries_root = new ArrayList<Entry>(grp_entries.size());
-            entries.addAll(grp_entries);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("groups", groups_root);
-            bundle.putSerializable("entries", entries_root);
-            new_fragment.setArguments(bundle);
-
-
+            new_fragment.setArguments(new Bundle());
+            FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                     .commit();
-
-                bundle.clear();
         }
             else {
                 Intent launch = new Intent(MainActivity.this, startScreen.class);
@@ -522,13 +323,13 @@ public class MainActivity extends AppCompatActivity   {
     } //onActivityResult
 
     private void showFileChooser(){
-        Intent intent4 = new Intent(Intent.ACTION_GET_CONTENT);
-        
-        intent4.setType("*/*");
-        intent4.addCategory(Intent.CATEGORY_OPENABLE);
+        Intent fileChooser_intent = new Intent(Intent.ACTION_GET_CONTENT);
+
+        fileChooser_intent.setType("*/*");
+        fileChooser_intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         try {
-            startActivityForResult(Intent.createChooser(intent4, "Select kdbx file!"), 100);
+            startActivityForResult(Intent.createChooser(fileChooser_intent, "Select kdbx file!"), 100);
         }
         catch (Exception exception){
             Toast.makeText(this, "Install a file manager!", Toast.LENGTH_LONG).show();
@@ -537,23 +338,17 @@ public class MainActivity extends AppCompatActivity   {
 
     private SimpleDatabase import_db(){
 
-        //filepicker_path = "";
         String Password = input_password();
         showFileChooser();
         ListView navmenu = findViewById(R.id.list_slidermenu);
-
-
     return database;
-
 }
 
 
 //https://stackoverflow.com/questions/10903754/input-text-dialog-android
 private String input_password(){
     final EditText txtUrl = new EditText(this);
-     // Set the default text to a link of the Queen
     txtUrl.setHint("Password?");
-    //String Password;
 
     new AlertDialog.Builder(this)
             .setTitle("Password for chosen Database?")
@@ -562,31 +357,19 @@ private String input_password(){
                 public void onClick(DialogInterface dialog, int whichButton) {
                     Password = txtUrl.getText().toString();
                     ListView navmenu = findViewById(R.id.list_slidermenu);
-
-
-
-                    if (filepicker_path != ""){
+                    if (!Objects.equals(filepicker_path, "")){
                         try {
                             InputStream inputStream = new FileInputStream(filepicker_path);
                             try {
                                 KdbxCreds creds = new KdbxCreds(Password.getBytes());
                                 database = SimpleDatabase.load(creds, inputStream);
 
-                                if (database != null){
                                     group_names.clear();
-
                                     String db_name = database.getName();
-                                    //Log.v("Database Name",  String.valueOf(db_name));
-
-
-
                                     String root = database.getRootGroup().getName();
 
-                                    //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
-                                    //List entries = database.getRootGroup().getEntries();
                                     List entries = database.getRootGroup().getEntries();
 
-                                    //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
                                     List groups = database.getRootGroup().getGroups();
 
                                     group_names.add(root + " (ROOT)");
@@ -600,48 +383,21 @@ private String input_password(){
                                     navmenu.setAdapter(groupadapter);
 
                                     binding.appBarMain.toolbar.setTitle(db_name);
-
-
                                     current_group = database.getRootGroup();
 
 
 
-                                    FragmentManager fragmentManager = getSupportFragmentManager();
-
-                                    binding.appBarMain.toolbar.setTitle(db_name);
 
 
-
-                                    Group grp_toSend = database.getRootGroup();;
-                                    List grp_entries = database.getRootGroup().getEntries();
                                     list_Fragment new_fragment = new list_Fragment();
-
-                                    ArrayList<Group> groups_root = new ArrayList<Group>(grp_toSend.getGroups().size());
-                                    groups.addAll(grp_toSend.getGroups());
-
-                                    ArrayList<Entry> entries_root = new ArrayList<Entry>(grp_entries.size());
-                                    entries.addAll(grp_entries);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putSerializable("groups", groups_root);
-                                    bundle.putSerializable("entries", entries_root);
-                                    new_fragment.setArguments(bundle);
+                                    new_fragment.setArguments(new Bundle());
 
 
+                                  FragmentManager fragmentManager = getSupportFragmentManager();
                                     fragmentManager.beginTransaction()
                                             .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                                             .commit();
 
-                                    bundle.clear();
-
-
-
-                                    //NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
-
-
-
-
-                                }
-                                //Exception instead of IOexception here
                             } catch (Exception e) {
                                 //throw new RuntimeException(e);
                                 Intent launch = new Intent(MainActivity.this, startScreen.class);
@@ -656,57 +412,34 @@ private String input_password(){
                         }
                     }
 
-
-
                 }
             })
             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     ListView navmenu = findViewById(R.id.list_slidermenu);
 
-                    if (filepicker_path != ""){
+                    if (!Objects.equals(filepicker_path, "")){
                         try {
                             InputStream inputStream = new FileInputStream(filepicker_path);
                             try {
                                 KdbxCreds creds = new KdbxCreds(Password.getBytes());
                                 database = SimpleDatabase.load(creds, inputStream);
 
-                                if (database != null){
-                                    group_names.clear();
+                                group_names.clear();
 
-                                    String db_name = database.getName();
-                                    //Log.v("Database Name",  String.valueOf(db_name));
+                                String db_name = database.getName();
+                                String root = database.getRootGroup().getName();
 
-
-
-                                    String root = database.getRootGroup().getName();
-
-                                    //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
-                                    //List entries = database.getRootGroup().getEntries();
-                                    List entries = database.getRootGroup().getEntries();
-
-                                    //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
-                                    List groups = database.getRootGroup().getGroups();
-                                    for (int i  = 0; i < groups.size(); i++){
-                                        String temp = groups.get(i).toString();
-                                        temp = temp.substring((root.length()+2), temp.length()-1);
-                                        group_names.add(temp);
-                                    }
-                                    ArrayAdapter groupadapter;
-                                    groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
-                                    navmenu.setAdapter(groupadapter);
-
-                                   /* current_group = database.getRootGroup();
-
-                                    list_Fragment a = new list_Fragment();
-                                    FragmentManager fragmentManager = getSupportFragmentManager();
-
-                                    binding.appBarMain.toolbar.setTitle(db_name);
-
-                                    fragmentManager.beginTransaction()
-                                            .replace(R.id.nav_host_fragment_content_main, a).addToBackStack(null)
-                                            .commit();*/
+                                //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
+                                List groups = database.getRootGroup().getGroups();
+                                for (int i  = 0; i < groups.size(); i++){
+                                    String temp = groups.get(i).toString();
+                                    temp = temp.substring((root.length()+2), temp.length()-1);
+                                    group_names.add(temp);
                                 }
+                                ArrayAdapter groupadapter;
+                                groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+                                navmenu.setAdapter(groupadapter);
                             }  catch (Exception e) {
                                 //throw new RuntimeException(e);
                                 Intent launch = new Intent(MainActivity.this, startScreen.class);
@@ -740,22 +473,15 @@ private String input_password(){
             group_names.clear();
 
             String db_name = database.getName();
-            //Log.v("Database Name",  String.valueOf(db_name));
-
-
 
             String root = database.getRootGroup().getName();
 
-            //Log.v("getEntries result",  String.valueOf(database.getRootGroup().getEntries()));
-            //List entries = database.getRootGroup().getEntries();
-            List entries = database.getRootGroup().getEntries();
+            List<SimpleEntry> entries = database.getRootGroup().getEntries();
 
             //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
-            List groups = database.getRootGroup().getGroups();
-
+            List<SimpleGroup> groups = database.getRootGroup().getGroups();
 
             group_names.add(root + " (ROOT)");
-
             for (int i  = 0; i < groups.size(); i++){
                 String temp = groups.get(i).toString();
                 temp = temp.substring((root.length()+2), temp.length()-1);
@@ -773,8 +499,6 @@ private String input_password(){
         onBackPressed();
         UUID uuid = current_group.getUuid();
         database.deleteGroup(uuid);
-
-
         }
 
     public void set_group(Group group){
@@ -785,14 +509,8 @@ private String input_password(){
         return current_group;
     }
 
-    public Group get_root_group(){
-        return database.getRootGroup();
-    }
-
     @Override
     public void onBackPressed()
-
-
     {
 
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
@@ -800,44 +518,17 @@ private String input_password(){
 
             if(current_group.getParent() != null){
                 current_group = current_group.getParent();
-
-
-
-
                 updateBar();
                 super.onBackPressed();
             }
 
         }
-        //if (currentFragment instanceof entry || currentFragment instanceof add_entry) {
-        //    super.onBackPressed();
-       // }
         else {
             super.onBackPressed();
         }
-
-
-
-
-
-
-
-        //super.onBackPressed();
-
-          // optional depending on your needs
-    }
-
-    public void updateUI(){
-        list_Fragment a = new list_Fragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        fragmentManager.beginTransaction()
-                .add(R.id.nav_host_fragment_content_main, a).addToBackStack(null)
-                .commit();
     }
 
     public void updateBar(){
-        //Group group
         binding.appBarMain.toolbar.setTitle(get_current_group().getPath());
     }
     public void save_db(){
@@ -875,7 +566,6 @@ private String input_password(){
     }
 
     public void delete_entry(UUID uuid){
-
         database.deleteEntry(uuid);
 
         FragmentManager fm = getSupportFragmentManager();
@@ -896,7 +586,6 @@ private String input_password(){
 
         String root = database.getRootGroup().getName();
         List entries = database.getRootGroup().getEntries();
-        //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
         List groups = database.getRootGroup().getGroups();
         group_names.add(root + " (ROOT)");
         for (int i  = 0; i < groups.size(); i++){
@@ -922,9 +611,6 @@ private String input_password(){
 
         if (list_frag instanceof list_Fragment) {
             ((list_Fragment) list_frag).update_listview();
-
-            Log.v("ist hirtaa", "ja");
-
         }
     }
 
@@ -937,77 +623,27 @@ private String input_password(){
             Log.v("test entry", copied_entry.toString());
         }
 
-
-
     }
 
     public void edit_entry(Entry entry, UUID uuid){
-        //database.deleteEntry(uuid);
-
         Entry old_entry = database.findEntry(uuid);
         old_entry.setTitle(entry.getTitle());
         old_entry.setNotes(entry.getNotes());
         old_entry.setPassword(entry.getPassword());
         old_entry.setUrl(entry.getUrl());
         old_entry.setUsername(entry.getUsername());
-        //current_group.addEntry(entry);
 
         FragmentManager fm = getSupportFragmentManager();
         fm.popBackStack();
 
 
-
-        ;
-        //Fragment frag = childmanager.getFragments();
-
-
-//        Log.v("current grp", current_group.toString());
-//         grp_toSend= current_group;
-//        List grp_entries = grp_toSend.getEntries();
-//        list_Fragment new_fragment = new list_Fragment();
-//        ArrayList<Group> groups = new ArrayList<Group>(grp_toSend.getGroups().size());
-//        groups.addAll(grp_toSend.getGroups());
-//        ArrayList<Entry> entries = new ArrayList<Entry>(grp_entries.size());
-//        entries.addAll(grp_entries);
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("groups", groups);
-//        bundle.putSerializable("entries", entries);
-//        new_fragment.setArguments(bundle);
-//
-//        fm.beginTransaction()
-//                .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
-//                .commit();
-
-
-
-        String tag = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
-
-
-        Fragment currentFragment = fm.findFragmentById(R.id.nav_host_fragment_content_main);
         List frags = fm.getFragments();
-        Fragment tester = (Fragment) frags.get(frags.size()-3);
-        Log.v("tester", tester.toString());
-        Log.v("frags", frags.toString());
-
-        Log.v("type?", currentFragment.toString());
-        currentFragment = tester;
-
+        Fragment currentFragment = (Fragment) frags.get(frags.size()-3);
         if (currentFragment instanceof list_Fragment) {
             ((list_Fragment) currentFragment).update_listview();
 
-            Log.v("ist hirtaa", "ja");
-
             }
-
-
         }
-
-
-
-
-
-
-
     }
 
 
