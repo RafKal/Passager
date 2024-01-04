@@ -1,5 +1,11 @@
 package com.example.passager;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.checkerframework.checker.units.qual.A;
 import org.linguafranca.pwdb.Entry;
@@ -67,6 +76,9 @@ public class entry extends Fragment {
 
     MainActivity Activity = ((MainActivity) getActivity());
 
+
+    ClipboardManager myClipboard;
+    ClipData myClip;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,6 +86,9 @@ public class entry extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_entry, container, false);
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
+
+
+
 
 
 
@@ -124,6 +139,47 @@ public class entry extends Fragment {
 
         TextView url_text = rootView.findViewById(R.id.entry_URL);
         url_text.setText(url);
+
+
+        FloatingActionButton copy_username =  rootView.findViewById(R.id.copy_username);
+        copy_username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("username", username);
+                clipboard.setPrimaryClip(clip);
+
+                Toast.makeText(getContext(), "Copied Username", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        FloatingActionButton copy_password =  rootView.findViewById(R.id.copy_password);
+        copy_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("password", password);
+                clipboard.setPrimaryClip(clip);
+
+                Toast.makeText(getContext(), "Copied Password", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        FloatingActionButton follow_url =  rootView.findViewById(R.id.follow_URL);
+        follow_url.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Uri intentUri = Uri.parse(url);
+                Intent intent = new Intent(Intent.ACTION_VIEW, intentUri);
+                startActivity(intent);
+            }
+        });
+
+
 
 
         Button edit =  (Button) rootView.findViewById(R.id.entry_edit_entry);

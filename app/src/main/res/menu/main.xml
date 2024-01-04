@@ -6,16 +6,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orderInCategory="100"
-        android:title="Delete Group"
-        app:showAsAction="never" />
+        android:title="Delete Group" />
     <item
         android:id="@+id/action_save"
         android:orderInCategory="100"
-        android:title="Save"
-        app:showAsAction="never" />
+        android:title="Save" />
     <item
         android:id="@+id/action_save_as"
         android:orderInCategory="100"
-        android:title="Save as.."
-        app:showAsAction="never" />
+        android:title="Save as.." />
 </menu>

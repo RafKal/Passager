@@ -12,42 +12,117 @@
     tools:context=".entry">
 
 
-    <EditText
-        android:id="@+id/entry_Title"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|center_vertical"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Title"
-        android:textAlignment="center" />
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/entry_username"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Username"
-        android:textAlignment="center" />
+        <EditText
+            android:id="@+id/entry_Title"
+            android:layout_width="356dp"
+            android:layout_height="56dp"
+            android:layout_gravity="left"
+            android:clickable="false"
+            android:editable="false"
+            android:ems="10"
+            android:gravity="center_horizontal|center_vertical"
+            android:inputType="text"
+            android:text="Title"
+            android:textAlignment="gravity" />
+    </FrameLayout>
 
-    <EditText
-        android:id="@+id/entry_Password"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:gravity="center"
-        android:hint="Password"
-        android:inputType="textPassword" />
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/entry_URL"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/copy_username"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|top"
+            android:layout_weight="1"
+            android:baselineAlignBottom="false"
+            android:clickable="true"
+            android:contentDescription="Copy Username"
+            android:contextClickable="true"
+            android:src="?attr/actionModeCopyDrawable"
+            android:tooltipText="Copy"
+            app:backgroundTint="#00FFFFFF"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:fabSize="normal" />
+
+        <EditText
+            android:id="@+id/entry_username"
+            android:layout_width="354dp"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:gravity="center_horizontal|center_vertical"
+            android:inputType="text"
+            android:text="Username"
+            android:textAlignment="gravity" />
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:gravity="center"
-        android:inputType="text"
-        android:text="URL" />
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/copy_password"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|top"
+            android:layout_weight="1"
+            android:baselineAlignBottom="false"
+            android:clickable="true"
+            android:contentDescription="Copy Password"
+            android:contextClickable="true"
+            android:src="?attr/actionModeCopyDrawable"
+            android:tooltipText="Copy"
+            app:backgroundTint="#00FFFFFF"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:fabSize="normal" />
+
+        <EditText
+            android:id="@+id/entry_Password"
+            android:layout_width="357dp"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="Password"
+            android:inputType="textPassword" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/follow_URL"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|top"
+            android:layout_weight="1"
+            android:baselineAlignBottom="false"
+            android:clickable="true"
+            android:contentDescription="Copy Username"
+            android:contextClickable="true"
+            android:src="@android:drawable/ic_menu_send"
+            android:tooltipText="Copy"
+            app:backgroundTint="#00FFFFFF"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:fabSize="normal" />
+
+        <EditText
+            android:id="@+id/entry_URL"
+            android:layout_width="357dp"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="text"
+            android:text="URL" />
+    </FrameLayout>
 
     <EditText
         android:id="@+id/entry_Notes"
@@ -57,13 +132,6 @@
         android:gravity="center|top"
         android:inputType="text"
         android:text="Notes" />
-
-    <Button
-        android:id="@+id/entry_copy_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:insetTop="20dp"
-        android:text="copy password" />
 
     <Button
         android:id="@+id/entry_edit_entry"

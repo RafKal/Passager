@@ -24,11 +24,8 @@ public class gen_newDB extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String value = extras.getString("open");
-            Log.v("is first time", value.toString());
-        }
+
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gen_new_db);
@@ -81,15 +78,6 @@ public class gen_newDB extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed()
 
-
-
-
-
-    {
-        super.onBackPressed();
-    }
 
     }

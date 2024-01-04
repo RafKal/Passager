@@ -50,8 +50,8 @@ public class gen_password extends AppCompatActivity {
 
                     if (!lowercase.isChecked() && !uppercase.isChecked()&& !numbers.isChecked() && !special.isChecked()){
                         Toast.makeText( getApplicationContext(), "No Switch checked!", Toast.LENGTH_SHORT).show();
-                    } else if (0 >= lenght_int || 33 <= lenght_int) {
-                        Toast.makeText( getApplicationContext(), "Please enter number between 1 and 32", Toast.LENGTH_SHORT).show();
+                    } else if (3 >= lenght_int || 33 <= lenght_int) {
+                        Toast.makeText( getApplicationContext(), "Please enter number between 4 and 32", Toast.LENGTH_SHORT).show();
                     }
                     else {
                         password = pg.generatePassword(lenght_int, lowercase.isChecked(),

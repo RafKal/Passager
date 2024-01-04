@@ -5,11 +5,13 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 public class startScreen extends AppCompatActivity {
     int result;
+    Boolean no_db = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +19,13 @@ public class startScreen extends AppCompatActivity {
         setContentView(R.layout.activity_start_screen);
 
         //set 0 for create, 1 for import
+
+        no_db = false;
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+             no_db = extras.getBoolean("path");
+        }
 
 
 
@@ -46,4 +55,19 @@ public class startScreen extends AppCompatActivity {
 
 
     }
+
+
+    @Override
+    public void onBackPressed() {
+
+        Log.v("show", no_db.toString());
+        {
+            if (!no_db){
+                super.onBackPressed();
+            }
+        }
+
+    }
+
+
 }

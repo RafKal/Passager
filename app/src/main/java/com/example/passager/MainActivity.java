@@ -160,8 +160,9 @@ public class MainActivity extends AppCompatActivity   {
 
 
         Intent launch = new Intent(this, startScreen.class);
-        launch.putExtra("open", filepicker_path=="" );
+        launch.putExtra("path", true);
         startActivityForResult(launch, 101);
+        launch.removeExtra("path");
 
 
 
@@ -292,12 +293,22 @@ public class MainActivity extends AppCompatActivity   {
     @Override
     public boolean onOptionsItemSelected(MenuItem item ) {
 
-        Log.v("id", String.valueOf(item.getItemId()));
+        int id = item.getItemId();
+        int save_id = R.id.action_save;
 
-        switch (item.getItemId()){
+
+        Log.v("id", String.valueOf(id));
+        Log.v("save_id", String.valueOf(save_id));
+
+        if (id  ==save_id){
+            if (filepicker_path != null){
+                save_db();
+            }
+        }
+
+       /* switch (item.getItemId()){
             //save id
-            case 2131296801 :
-
+            case save_id:
                  if (filepicker_path != null){
                      save_db();
                  }
@@ -310,7 +321,7 @@ public class MainActivity extends AppCompatActivity   {
             case 2131296803 :
                 //delete_grp();
                 break;
-        }
+        }*/
 
 
         return super.onOptionsItemSelected(item);
@@ -333,6 +344,7 @@ public class MainActivity extends AppCompatActivity   {
 
 
                 String path = uri.getPath();
+                Log.v("path", filepicker_path);
                 path = uri.getLastPathSegment().substring(4);
 
                 filepicker_path = path;
@@ -449,6 +461,7 @@ public class MainActivity extends AppCompatActivity   {
 
             FragmentManager fragmentManager = getSupportFragmentManager();
 
+
             binding.appBarMain.toolbar.setTitle(db_name);
 
 
@@ -473,7 +486,7 @@ public class MainActivity extends AppCompatActivity   {
 
 
             fragmentManager.beginTransaction()
-                    .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+                    .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                     .commit();
         }
             else {
@@ -757,22 +770,23 @@ private String input_password(){
     {
 
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
-        List frags = getSupportFragmentManager().getFragments();
-        Log.v("frags", frags.toString());
-
         if (currentFragment instanceof list_Fragment) {
 
             if(current_group.getParent() != null){
                 current_group = current_group.getParent();
                 updateBar();
+                super.onBackPressed();
             }
+        }
+        if (currentFragment instanceof entry) {
+            super.onBackPressed();
         }
 
 
 
 
 
-        super.onBackPressed();
+        //super.onBackPressed();
 
           // optional depending on your needs
     }
@@ -798,16 +812,14 @@ private String input_password(){
                 //filepicker_path =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getPath();
 
 
-                //KdbxStreamFormat streamFormat = new KdbxStreamFormat(new KdbxHeader(4));
-                //OutputStream outputStream = new FileOutputStream(file_dir);
+                KdbxStreamFormat streamFormat = new KdbxStreamFormat(new KdbxHeader(4));
+                OutputStream outputStream = new FileOutputStream(file_dir);
 
                 KdbxCreds creds = new KdbxCreds(Password.getBytes());
-                file_dir.mkdir();
+                //file_dir.mkdir();
                 FileOutputStream writer = new FileOutputStream(new File(dir, database.getName().replace(" ", "_")) + ".kdbx");
                 Log.v("path file", file_dir.toString());
-                database.save(creds, writer);
-
-
+                database.save(streamFormat, creds, writer);
 
             }
             else {
@@ -829,6 +841,19 @@ private String input_password(){
     public void delete_entry(UUID uuid){
 
         database.deleteEntry(uuid);
+
+        FragmentManager fm = getSupportFragmentManager();
+        List frags = fm.getFragments();
+        Fragment list_frag = (Fragment) frags.get(frags.size()-2);
+        Log.v("tester", list_frag.toString());
+
+
+        if (list_frag instanceof list_Fragment) {
+            ((list_Fragment) list_frag).update_listview();
+
+            Log.v("ist hirtaa", "ja");
+
+        }
     }
 
     public void add_entry(Entry entry){

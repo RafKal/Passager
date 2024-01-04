@@ -164,7 +164,7 @@ public class list_Fragment extends ListFragment {
             }
 
             groupadapter.add("ADD Entry");
-            groupadapter.add("ADD Group ");
+            groupadapter.add("ADD Group");
 
             setListAdapter(groupadapter);
 
