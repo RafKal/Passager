@@ -24,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.checkerframework.checker.units.qual.A;
 import org.linguafranca.pwdb.Entry;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -115,6 +116,23 @@ public class entry extends Fragment {
             }
         });
 
+        Button copy_entry =  (Button) rootView.findViewById(R.id.entry_copy_entry);
+        copy_entry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle data = getArguments();
+                String uuid_string = data.getString("UUID");
+                String title = data.getString("title");
+                UUID uuid = UUID.fromString(uuid_string);
+                MainActivity Activity = ((MainActivity) getActivity());
+                Activity.copy_entry(uuid, title);
+
+                Toast.makeText(getContext(), "Copied Entry", Toast.LENGTH_SHORT).show();
+
+
+            }
+        });
+
 
 
 
@@ -170,12 +188,30 @@ public class entry extends Fragment {
 
         FloatingActionButton follow_url =  rootView.findViewById(R.id.follow_URL);
         follow_url.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
 
-                Uri intentUri = Uri.parse(url);
-                Intent intent = new Intent(Intent.ACTION_VIEW, intentUri);
-                startActivity(intent);
+                String url =  url_text.getText().toString();
+
+
+
+                if(url.equals("")){
+                    Toast.makeText(getContext(), "No Link to follow!", Toast.LENGTH_SHORT).show();
+                }
+                else if( ! url.contains("https://")){
+                    String url_tosend  = "https://" + url;
+                    Uri intentUri = Uri.parse(url_tosend);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, intentUri);
+                    startActivity(intent);
+                }
+                else {
+                    Uri intentUri = Uri.parse(url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, intentUri);
+                    startActivity(intent);
+                }
+
+
             }
         });
 

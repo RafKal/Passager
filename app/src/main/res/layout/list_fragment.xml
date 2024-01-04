@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <ListView
         android:id="@android:id/list"
         style="@style/Widget.AppCompat.ListView"
-        android:layout_width="408dp"
+        android:layout_width="393dp"
 
-        android:layout_height="728dp"
-        android:layout_marginEnd="4dp"
+        android:layout_height="713dp"
         android:clickable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

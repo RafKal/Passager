@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 
-public class get_password extends AppCompatActivity {
+import java.io.Serializable;
+
+public class get_password extends AppCompatActivity  {
 
     String Password;
 

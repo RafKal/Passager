@@ -76,6 +76,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.net.URI;
 import java.security.Permission;
 import java.util.AbstractMap;
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity   {
 
     Group current_group;
     Group grp_toSend;
+    Entry copied_entry;
 
     String filepicker_path = "";
     int startScreen_result = 2; //startScreen can have 2 options (0 & 1). 2 handled as error
@@ -232,7 +234,6 @@ public class MainActivity extends AppCompatActivity   {
                     binding.appBarMain.toolbar.setTitle(name);
 
 
-                    List grp_entries = database.getRootGroup().findGroups(name);
 
 
                     if (position == 0){
@@ -242,8 +243,7 @@ public class MainActivity extends AppCompatActivity   {
                         grp_toSend = database.getRootGroup().getGroups().get(position-1);
                     }
                     current_group = grp_toSend;
-
-                    grp_entries = grp_toSend.getEntries();
+                    List grp_entries = grp_toSend.getEntries();
 
 
                     list_Fragment new_fragment = new list_Fragment();
@@ -257,17 +257,39 @@ public class MainActivity extends AppCompatActivity   {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("groups", groups);
                     bundle.putSerializable("entries", entries);
+                    new_fragment.setArguments(bundle);
+
+                    fragmentManager.beginTransaction()
+                            .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+                            .commit();
+
+                    bundle.clear();
+
+                   /* -------------------------
+                            current_group = database.getRootGroup();
 
 
+
+                    Group grp_toSend = database.getRootGroup();;
+                    List grp_entries = database.getRootGroup().getEntries();
+                    list_Fragment new_fragment = new list_Fragment();
+
+                    ArrayList<Group> groups_root = new ArrayList<Group>(grp_toSend.getGroups().size());
+                    groups.addAll(grp_toSend.getGroups());
+
+                    ArrayList<Entry> entries_root = new ArrayList<Entry>(grp_entries.size());
+                    entries.addAll(grp_entries);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("groups", groups_root);
+                    bundle.putSerializable("entries", entries_root);
                     new_fragment.setArguments(bundle);
 
 
-
-
                     fragmentManager.beginTransaction()
-                            .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+                            .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                             .commit();
-
+                    ------------- --   -- -
+*/
                     drawer.closeDrawers();
 
 
@@ -295,33 +317,33 @@ public class MainActivity extends AppCompatActivity   {
 
         int id = item.getItemId();
         int save_id = R.id.action_save;
+        int paste_entry_id = R.id.action_paste_entry;
 
 
-        Log.v("id", String.valueOf(id));
-        Log.v("save_id", String.valueOf(save_id));
 
         if (id  ==save_id){
             if (filepicker_path != null){
                 save_db();
             }
         }
+        if (id  == paste_entry_id){
+            if (current_group != null && copied_entry!= null){
+                current_group.addEntry(copied_entry);
+                FragmentManager fm = getSupportFragmentManager();
+                List frags = fm.getFragments();
+                Log.v("paste frags", frags.toString());
+                Fragment list_frag = (Fragment) frags.get(frags.size()-1);
 
-       /* switch (item.getItemId()){
-            //save id
-            case save_id:
-                 if (filepicker_path != null){
-                     save_db();
-                 }
 
 
-
-                 break;
-
-                 //delete group id
-            case 2131296803 :
-                //delete_grp();
-                break;
-        }*/
+                if (list_frag instanceof list_Fragment) {
+                    ((list_Fragment) list_frag).update_listview();
+                }
+            }
+            else{
+                Toast.makeText(this, "No Entry Copied!", Toast.LENGTH_SHORT).show();
+            }
+        }
 
 
         return super.onOptionsItemSelected(item);
@@ -488,6 +510,8 @@ public class MainActivity extends AppCompatActivity   {
             fragmentManager.beginTransaction()
                     .replace(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                     .commit();
+
+                bundle.clear();
         }
             else {
                 Intent launch = new Intent(MainActivity.this, startScreen.class);
@@ -606,6 +630,8 @@ private String input_password(){
                                     fragmentManager.beginTransaction()
                                             .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                                             .commit();
+
+                                    bundle.clear();
 
 
 
@@ -774,13 +800,23 @@ private String input_password(){
 
             if(current_group.getParent() != null){
                 current_group = current_group.getParent();
+
+
+
+
                 updateBar();
                 super.onBackPressed();
             }
+
         }
-        if (currentFragment instanceof entry) {
+        //if (currentFragment instanceof entry || currentFragment instanceof add_entry) {
+        //    super.onBackPressed();
+       // }
+        else {
             super.onBackPressed();
         }
+
+
 
 
 
@@ -845,6 +881,42 @@ private String input_password(){
         FragmentManager fm = getSupportFragmentManager();
         List frags = fm.getFragments();
         Fragment list_frag = (Fragment) frags.get(frags.size()-2);
+        Log.v("delete frags", frags.toString());
+        Log.v("tester", list_frag.toString());
+
+
+        if (list_frag instanceof list_Fragment) {
+            ((list_Fragment) list_frag).update_listview();
+
+            Log.v("ist hirtaa", "ja");
+
+        }
+        group_names.clear();
+
+
+        String root = database.getRootGroup().getName();
+        List entries = database.getRootGroup().getEntries();
+        //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
+        List groups = database.getRootGroup().getGroups();
+        group_names.add(root + " (ROOT)");
+        for (int i  = 0; i < groups.size(); i++){
+            String temp = groups.get(i).toString();
+            temp = temp.substring((root.length()+2), temp.length()-1);
+            group_names.add(temp);
+        }
+        ArrayAdapter groupadapter;
+        groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+        ListView navmenu = findViewById(R.id.list_slidermenu);
+        navmenu.setAdapter(groupadapter);
+
+    }
+
+    public void add_entry(Entry entry){
+        current_group.addEntry(entry);
+        FragmentManager fm = getSupportFragmentManager();
+        List frags = fm.getFragments();
+        Fragment list_frag = (Fragment) frags.get(frags.size()-2);
+
         Log.v("tester", list_frag.toString());
 
 
@@ -856,20 +928,17 @@ private String input_password(){
         }
     }
 
-    public void add_entry(Entry entry){
-        current_group.addEntry(entry);
-        FragmentManager fm = getSupportFragmentManager();
-        List frags = fm.getFragments();
-        Fragment list_frag = (Fragment) frags.get(frags.size()-2);
-        Log.v("tester", list_frag.toString());
+    public void copy_entry(UUID uuid, String title) {
+        copied_entry = database.findEntry(uuid);
 
-
-        if (list_frag instanceof list_Fragment) {
-            ((list_Fragment) list_frag).update_listview();
-
-            Log.v("ist hirtaa", "ja");
-
+        if (copied_entry == null){
+            Group rec_bin = database.getRecycleBin();
+            copied_entry = (Entry)  rec_bin.findEntries(title, true).get(0);
+            Log.v("test entry", copied_entry.toString());
         }
+
+
+
     }
 
     public void edit_entry(Entry entry, UUID uuid){

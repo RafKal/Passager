@@ -20,6 +20,7 @@ import com.example.passager.ui.list_Fragment;
 import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
 import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -27,7 +28,7 @@ import java.util.UUID;
  * Use the {@link add_entry#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class add_entry extends Fragment {
+public class add_entry extends Fragment  {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -77,12 +78,7 @@ public class add_entry extends Fragment {
                              Bundle savedInstanceState) {
 
 
-       /* bundle.putString("title", entry_tosend.getTitle());
-        bundle.putString("username", entry_tosend.getUsername());
-        bundle.putString("notes", entry_tosend.getNotes());
-        bundle.putString("password", entry_tosend.getPassword());
-        bundle.putString("URL", entry_tosend.getUrl());
-        bundle.putString("UUID", String.valueOf(entry_tosend.getUuid()));*/
+
 
 
         View rootView = inflater.inflate(R.layout.fragment_add_entry, container, false);
@@ -103,9 +99,6 @@ public class add_entry extends Fragment {
             password_text.setText(data.getString("password"));
             notes_text.setText(data.getString("notes"));
             url_text.setText(data.getString("URL"));
-
-
-
             is_edit = true;
         }
 
@@ -158,22 +151,6 @@ public class add_entry extends Fragment {
                     Activity.add_entry(new_entry);
                 }
 
-
-                //Activity.updateUI();
-
-                //FragmentManager f = getChildFragmentManager();
-                //list_Fragment frag = (list_Fragment) getParentFragment();
-
-
-                /*list_Fragment parentFrag = ((list_Fragment)add_entry.this.getParentFragment());
-                parentFrag.update_listview();*/
-
-                // ((list_Fragment) getParentFragment()).update_listview();
-
-
-
-
-
                 fm.popBackStack();
 
             }
@@ -184,12 +161,11 @@ public class add_entry extends Fragment {
         gen_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //password_generator pg = new password_generator();
-                //String Password = pg.generatePassword(8);
-                //password_text.setText(Password);
 
-                Intent gen_newPW = new Intent(getContext(), gen_password.class);
-                startActivityForResult(gen_newPW, 100);
+                //fm.saveBackStack("b_save");
+
+               Intent gen_newPW = new Intent(getContext(), gen_password.class);
+               startActivityForResult(gen_newPW, 100);
 
 
             }
@@ -216,6 +192,8 @@ public class add_entry extends Fragment {
                 TextView password_text = rootView.findViewById(R.id.entry_Password);
                 password_text.setText(password);
 
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                //fm.restoreBackStack("b_save");
 
             }
         }

@@ -2,6 +2,9 @@ package com.example.passager;
 
 import android.util.Log;
 
+import androidx.navigation.NavType;
+
+import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;

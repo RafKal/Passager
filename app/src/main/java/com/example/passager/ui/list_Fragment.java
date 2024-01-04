@@ -33,6 +33,7 @@ import org.linguafranca.pwdb.Group;
 import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
 import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -295,6 +296,7 @@ public class list_Fragment extends ListFragment {
                             fragmentManager.beginTransaction()
                                     .add(R.id.nav_host_fragment_content_main, entry_fragment).addToBackStack(null)
                                     .commit();
+                            //bundle.clear();
                         }
                     else if (grp_size > 0) {
 
@@ -324,15 +326,14 @@ public class list_Fragment extends ListFragment {
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("groups", new_groups);
                             bundle.putSerializable("entries", new_entries);
-                            bundle.putInt("int", 1);
-
 
                             next_fragment.setArguments(bundle);
 
-
                             fragmentManager.beginTransaction()
-                                    .replace(R.id.nav_host_fragment_content_main, next_fragment).addToBackStack(null)
+                                    .add(R.id.nav_host_fragment_content_main, next_fragment).addToBackStack(null)
                                     .commit();
+
+                            bundle.clear();
                         }
 
 
@@ -390,9 +391,7 @@ public class list_Fragment extends ListFragment {
         List groups = group.getGroups();
         List entries = group.getEntries();
 
-
-
-
+        groupadapter.clear();
 
         if (groups.size() > 0) {
 
@@ -456,14 +455,6 @@ public class list_Fragment extends ListFragment {
         setListAdapter(groupadapter);
 
     }
-
-    public void deleteEntry(Entry entry){
-        UUID uuid = entry.getUuid();
-        Activity.delete_entry(uuid);
-    }
-
-
-
 
 }
 

@@ -62,21 +62,21 @@
         android:id="@+id/entry_saveEntry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:insetTop="50dp"
+        android:insetTop="20dp"
         android:text="Save" />
 
     <Button
         android:id="@+id/entry_gen_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:insetTop="20dp"
+        android:insetTop="10dp"
         android:text="generate password" />
 
     <Button
         android:id="@+id/entry_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:insetTop="20dp"
+        android:insetTop="10dp"
         android:text="Back" />
 
 

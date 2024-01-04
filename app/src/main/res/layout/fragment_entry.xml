@@ -53,7 +53,7 @@
 
         <EditText
             android:id="@+id/entry_username"
-            android:layout_width="354dp"
+            android:layout_width="358dp"
             android:layout_height="match_parent"
             android:ems="10"
             android:gravity="center_horizontal|center_vertical"
@@ -141,17 +141,24 @@
         android:text="edit entry" />
 
     <Button
+        android:id="@+id/entry_copy_entry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:insetTop="10dp"
+        android:text="copy entry" />
+
+    <Button
         android:id="@+id/entry_delete_entry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:insetTop="20dp"
+        android:insetTop="10dp"
         android:text="delete entry" />
 
     <Button
         android:id="@+id/entry_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:insetTop="20dp"
+        android:insetTop="10dp"
         android:text="Back" />
 
 

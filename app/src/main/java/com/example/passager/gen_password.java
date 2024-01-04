@@ -11,7 +11,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class gen_password extends AppCompatActivity {
+import java.io.Serializable;
+
+public class gen_password extends AppCompatActivity  {
 
     String password;
 
@@ -30,13 +32,11 @@ public class gen_password extends AppCompatActivity {
         TextView password_txt = findViewById(R.id.pw_result);
 
 
-        lowercase.isChecked();
 
 
 
 
-
-        Button generate =  (Button) findViewById(R.id.pw_generate);
+       Button generate =  (Button) findViewById(R.id.pw_generate);
         generate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,18 +60,6 @@ public class gen_password extends AppCompatActivity {
                         password_txt.setText(password);
                     }
                 }
-
-
-
-
-
-
-
-
-
-
-
-
             }
         });
 
