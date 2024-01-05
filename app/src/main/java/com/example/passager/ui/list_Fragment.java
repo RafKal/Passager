@@ -119,7 +119,7 @@ public class list_Fragment extends ListFragment {
                         grp_name = "|GROUP| " + grp_name;
                         group_names.add(grp_name);
                     }
-                    groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, group_names);
+                    groupadapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
 
 
 
@@ -151,7 +151,7 @@ public class list_Fragment extends ListFragment {
                         entries_names.add(entry_name);
                     }
 
-                    groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, entries_names);
+                    groupadapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, entries_names);
 
                 }
             }
@@ -160,7 +160,7 @@ public class list_Fragment extends ListFragment {
 
 
             if (groupadapter == null){
-                groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
+                groupadapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1);
             }
 
             groupadapter.add("ADD Entry");
@@ -335,6 +335,8 @@ public class list_Fragment extends ListFragment {
         List groups = group.getGroups();
         List entries = group.getEntries();
 
+
+
         groupadapter.clear();
 
         if (groups.size() > 0) {
@@ -348,7 +350,8 @@ public class list_Fragment extends ListFragment {
                 grp_name = "|GROUP| " + grp_name;
                 group_names.add(grp_name);
             }
-            groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, group_names);
+
+            groupadapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
 
 
 
@@ -379,7 +382,7 @@ public class list_Fragment extends ListFragment {
                     entries_names.add(entry_name);
                 }
 
-                groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, entries_names);
+                groupadapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, entries_names);
 
             }
         }
@@ -388,11 +391,12 @@ public class list_Fragment extends ListFragment {
 
 
         if (groupadapter == null){
-            groupadapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
+            groupadapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1);
         }
 
         groupadapter.add("ADD Entry");
         groupadapter.add("ADD Group ");
+
         setListAdapter(groupadapter);
 
     }

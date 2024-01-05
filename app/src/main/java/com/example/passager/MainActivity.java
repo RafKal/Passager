@@ -2,6 +2,7 @@ package com.example.passager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.graphics.PathUtils;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -85,6 +88,7 @@ public class MainActivity extends AppCompatActivity   {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+       // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
@@ -225,10 +229,32 @@ public class MainActivity extends AppCompatActivity   {
             if(resultCode == Activity.RESULT_OK & data!= null){
                 Uri uri = data.getData();
 
+                FileUtils pu = new FileUtils(getApplicationContext());
+                String path = pu.getPath(uri);
+               // String path = PathUtils.getPath(getApplicationContext(), uri);
+                Log.v("path", path);
 
-                String path = uri.getPath();
-                Log.v("path", filepicker_path);
-                path = uri.getLastPathSegment().substring(4);
+
+               /* path = uri.getPath();
+                File file = new File(path);
+
+                //String path = uri.getLastPathSegment();
+                //Log.v("path", filepicker_path);
+                Log.v("path", file.getAbsolutePath());
+                Log.v("path", uri.getPath());
+                //path = uri.getLastPathSegment().substring(4);
+
+                path = getApplicationContext().getFilesDir().getAbsolutePath();
+                Log.v("path", path);
+
+                //File file = new File(path + "/abikor.txt");
+
+                File thi = new File(getApplicationContext().getExternalFilesDir(null), "test.xls");
+
+                Log.v("path", thi.getAbsolutePath());*/
+
+
+
 
                 filepicker_path = path;
                 Log.v("path", filepicker_path);
@@ -300,7 +326,7 @@ public class MainActivity extends AppCompatActivity   {
                 group_names.add(temp);
             }
             ArrayAdapter groupadapter;
-            groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+            groupadapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, group_names);
             ListView navmenu = findViewById(R.id.list_slidermenu);
             navmenu.setAdapter(groupadapter);
 
@@ -379,7 +405,7 @@ private String input_password(){
                                         group_names.add(temp);
                                     }
                                     ArrayAdapter groupadapter;
-                                    groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+                                    groupadapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, group_names);
                                     navmenu.setAdapter(groupadapter);
 
                                     binding.appBarMain.toolbar.setTitle(db_name);
@@ -407,7 +433,8 @@ private String input_password(){
                             }
                         } catch (FileNotFoundException e) {
                             //throw new RuntimeException(e);
-                            Toast.makeText(MainActivity.this, "File not found", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, filepicker_path, Toast.LENGTH_LONG).show();
+                            //Toast.makeText(MainActivity.this, "File not found", Toast.LENGTH_LONG).show();
 
                         }
                     }
@@ -438,7 +465,7 @@ private String input_password(){
                                     group_names.add(temp);
                                 }
                                 ArrayAdapter groupadapter;
-                                groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+                                groupadapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, group_names);
                                 navmenu.setAdapter(groupadapter);
                             }  catch (Exception e) {
                                 //throw new RuntimeException(e);
@@ -488,7 +515,7 @@ private String input_password(){
                 group_names.add(temp);
             }
             ArrayAdapter groupadapter;
-            groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+            groupadapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, group_names);
             ListView navmenu = findViewById(R.id.list_slidermenu);
             navmenu.setAdapter(groupadapter);
 
@@ -594,7 +621,7 @@ private String input_password(){
             group_names.add(temp);
         }
         ArrayAdapter groupadapter;
-        groupadapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
+        groupadapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, group_names);
         ListView navmenu = findViewById(R.id.list_slidermenu);
         navmenu.setAdapter(groupadapter);
 
