@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -20,8 +21,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.biometric.BiometricManager;
+import androidx.biometric.BiometricPrompt;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.PathUtils;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -61,6 +67,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.Executor;
 
 
 public class MainActivity extends AppCompatActivity   {
@@ -81,6 +88,9 @@ public class MainActivity extends AppCompatActivity   {
     String Password;
 
 
+    androidx.biometric.BiometricPrompt biometricPrompt;
+    BiometricPrompt.PromptInfo promptInfo;
+    ConstraintLayout mMainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +101,72 @@ public class MainActivity extends AppCompatActivity   {
        // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.appBarMain.toolbar);
+        //-----------------------------------------------------------------------------------
 
+        BiometricManager biometricManager = BiometricManager.from(this);
+        switch (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL)){
+            case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
+                Toast.makeText(this, "No Fingerprint reader!", Toast.LENGTH_SHORT).show();
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
+                Toast.makeText(this, "No Fingerprint not working!", Toast.LENGTH_SHORT).show();
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
+                Toast.makeText(this, "No Fingerprint on Device!", Toast.LENGTH_SHORT).show();
+                break;
+        }
+
+        Executor executor = ContextCompat.getMainExecutor(this);
+
+       /* Handler handler = new Handler();
+
+        Executor executor = new Executor() {
+            @Override
+            public void execute(Runnable command) {
+                handler.post(command);
+            }
+        };*/
+
+
+
+        biometricPrompt = new BiometricPrompt(MainActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                Toast.makeText(getApplicationContext(), "Login error!", Toast.LENGTH_SHORT).show();
+                super.onAuthenticationError(errorCode, errString);
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                Toast.makeText(getApplicationContext(), "Login Success!", Toast.LENGTH_SHORT).show();
+                super.onAuthenticationSucceeded(result);
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                Toast.makeText(getApplicationContext(), "Login Failed!", Toast.LENGTH_SHORT).show();
+                super.onAuthenticationFailed();
+            }
+        });
+
+
+        promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("Passager").
+                 setDescription("Use fingerprint").setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL).
+                build();
+
+      /*  promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("Passager").
+                setDescription("Use fingerprint").setDeviceCredentialAllowed(true).
+                build();*/
+
+
+        biometricPrompt.authenticate(promptInfo);
+
+        //----------------------------------------------------------------------------------
+
+
+
+
+        setSupportActionBar(binding.appBarMain.toolbar);
         FragmentManager fragmentManager = getSupportFragmentManager();
 
       /*  ActivityCompat.requestPermissions(this,

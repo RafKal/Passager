@@ -75,8 +75,10 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.fragment:fragment-testing:1.4.1")
 
+
     androidTestImplementation("androidx.test:core:1.4.0")
     implementation ("javax.xml.stream:stax-api:1.0")
+    implementation ("androidx.biometric:biometric:1.1.0")
 
 
 
