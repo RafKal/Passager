@@ -17,46 +17,56 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center|center_vertical"
+        android:backgroundTint="#000000"
         android:ems="10"
         android:inputType="text"
         android:text="Title"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="@android:color/black" />
 
     <EditText
         android:id="@+id/entry_username"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:backgroundTint="#000000"
         android:ems="10"
         android:inputType="text"
         android:text="Username"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="@android:color/black" />
 
     <EditText
         android:id="@+id/entry_Password"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:backgroundTint="#000000"
         android:ems="10"
         android:gravity="center"
         android:hint="Password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:textColor="@android:color/black" />
 
     <EditText
         android:id="@+id/entry_URL"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:backgroundTint="#000000"
         android:ems="10"
         android:gravity="center"
         android:inputType="text"
-        android:text="URL" />
+        android:text="URL"
+        android:textColor="@android:color/black" />
 
     <EditText
         android:id="@+id/entry_Notes"
         android:layout_width="match_parent"
         android:layout_height="161dp"
+        android:backgroundTint="#000000"
         android:ems="10"
         android:gravity="center|top"
         android:inputType="text"
-        android:text="Notes" />
+        android:text="Notes"
+        android:textColor="@android:color/black" />
 
     <Button
         android:id="@+id/entry_saveEntry"

@@ -18,16 +18,18 @@
 
         <EditText
             android:id="@+id/entry_Title"
-            android:layout_width="356dp"
+            android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_gravity="left"
+            android:backgroundTint="#000000"
             android:clickable="false"
             android:editable="false"
             android:ems="10"
             android:gravity="center_horizontal|center_vertical"
             android:inputType="text"
             android:text="Title"
-            android:textAlignment="gravity" />
+            android:textAlignment="gravity"
+            android:textColor="@color/black" />
     </FrameLayout>
 
     <FrameLayout
@@ -46,20 +48,23 @@
             android:contextClickable="true"
             android:src="?attr/actionModeCopyDrawable"
             android:tooltipText="Copy"
-            app:backgroundTint="#00FFFFFF"
+            app:backgroundTint="#FFFFFF"
             app:borderWidth="0dp"
-            app:elevation="0dp"
+            app:elevation="1dp"
             app:fabSize="normal" />
 
         <EditText
             android:id="@+id/entry_username"
-            android:layout_width="358dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:backgroundTint="#000000"
+            android:elevation="0dp"
             android:ems="10"
             android:gravity="center_horizontal|center_vertical"
             android:inputType="text"
             android:text="Username"
-            android:textAlignment="gravity" />
+            android:textAlignment="gravity"
+            android:textColor="@android:color/black" />
     </FrameLayout>
 
     <FrameLayout
@@ -76,21 +81,27 @@
             android:clickable="true"
             android:contentDescription="Copy Password"
             android:contextClickable="true"
+            android:fadingEdge="horizontal|vertical"
+            android:requiresFadingEdge="vertical"
             android:src="?attr/actionModeCopyDrawable"
             android:tooltipText="Copy"
-            app:backgroundTint="#00FFFFFF"
-            app:borderWidth="0dp"
-            app:elevation="0dp"
+            app:backgroundTint="#FFFFFF"
+            app:borderWidth="2dp"
+            app:elevation="1dp"
             app:fabSize="normal" />
 
         <EditText
             android:id="@+id/entry_Password"
-            android:layout_width="357dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:backgroundTint="#000000"
+            android:elevation="0dp"
             android:ems="10"
             android:gravity="center"
             android:hint="Password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black" />
     </FrameLayout>
 
     <FrameLayout
@@ -109,29 +120,34 @@
             android:contextClickable="true"
             android:src="@android:drawable/ic_menu_send"
             android:tooltipText="Copy"
-            app:backgroundTint="#00FFFFFF"
+            app:backgroundTint="#FFFFFF"
             app:borderWidth="0dp"
-            app:elevation="0dp"
+            app:elevation="1dp"
             app:fabSize="normal" />
 
         <EditText
             android:id="@+id/entry_URL"
-            android:layout_width="357dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:backgroundTint="#000000"
+            android:elevation="0dp"
             android:ems="10"
             android:gravity="center"
             android:inputType="text"
-            android:text="URL" />
+            android:text="URL"
+            android:textColor="@android:color/black" />
     </FrameLayout>
 
     <EditText
         android:id="@+id/entry_Notes"
         android:layout_width="match_parent"
         android:layout_height="161dp"
+        android:backgroundTint="#000000"
         android:ems="10"
         android:gravity="center|top"
         android:inputType="text"
-        android:text="Notes" />
+        android:text="Notes"
+        android:textColor="@android:color/black" />
 
     <Button
         android:id="@+id/entry_edit_entry"

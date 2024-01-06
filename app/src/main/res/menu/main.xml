@@ -10,16 +10,16 @@
         android:id="@+id/action_save"
         android:orderInCategory="100"
         android:title="Save" />
-    <item
+    <!--<item
         android:id="@+id/action_save_as"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orderInCategory="100"
-        android:title="Save as.." />
-    <item
+        android:title="Save as.." />-->
+   <!-- <item
         android:id="@+id/action_delete_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orderInCategory="100"
-        android:title="Delete Group" />
+        android:title="Delete Group" />-->
 </menu>

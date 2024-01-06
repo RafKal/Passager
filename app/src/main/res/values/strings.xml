@@ -15,9 +15,6 @@
 
     <string-array name="default_groups">
         <item>Home</item>
-        <item>Games</item>
-        <item>Services</item>
-        <item>Add Group</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

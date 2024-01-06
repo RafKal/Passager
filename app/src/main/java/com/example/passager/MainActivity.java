@@ -1,5 +1,8 @@
 package com.example.passager;
 
+import static android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG;
+import static android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -97,14 +101,15 @@ public class MainActivity extends AppCompatActivity   {
 
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-       // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        setContentView(binding.getRoot());
+
+
+
+
 
         //-----------------------------------------------------------------------------------
 
-        BiometricManager biometricManager = BiometricManager.from(this);
-        switch (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL)){
+        BiometricManager biometricManager = BiometricManager.from(getApplicationContext());
+        switch (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL | BiometricManager.Authenticators.BIOMETRIC_WEAK)){
             case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
                 Toast.makeText(this, "No Fingerprint reader!", Toast.LENGTH_SHORT).show();
                 break;
@@ -113,22 +118,46 @@ public class MainActivity extends AppCompatActivity   {
                 break;
             case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
                 Toast.makeText(this, "No Fingerprint on Device!", Toast.LENGTH_SHORT).show();
+
+                final Intent enrollIntent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
+                enrollIntent.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                        BIOMETRIC_STRONG | DEVICE_CREDENTIAL);
+                startActivityForResult(enrollIntent, 105);
+
+                Executor executor = ContextCompat.getMainExecutor(this);
+                biometricPrompt = new BiometricPrompt(MainActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                        Toast.makeText(getApplicationContext(), "Login error!", Toast.LENGTH_SHORT).show();
+                        super.onAuthenticationError(errorCode, errString);
+                    }
+
+                    @Override
+                    public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                        Toast.makeText(getApplicationContext(), "Login Success!", Toast.LENGTH_SHORT).show();
+                        super.onAuthenticationSucceeded(result);
+                    }
+
+                    @Override
+                    public void onAuthenticationFailed() {
+                        Toast.makeText(getApplicationContext(), "Login Failed!", Toast.LENGTH_SHORT).show();
+                        super.onAuthenticationFailed();
+                    }
+                });
+
+
+                promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("Passager").
+                        setDescription("Unlock").setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL).
+                        build();
+
+
+                biometricPrompt.authenticate(promptInfo);
+
                 break;
+
         }
 
-        Executor executor = ContextCompat.getMainExecutor(this);
-
-       /* Handler handler = new Handler();
-
-        Executor executor = new Executor() {
-            @Override
-            public void execute(Runnable command) {
-                handler.post(command);
-            }
-        };*/
-
-
-
+       Executor executor = ContextCompat.getMainExecutor(this);
         biometricPrompt = new BiometricPrompt(MainActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
             @Override
             public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
@@ -139,6 +168,88 @@ public class MainActivity extends AppCompatActivity   {
             @Override
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 Toast.makeText(getApplicationContext(), "Login Success!", Toast.LENGTH_SHORT).show();
+
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+
+      /*  ActivityCompat.requestPermissions(this,
+                new String[]{permission.WRITE_EXTERNAL_STORAGE, permission.READ_EXTERNAL_STORAGE, permission.MANAGE_EXTERNAL_STORAGE},
+                PackageManager.PERMISSION_GRANTED);*/
+
+                binding = ActivityMainBinding.inflate(getLayoutInflater());
+                // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                setContentView(binding.getRoot());
+
+                //build navigation elements
+                ListView navmenu = findViewById(R.id.list_slidermenu);
+                ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(MainActivity.this, R.array.default_groups, android.R.layout.simple_list_item_1);
+                navmenu.setAdapter(arrayAdapter);
+
+
+                setSupportActionBar(binding.appBarMain.toolbar);
+                DrawerLayout drawer = binding.drawerLayout;
+                NavigationView navigationView = binding.navView;
+                mAppBarConfiguration = new AppBarConfiguration.Builder(
+                        R.id.nav_home
+                )
+                        .setOpenableLayout(drawer)
+                        .build();
+                NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
+                NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, mAppBarConfiguration);
+                NavigationUI.setupWithNavController(navigationView, navController);
+
+                if (!Environment.isExternalStorageManager()) {
+                    Intent getpermission = new Intent();
+                    getpermission.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                    startActivity(getpermission);
+                }
+
+
+                // Initial start screen
+                Intent launch = new Intent(getApplicationContext(), startScreen.class);
+                launch.putExtra("path", true);
+                startActivityForResult(launch, 101);
+                launch.removeExtra("path");
+
+
+                binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
+                                                              @Override
+                                                              public void onClick(View view) {
+                                                                  //fragmentManager.clearBackStack(null);
+                                                                  startActivityForResult(launch, 101);
+                                                              }
+                                                          }
+                );
+
+                navmenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
+                                            long id) {
+
+                        if (database != null) {
+                            String name = group_names.get(position);
+                            binding.appBarMain.toolbar.setTitle(name);
+
+                            if (position == 0) {
+                                grp_toSend = database.getRootGroup();
+                            } else {
+                                grp_toSend = database.getRootGroup().getGroups().get(position - 1);
+                            }
+                            current_group = grp_toSend;
+
+                            list_Fragment new_fragment = new list_Fragment();
+                            new_fragment.setArguments(new Bundle());
+
+                            fragmentManager.beginTransaction()
+                                    .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
+                                    .commit();
+
+                            drawer.closeDrawers();
+
+                        }
+                    }
+                });
+
+
                 super.onAuthenticationSucceeded(result);
             }
 
@@ -151,12 +262,8 @@ public class MainActivity extends AppCompatActivity   {
 
 
         promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("Passager").
-                 setDescription("Use fingerprint").setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL).
+                 setDescription("Login using Credentials").setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL).
                 build();
-
-      /*  promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("Passager").
-                setDescription("Use fingerprint").setDeviceCredentialAllowed(true).
-                build();*/
 
 
         biometricPrompt.authenticate(promptInfo);
@@ -166,87 +273,9 @@ public class MainActivity extends AppCompatActivity   {
 
 
 
-        setSupportActionBar(binding.appBarMain.toolbar);
-        FragmentManager fragmentManager = getSupportFragmentManager();
 
-      /*  ActivityCompat.requestPermissions(this,
-                new String[]{permission.WRITE_EXTERNAL_STORAGE, permission.READ_EXTERNAL_STORAGE, permission.MANAGE_EXTERNAL_STORAGE},
-                PackageManager.PERMISSION_GRANTED);*/
 
-        if (!Environment.isExternalStorageManager()){
-            Intent getpermission = new Intent();
-            getpermission.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-            startActivity(getpermission);
         }
-
-
-        // Initial start screen
-        Intent launch = new Intent(this, startScreen.class);
-        launch.putExtra("path", true);
-        startActivityForResult(launch, 101);
-        launch.removeExtra("path");
-
-
-
-        //build navigation elements
-        ListView navmenu = findViewById(R.id.list_slidermenu);
-        ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(this, R.array.default_groups, android.R.layout.simple_list_item_1);
-        navmenu.setAdapter(arrayAdapter);
-
-        DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navView;
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home
-        )
-                .setOpenableLayout(drawer)
-                .build();
-          NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-          NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-          NavigationUI.setupWithNavController(navigationView, navController);
-
-
-
-
-
-        binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View view) {
-                  //fragmentManager.clearBackStack(null);
-                  startActivityForResult(launch, 101);
-              }
-          }
-        );
-
-        navmenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
-                                    long id) {
-
-                if(database != null){
-                    String name = group_names.get(position);
-                    binding.appBarMain.toolbar.setTitle(name);
-
-                    if (position == 0){
-                        grp_toSend = database.getRootGroup();
-                    }
-                    else {
-                        grp_toSend = database.getRootGroup().getGroups().get(position-1);
-                    }
-                    current_group = grp_toSend;
-
-                    list_Fragment new_fragment = new list_Fragment();
-                    new_fragment.setArguments(new Bundle());
-
-                    fragmentManager.beginTransaction()
-                            .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
-                            .commit();
-
-                    drawer.closeDrawers();
-
-                }
-            }
-        });
-
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -559,7 +588,10 @@ private String input_password(){
                 }
             })
             .show();
+
     return Password;
+
+
 }
 
     public void print(){
@@ -624,9 +656,6 @@ private String input_password(){
             }
 
         }
-        else {
-            super.onBackPressed();
-        }
     }
 
     public void updateBar(){
@@ -634,12 +663,13 @@ private String input_password(){
     }
     public void save_db(){
         try {
-            if (filepicker_path == ""){
+            if (filepicker_path.equals("")){
                 File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
                 File file_dir = new File(dir + "/" + database.getName().replace(" ", "_") + ".kdbx");
                 //filepicker_path =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getPath();
 
 
+                Toast.makeText(this, "Saved in 'Documents' Folder", Toast.LENGTH_SHORT).show();
                 KdbxStreamFormat streamFormat = new KdbxStreamFormat(new KdbxHeader(4));
                 OutputStream outputStream = new FileOutputStream(file_dir);
 
