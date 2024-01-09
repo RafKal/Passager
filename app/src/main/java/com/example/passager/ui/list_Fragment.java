@@ -3,7 +3,6 @@ package com.example.passager.ui;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,10 +32,10 @@ import org.linguafranca.pwdb.Group;
 import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
 import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
 
-import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
 
 /**
  * A fragment representing a list of Items.

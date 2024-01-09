@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
+import android.text.InputType;
 import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
@@ -477,7 +478,9 @@ public class MainActivity extends AppCompatActivity   {
 //https://stackoverflow.com/questions/10903754/input-text-dialog-android
 private String input_password(){
     final EditText txtUrl = new EditText(this);
+
     txtUrl.setHint("Password?");
+    txtUrl.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
     new AlertDialog.Builder(this)
             .setTitle("Password for chosen Database?")
