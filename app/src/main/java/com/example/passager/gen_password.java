@@ -4,14 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.Serializable;
 
 public class gen_password extends AppCompatActivity  {
 
@@ -36,7 +34,7 @@ public class gen_password extends AppCompatActivity  {
 
 
 
-       Button generate =  (Button) findViewById(R.id.pw_generate);
+       Button generate = findViewById(R.id.pw_generate);
         generate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,7 +62,7 @@ public class gen_password extends AppCompatActivity  {
         });
 
 
-        Button keep =  (Button) findViewById(R.id.pw_keep);
+        Button keep = findViewById(R.id.pw_keep);
         keep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -1,37 +1,26 @@
 package com.example.passager;
 
 import android.util.Log;
-
-import androidx.navigation.NavType;
-
-import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public class password_generator {
 
-    public  String generatePassword (int length, boolean lowercases_b, boolean uppercase_b,
+    public  String generatePassword (int length, boolean lowercase_b, boolean uppercase_b,
                                                  boolean numbers_b, boolean symbols_b) {
-        //minimum length of 6
-        //if (length < 1) {
-         //   length = 6;
-        //}
-
-
 
         final char[] lowercase = "abcdefghijklmnopqrstuvwxyz".toCharArray();
         final char[] uppercase = "ABCDEFGJKLMNPRSTUVWXYZ".toCharArray();
         final char[] numbers = "0123456789".toCharArray();
         final char[] symbols = "^$?!@#%&".toCharArray();
-        final char[] allAllowed = "abcdefghijklmnopqrstuvwxyzABCDEFGJKLMNPRSTUVWXYZ0123456789^$?!@#%&".toCharArray();
+
 
         List<Integer> char_type = new ArrayList<>();
         StringBuilder allowed = new StringBuilder();
-        if (lowercases_b){
+        if (lowercase_b){
             allowed.append(lowercase);
             char_type.add(0);
         }

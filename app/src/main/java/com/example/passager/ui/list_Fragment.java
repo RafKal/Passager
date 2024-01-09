@@ -72,8 +72,7 @@ public class list_Fragment extends ListFragment {
 
     ArrayAdapter groupadapter;
     public AppCompatActivity parent;
-    MainActivity Activity = ((MainActivity) getActivity());
-    List grp_entries;
+
 
 
 
@@ -121,25 +120,23 @@ public class list_Fragment extends ListFragment {
                     groupadapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, group_names);
 
 
+                if (entries.size() > 0) {
+                    ArrayList<String> entries_names = new ArrayList<String>();
 
-                    if (entries  != null) {
-                        if (entries.size() > 0) {ArrayList<String> entries_names = new ArrayList<String>();
+                    for (int i = 0; i < entries.size(); i++) {
+                        SimpleEntry temp = (SimpleEntry) entries.get(i);
+                        String entry_name = temp.getTitle();
 
-                            for (int i = 0; i < entries.size(); i++) {
-                                SimpleEntry temp = (SimpleEntry) entries.get(i);
-                                String entry_name = temp.getTitle();
-
-                                entries_names.add(entry_name);
-                            }
-
-
-                            groupadapter.addAll(entries_names);
-                        }
+                        entries_names.add(entry_name);
                     }
 
+
+                    groupadapter.addAll(entries_names);
                 }
 
-            else if (entries  != null) {
+            }
+
+            else {
                 if (entries.size() > 0) {
 
                     ArrayList<String> entries_names = new ArrayList<String>();
@@ -154,7 +151,6 @@ public class list_Fragment extends ListFragment {
 
                 }
             }
-            else { Log.v("es ist", "leer"); }
 
 
 
@@ -199,7 +195,6 @@ public class list_Fragment extends ListFragment {
         ListView lv = getListView();
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
-
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                     long id) {
@@ -238,13 +233,7 @@ public class list_Fragment extends ListFragment {
 
                     int grp_size = groups.size();
 
-                    if (groups != null){
-                        grp_size = groups.size();
-                    }
-                    else{
-                        grp_size = 0;
 
-                    }
 
                     if ( (position+1)  > grp_size) {
                              SimpleEntry entry_tosend = (SimpleEntry) entries.get(position - groups.size());
@@ -263,7 +252,7 @@ public class list_Fragment extends ListFragment {
                             fragmentManager.beginTransaction()
                                     .add(R.id.nav_host_fragment_content_main, entry_fragment).addToBackStack(null)
                                     .commit();
-                            //bundle.clear();
+
                         }
                     else if (grp_size > 0) {
 

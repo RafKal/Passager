@@ -5,16 +5,15 @@ import static android.hardware.biometrics.BiometricManager.Authenticators.DEVICE
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
+
 import android.provider.Settings;
 import android.text.InputType;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,12 +27,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
-import androidx.constraintlayout.widget.ConstraintLayout;
+
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.PathUtils;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -58,7 +55,6 @@ import org.linguafranca.pwdb.kdbx.KdbxCreds;
 import org.linguafranca.pwdb.kdbx.KdbxHeader;
 import org.linguafranca.pwdb.kdbx.KdbxStreamFormat;
 import org.linguafranca.pwdb.kdbx.simple.SimpleDatabase;
-import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
 import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
 
 import java.io.File;
@@ -95,7 +91,6 @@ public class MainActivity extends AppCompatActivity   {
 
     androidx.biometric.BiometricPrompt biometricPrompt;
     BiometricPrompt.PromptInfo promptInfo;
-    ConstraintLayout mMainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,8 +101,6 @@ public class MainActivity extends AppCompatActivity   {
 
 
 
-
-        //-----------------------------------------------------------------------------------
 
         BiometricManager biometricManager = BiometricManager.from(getApplicationContext());
         switch (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL | BiometricManager.Authenticators.BIOMETRIC_WEAK)){
@@ -173,12 +166,8 @@ public class MainActivity extends AppCompatActivity   {
 
                 FragmentManager fragmentManager = getSupportFragmentManager();
 
-      /*  ActivityCompat.requestPermissions(this,
-                new String[]{permission.WRITE_EXTERNAL_STORAGE, permission.READ_EXTERNAL_STORAGE, permission.MANAGE_EXTERNAL_STORAGE},
-                PackageManager.PERMISSION_GRANTED);*/
 
                 binding = ActivityMainBinding.inflate(getLayoutInflater());
-                // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 setContentView(binding.getRoot());
 
                 //build navigation elements
@@ -269,7 +258,6 @@ public class MainActivity extends AppCompatActivity   {
 
         biometricPrompt.authenticate(promptInfo);
 
-        //----------------------------------------------------------------------------------
 
 
 
@@ -335,57 +323,25 @@ public class MainActivity extends AppCompatActivity   {
 
                 FileUtils pu = new FileUtils(getApplicationContext());
                 String path = pu.getPath(uri);
-               // String path = PathUtils.getPath(getApplicationContext(), uri);
                 Log.v("path", path);
-
-
-               /* path = uri.getPath();
-                File file = new File(path);
-
-                //String path = uri.getLastPathSegment();
-                //Log.v("path", filepicker_path);
-                Log.v("path", file.getAbsolutePath());
-                Log.v("path", uri.getPath());
-                //path = uri.getLastPathSegment().substring(4);
-
-                path = getApplicationContext().getFilesDir().getAbsolutePath();
-                Log.v("path", path);
-
-                //File file = new File(path + "/abikor.txt");
-
-                File thi = new File(getApplicationContext().getExternalFilesDir(null), "test.xls");
-
-                Log.v("path", thi.getAbsolutePath());*/
-
-
-
-
                 filepicker_path = path;
-                Log.v("path", filepicker_path);
 
                 TextView txtResult = findViewById(R.id.txtResult);
                 txtResult.setText(path);
 
             }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                // Write your code if there's no result
-            }
         }
 
         if (requestCode == 101) {
             if(resultCode == Activity.RESULT_OK & data!= null){
-                Uri uri = data.getData();
                 startScreen_result = data.getIntExtra("result", 2);
                 if (startScreen_result == 1){
-                    database = import_db();
+                   import_db();
                 }
                 else if (startScreen_result == 0){
                     Intent gen_newDB = new Intent(this, gen_newDB.class);
                     startActivityForResult(gen_newDB, 102);
                 }
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                // Write your code if there's no result
             }
         }
 
@@ -393,7 +349,6 @@ public class MainActivity extends AppCompatActivity   {
             if(resultCode == Activity.RESULT_OK & data!= null){
             String name = data.getStringExtra("name");
             String master_password = data.getStringExtra("master_password");
-            String repeat_password = data.getStringExtra("repeat_password");
             String description = data.getStringExtra("description");
             Password = master_password;
             filepicker_path = "";
@@ -418,7 +373,6 @@ public class MainActivity extends AppCompatActivity   {
 
 
             String root = database.getRootGroup().getName();
-            List entries = database.getRootGroup().getEntries();
 
             //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
             List groups = database.getRootGroup().getGroups();
@@ -450,7 +404,7 @@ public class MainActivity extends AppCompatActivity   {
             }
         }
 
-    } //onActivityResult
+    }
 
     private void showFileChooser(){
         Intent fileChooser_intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -466,17 +420,15 @@ public class MainActivity extends AppCompatActivity   {
         }
     }
 
-    private SimpleDatabase import_db(){
+    private void import_db(){
 
-        String Password = input_password();
+        input_password();
         showFileChooser();
-        ListView navmenu = findViewById(R.id.list_slidermenu);
-    return database;
 }
 
 
 //https://stackoverflow.com/questions/10903754/input-text-dialog-android
-private String input_password(){
+private void input_password(){
     final EditText txtUrl = new EditText(this);
 
     txtUrl.setHint("Password?");
@@ -499,8 +451,6 @@ private String input_password(){
                                     group_names.clear();
                                     String db_name = database.getName();
                                     String root = database.getRootGroup().getName();
-
-                                    List entries = database.getRootGroup().getEntries();
 
                                     List groups = database.getRootGroup().getGroups();
 
@@ -531,16 +481,13 @@ private String input_password(){
                                             .commit();
 
                             } catch (Exception e) {
-                                //throw new RuntimeException(e);
                                 Intent launch = new Intent(MainActivity.this, startScreen.class);
                                 startActivityForResult(launch, 101);
                                 Toast.makeText(MainActivity.this, "Incorrect Password", Toast.LENGTH_LONG).show();
 
                             }
                         } catch (FileNotFoundException e) {
-                            //throw new RuntimeException(e);
-                            Toast.makeText(MainActivity.this, filepicker_path, Toast.LENGTH_LONG).show();
-                            //Toast.makeText(MainActivity.this, "File not found", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "Error opening Database", Toast.LENGTH_LONG).show();
 
                         }
                     }
@@ -559,8 +506,6 @@ private String input_password(){
                                 database = SimpleDatabase.load(creds, inputStream);
 
                                 group_names.clear();
-
-                                String db_name = database.getName();
                                 String root = database.getRootGroup().getName();
 
                                 //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
@@ -574,12 +519,10 @@ private String input_password(){
                                 groupadapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, group_names);
                                 navmenu.setAdapter(groupadapter);
                             }  catch (Exception e) {
-                                //throw new RuntimeException(e);
                                 Intent launch = new Intent(MainActivity.this, startScreen.class);
                                 startActivityForResult(launch, 101);
                             }
                         } catch (Exception e) {
-                            //throw new RuntimeException(e);
                             Intent launch = new Intent(MainActivity.this, startScreen.class);
                             startActivityForResult(launch, 101);
                         }
@@ -591,15 +534,7 @@ private String input_password(){
                 }
             })
             .show();
-
-    return Password;
-
-
 }
-
-    public void print(){
-        Entry entry1 = database.getRootGroup().getEntries().get(0);
-    }
 
     public void add_grp(String name){
         if (name != null){
@@ -608,11 +543,7 @@ private String input_password(){
 
             group_names.clear();
 
-            String db_name = database.getName();
-
             String root = database.getRootGroup().getName();
-
-            List<SimpleEntry> entries = database.getRootGroup().getEntries();
 
             //get List of all groups, get only group name (/db_name/eMail -> eMail, and send group names to ArrayAdapter)
             List<SimpleGroup> groups = database.getRootGroup().getGroups();
@@ -631,11 +562,6 @@ private String input_password(){
         }
     }
 
-    public void delete_grp(){
-        onBackPressed();
-        UUID uuid = current_group.getUuid();
-        database.deleteGroup(uuid);
-        }
 
     public void set_group(Group group){
         current_group = group;
@@ -669,15 +595,11 @@ private String input_password(){
             if (filepicker_path.equals("")){
                 File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
                 File file_dir = new File(dir + "/" + database.getName().replace(" ", "_") + ".kdbx");
-                //filepicker_path =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getPath();
 
 
                 Toast.makeText(this, "Saved in 'Documents' Folder", Toast.LENGTH_SHORT).show();
                 KdbxStreamFormat streamFormat = new KdbxStreamFormat(new KdbxHeader(4));
-                OutputStream outputStream = new FileOutputStream(file_dir);
-
                 KdbxCreds creds = new KdbxCreds(Password.getBytes());
-                //file_dir.mkdir();
                 FileOutputStream writer = new FileOutputStream(new File(dir, database.getName().replace(" ", "_")) + ".kdbx");
                 Log.v("path file", file_dir.toString());
                 database.save(streamFormat, creds, writer);
@@ -719,7 +641,6 @@ private String input_password(){
 
 
         String root = database.getRootGroup().getName();
-        List entries = database.getRootGroup().getEntries();
         List groups = database.getRootGroup().getGroups();
         group_names.add(root + " (ROOT)");
         for (int i  = 0; i < groups.size(); i++){

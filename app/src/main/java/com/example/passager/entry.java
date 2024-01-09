@@ -10,8 +10,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import org.checkerframework.checker.units.qual.A;
 import org.linguafranca.pwdb.Entry;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -77,9 +72,6 @@ public class entry extends Fragment {
 
     MainActivity Activity = ((MainActivity) getActivity());
 
-
-    ClipboardManager myClipboard;
-    ClipData myClip;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -93,7 +85,7 @@ public class entry extends Fragment {
 
 
 
-        Button back =  (Button) rootView.findViewById(R.id.entry_back);
+        Button back = rootView.findViewById(R.id.entry_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,7 +94,7 @@ public class entry extends Fragment {
             }
         });
 
-        Button delete =  (Button) rootView.findViewById(R.id.entry_delete_entry);
+        Button delete =   rootView.findViewById(R.id.entry_delete_entry);
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,7 +108,7 @@ public class entry extends Fragment {
             }
         });
 
-        Button copy_entry =  (Button) rootView.findViewById(R.id.entry_copy_entry);
+        Button copy_entry =  rootView.findViewById(R.id.entry_copy_entry);
         copy_entry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -218,7 +210,7 @@ public class entry extends Fragment {
 
 
 
-        Button edit =  (Button) rootView.findViewById(R.id.entry_edit_entry);
+        Button edit = rootView.findViewById(R.id.entry_edit_entry);
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -250,10 +242,5 @@ public class entry extends Fragment {
         // Inflate the layout for this fragment
         return rootView;
 
-    }
-
-    public void deleteEntry(Entry entry){
-        UUID uuid = entry.getUuid();
-        Activity.delete_entry(uuid);
     }
 }

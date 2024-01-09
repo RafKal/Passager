@@ -12,15 +12,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.example.passager.databinding.FragmentEntryBinding;
-import com.example.passager.ui.list_Fragment;
-
 import org.linguafranca.pwdb.kdbx.simple.SimpleEntry;
-import org.linguafranca.pwdb.kdbx.simple.SimpleGroup;
-
-import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -104,7 +96,7 @@ public class add_entry extends Fragment  {
 
 
 
-        Button back =  (Button) rootView.findViewById(R.id.entry_back);
+        Button back =  rootView.findViewById(R.id.entry_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,7 +105,7 @@ public class add_entry extends Fragment  {
             }
         });
 
-        Button save_entry =  (Button) rootView.findViewById(R.id.entry_saveEntry);
+        Button save_entry =  rootView.findViewById(R.id.entry_saveEntry);
         save_entry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,11 +126,6 @@ public class add_entry extends Fragment  {
                 new_entry.setUsername(username);
                 new_entry.setPassword(password);
                 new_entry.setUrl(url);
-                //SimpleGroup group = Activity.database.getRootGroup().getGroups().get(0);
-                //group.addEntry(new_entry);
-
-                Log.v("kommt at", String.valueOf(Activity.current_group));
-                //Activity.current_group.addEntry(new_entry);
                 if (is_edit){
                     Bundle data = getArguments();
                     UUID uuid =  UUID.fromString(data.getString("UUID"));
@@ -153,12 +140,11 @@ public class add_entry extends Fragment  {
             }
         });
 
-        Button gen_password =  (Button) rootView.findViewById(R.id.entry_gen_password);
+        Button gen_password =  rootView.findViewById(R.id.entry_gen_password);
 
         gen_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 //fm.saveBackStack("b_save");
                Intent gen_newPW = new Intent(getContext(), gen_password.class);
                startActivityForResult(gen_newPW, 100);
@@ -187,9 +173,6 @@ public class add_entry extends Fragment  {
                 View rootView = getView();
                 TextView password_text = rootView.findViewById(R.id.entry_Password);
                 password_text.setText(password);
-
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                //fm.restoreBackStack("b_save");
 
             }
         }
