@@ -22,7 +22,8 @@ public class startScreen extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-             no_db = extras.getBoolean("path");
+            //check if no Databank is open. If that's the case, deactivate onBackPressed
+             no_db = extras.getBoolean("no_db");
         }
 
 
@@ -57,8 +58,6 @@ public class startScreen extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
-        Log.v("show", no_db.toString());
         {
             if (!no_db){
                 super.onBackPressed();

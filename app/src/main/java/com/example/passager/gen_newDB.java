@@ -30,8 +30,6 @@ public class gen_newDB extends AppCompatActivity {
         TextView description_text = findViewById(R.id.gen_description);
         android.widget.TextView repeat_password_text = findViewById(R.id.gen_repeat_master_password);
 
-        //String[] Data = {name, password, notes, url};
-
 
         Button create_db = findViewById(R.id.gen_create);
         create_db.setOnClickListener(new View.OnClickListener() {

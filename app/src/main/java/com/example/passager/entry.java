@@ -77,7 +77,6 @@ public class entry extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_entry, container, false);
-
         FragmentManager fm = getActivity().getSupportFragmentManager();
 
 
@@ -90,7 +89,6 @@ public class entry extends Fragment {
             @Override
             public void onClick(View view) {
                 fm.popBackStack();
-
             }
         });
 
@@ -235,8 +233,6 @@ public class entry extends Fragment {
 
             }
         });
-
-
 
 
         // Inflate the layout for this fragment

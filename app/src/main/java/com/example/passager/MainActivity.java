@@ -197,32 +197,40 @@ public class MainActivity extends AppCompatActivity   {
 
                 // Initial start screen
                 Intent launch = new Intent(getApplicationContext(), startScreen.class);
-                launch.putExtra("path", true);
+                launch.putExtra("no_db", true);
                 startActivityForResult(launch, 101);
-                launch.removeExtra("path");
+                launch.removeExtra("no_db");
 
 
+                //Initialise add icon with launch activity
                 binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
-                                                              @Override
-                                                              public void onClick(View view) {
-                                                                  startActivityForResult(launch, 101);
-                                                              }
-                                                          }
+                          @Override
+                          public void onClick(View view) {
+                              startActivityForResult(launch, 101);
+                          }
+                      }
                 );
 
+
+
+                //Initialise Drawer
                 navmenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                             long id) {
 
                         if (database != null) {
+                            //Get Tapped drawer Group and put name on toolbar
                             String name = group_names.get(position);
                             binding.appBarMain.toolbar.setTitle(name);
 
+                            //Check if Root Group was tapped
                             if (position == 0) {
                                 grp_toSend = database.getRootGroup();
                             } else {
                                 grp_toSend = database.getRootGroup().getGroups().get(position - 1);
                             }
+
+                            //set current_group for list_fragment creation (see list_fragment.java)
                             current_group = grp_toSend;
 
                             list_Fragment new_fragment = new list_Fragment();
@@ -237,8 +245,6 @@ public class MainActivity extends AppCompatActivity   {
                         }
                     }
                 });
-
-
                 super.onAuthenticationSucceeded(result);
             }
 
@@ -248,7 +254,6 @@ public class MainActivity extends AppCompatActivity   {
                 super.onAuthenticationFailed();
             }
         });
-
 
         promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("Passager").
                  setDescription("Login using Credentials").setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL).
@@ -287,11 +292,12 @@ public class MainActivity extends AppCompatActivity   {
             if (current_group != null && copied_entry!= null){
                 current_group.addEntry(copied_entry);
                 FragmentManager fm = getSupportFragmentManager();
+
+
+
+                //Get current list fragment and update its ListView so that pasted Entry shows
                 List frags = fm.getFragments();
-                Log.v("paste frags", frags.toString());
                 Fragment list_frag = (Fragment) frags.get(frags.size()-1);
-
-
                 if (list_frag instanceof list_Fragment) {
                     ((list_Fragment) list_frag).update_listview();
                 }
@@ -300,7 +306,6 @@ public class MainActivity extends AppCompatActivity   {
                 Toast.makeText(this, "No Entry Copied!", Toast.LENGTH_SHORT).show();
             }
         }
-
 
         return super.onOptionsItemSelected(item);
     }
@@ -316,21 +321,18 @@ public class MainActivity extends AppCompatActivity   {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        //Path getter
         if (requestCode == 100) {
             if(resultCode == Activity.RESULT_OK & data!= null){
                 Uri uri = data.getData();
 
                 FileUtils pu = new FileUtils(getApplicationContext());
-                String path = pu.getPath(uri);
-                Log.v("path", path);
-                filepicker_path = path;
-
-                TextView txtResult = findViewById(R.id.txtResult);
-                txtResult.setText(path);
+                filepicker_path = pu.getPath(uri);
 
             }
         }
 
+        //Launch Activity Result
         if (requestCode == 101) {
             if(resultCode == Activity.RESULT_OK & data!= null){
                 startScreen_result = data.getIntExtra("result", 2);
@@ -344,6 +346,7 @@ public class MainActivity extends AppCompatActivity   {
             }
         }
 
+        //Create Database Result
         if (requestCode == 102) {
             if(resultCode == Activity.RESULT_OK & data!= null){
             String name = data.getStringExtra("name");
@@ -357,7 +360,6 @@ public class MainActivity extends AppCompatActivity   {
 
             database.setName(name);
             database.getRootGroup().setName(name);
-
             database.setDescription(description);
 
             database.getRootGroup().addGroup(database.newGroup("General"));
@@ -379,6 +381,7 @@ public class MainActivity extends AppCompatActivity   {
             group_names.add(root + " (ROOT)");
             for (int i  = 0; i < groups.size(); i++){
                 String temp = groups.get(i).toString();
+                //cut out Root Name and "/" at the end of directory
                 temp = temp.substring((root.length()+2), temp.length()-1);
                 group_names.add(temp);
             }
@@ -475,7 +478,7 @@ private void input_password(){
 
 
                                   FragmentManager fragmentManager = getSupportFragmentManager();
-                                    fragmentManager.beginTransaction()
+                                  fragmentManager.beginTransaction()
                                             .add(R.id.nav_host_fragment_content_main, new_fragment).addToBackStack(null)
                                             .commit();
 
@@ -493,6 +496,7 @@ private void input_password(){
 
                 }
             })
+            //If cancel is tapped, reload Database if present. If not, start Launch Activity
             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     ListView navmenu = findViewById(R.id.list_slidermenu);
@@ -574,6 +578,7 @@ private void input_password(){
     public void onBackPressed()
     {
 
+        //Only go back if current group has Parent (aka if Root Group hasn't been reached)
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
         if (currentFragment instanceof list_Fragment) {
 
@@ -592,16 +597,17 @@ private void input_password(){
     public void save_db(){
         try {
             if (filepicker_path.equals("")){
+
+                //if no path is set, create one in local Documents folder and make new save
                 File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
                 File file_dir = new File(dir + "/" + database.getName().replace(" ", "_") + ".kdbx");
 
-
-                Toast.makeText(this, "Saved in 'Documents' Folder", Toast.LENGTH_SHORT).show();
                 KdbxStreamFormat streamFormat = new KdbxStreamFormat(new KdbxHeader(4));
                 KdbxCreds creds = new KdbxCreds(Password.getBytes());
                 FileOutputStream writer = new FileOutputStream(new File(dir, database.getName().replace(" ", "_")) + ".kdbx");
-                Log.v("path file", file_dir.toString());
                 database.save(streamFormat, creds, writer);
+
+                Toast.makeText(this, "Saved in 'Documents' Folder", Toast.LENGTH_SHORT).show();
 
             }
             else {
@@ -610,31 +616,22 @@ private void input_password(){
                 database.save(creds, outputStream);
             }
 
-            Log.v("path file", filepicker_path);
 
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            Toast.makeText(this, "Error Saving", Toast.LENGTH_SHORT).show();
         }
     }
 
+    //used in entry fragment
     public void delete_entry(UUID uuid){
         database.deleteEntry(uuid);
 
         FragmentManager fm = getSupportFragmentManager();
         List frags = fm.getFragments();
         Fragment list_frag = (Fragment) frags.get(frags.size()-2);
-        Log.v("delete frags", frags.toString());
-        Log.v("tester", list_frag.toString());
-
 
         if (list_frag instanceof list_Fragment) {
             ((list_Fragment) list_frag).update_listview();
-
-            Log.v("ist hirtaa", "ja");
-
         }
         group_names.clear();
 
@@ -659,10 +656,6 @@ private void input_password(){
         FragmentManager fm = getSupportFragmentManager();
         List frags = fm.getFragments();
         Fragment list_frag = (Fragment) frags.get(frags.size()-2);
-
-        Log.v("tester", list_frag.toString());
-
-
         if (list_frag instanceof list_Fragment) {
             ((list_Fragment) list_frag).update_listview();
         }
@@ -671,10 +664,10 @@ private void input_password(){
     public void copy_entry(UUID uuid, String title) {
         copied_entry = database.findEntry(uuid);
 
+        //Above operation returns null if copied from Recycle Bin
         if (copied_entry == null){
             Group rec_bin = database.getRecycleBin();
             copied_entry = (Entry)  rec_bin.findEntries(title, true).get(0);
-            Log.v("test entry", copied_entry.toString());
         }
 
     }

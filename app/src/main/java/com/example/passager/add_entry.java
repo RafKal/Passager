@@ -120,6 +120,7 @@ public class add_entry extends Fragment  {
                 String url =  url_text.getText().toString();
                 String username =  username_text.getText().toString();
 
+                //This creates a new Entry but doesn't add it to the database
                 SimpleEntry new_entry = Activity.database.newEntry();
                 new_entry.setTitle(title);
                 new_entry.setNotes(notes);
@@ -162,14 +163,11 @@ public class add_entry extends Fragment  {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data); comment this unless you want to pass your result to the activity.
 
         if (requestCode == 100) {
             if(resultCode == Activity.RESULT_OK & data!= null){
 
                 String password = data.getStringExtra("password");
-
-
                 View rootView = getView();
                 TextView password_text = rootView.findViewById(R.id.entry_Password);
                 password_text.setText(password);

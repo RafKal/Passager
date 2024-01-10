@@ -195,11 +195,15 @@ public class list_Fragment extends ListFragment {
         ListView lv = getListView();
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
+
+        //set ListView ClickListener
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                     long id) {
 
                 ListView lv = getListView();
+
+
                 start_loop:
                 if (getArguments() != null) {
                     mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
@@ -212,14 +216,10 @@ public class list_Fragment extends ListFragment {
                                 .commit();
 
                         break start_loop;
-
                     }
-
                     if (lv.getAdapter().getCount()-1 == position){
-
                         input_grp_name();
                         break start_loop;
-
                     }
                     update_listview();
 
@@ -235,6 +235,7 @@ public class list_Fragment extends ListFragment {
 
 
 
+                    //Check if Group or Entry was tapped. If item position on ListView is bigger than number if groups, an Entry was tapped
                     if ( (position+1)  > grp_size) {
                              SimpleEntry entry_tosend = (SimpleEntry) entries.get(position - groups.size());
 
