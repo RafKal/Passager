@@ -1,7 +1,6 @@
 package com.example.passager;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 
 public class startScreen extends AppCompatActivity {
-    int result;
     Boolean no_db = false;
 
     @Override
@@ -18,7 +16,7 @@ public class startScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_screen);
 
-        //set 0 for create, 1 for import
+        //This Activity returns 0 for create, 1 for import
 
         no_db = false;
 

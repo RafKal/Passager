@@ -24,9 +24,6 @@
             android:name=".gen_newDB"
             android:exported="false" />
         <activity
-            android:name=".get_password"
-            android:exported="false" />
-        <activity
             android:name=".startScreen"
             android:exported="false" />
         <activity

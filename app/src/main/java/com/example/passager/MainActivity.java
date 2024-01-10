@@ -98,10 +98,8 @@ public class MainActivity extends AppCompatActivity   {
         super.onCreate(savedInstanceState);
 
 
-
-
-
-
+        //Start Biometric reader. If none is available, create credentials.
+        //If login succeeds initialize app
         BiometricManager biometricManager = BiometricManager.from(getApplicationContext());
         switch (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL | BiometricManager.Authenticators.BIOMETRIC_WEAK)){
             case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
@@ -188,6 +186,8 @@ public class MainActivity extends AppCompatActivity   {
                 NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, mAppBarConfiguration);
                 NavigationUI.setupWithNavController(navigationView, navController);
 
+
+                //Get Permissions
                 if (!Environment.isExternalStorageManager()) {
                     Intent getpermission = new Intent();
                     getpermission.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
@@ -205,7 +205,6 @@ public class MainActivity extends AppCompatActivity   {
                 binding.appBarMain.add.setOnClickListener(new View.OnClickListener() {
                                                               @Override
                                                               public void onClick(View view) {
-                                                                  //fragmentManager.clearBackStack(null);
                                                                   startActivityForResult(launch, 101);
                                                               }
                                                           }

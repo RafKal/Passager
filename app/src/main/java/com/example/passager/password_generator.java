@@ -1,5 +1,10 @@
 package com.example.passager;
 
+
+/* Quelle:
+https://stackoverflow.com/a/55885045
+*/
+
 import android.util.Log;
 import java.security.SecureRandom;
 import java.util.ArrayList;
